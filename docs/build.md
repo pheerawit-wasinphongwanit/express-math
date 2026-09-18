@@ -58,3 +58,4 @@ Remote: `https://github.com/pheerawit-wasinphongwanit/express-math` (SSH URL fai
 - In-game: ปุ่ม 📣 ฟีดแบ็กบนเมนู → เปิดหน้า new-issue พร้อม template (story.md assumed decision #0, shell link ไม่ใช่ system)
 - Background service: `.github/workflows/feedback.yml` — ทำงานทันทีเมื่อ issue ถูกสร้าง (GitHub Actions = infra ของ GitHub รันตลอด ไม่ผูกกับเครื่อง agent): ติด label + ตอบกลับขอบคุณ + ส่งแจ้งเตือน Telegram ถึงเจ้าของ
 - E2E test: issue #1 → run 12s → label ✓ comment ✓ · issue 2 → telegram HTTP 200 ✓ (secrets set 2026-09-18)
+- Triage round 2026-09-18 (PM): both [test] issues passed — owner confirmed Telegram receipt for #2 (#1 "จะปิดเอง", #2 "ปิดเองหลังยืนยัน"). Closure blocked: local fine-grained PAT is issues-read-only (403 on PATCH/POST) — pending token fix or manual close by owner.
