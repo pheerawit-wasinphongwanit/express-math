@@ -7,12 +7,12 @@ Ride through 4 stations (waves) of rising difficulty; chase your best score and 
 ## Run
 
 Open `web/index.html` in any browser (works offline from `file://`, no build step, no CDN).
-For a local server: `python3 -m http.server` in the repo root → http://localhost:8000/web/
+For a local server: `python3 -m http.server` in the repo root → http://localhost:8000/
 
 ## Test
 
 ```bash
-node web/selftest.mjs
+node selftest.mjs
 ```
 
 Checks generator invariants (unique choices, non-negative integers, exact division,

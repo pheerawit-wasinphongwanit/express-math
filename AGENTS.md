@@ -19,7 +19,7 @@
 ## 3. Working Rules
 
 1. **Spec-first** — confirm inputs, outputs, invariants, and acceptance criteria before coding; spec changes precede code changes.
-2. **Verification gate** — a task is DONE only when checks actually ran and passed (`node web/selftest.mjs` 100% green unless the user explicitly waives). Never claim verification without running.
+2. **Verification gate** — a task is DONE only when checks actually ran and passed (`node selftest.mjs` 100% green unless the user explicitly waives). Never claim verification without running.
 3. **Zero secrets** — never place credentials/tokens in code, logs, or docs.
 4. **No irreversible operations** (publish/deploy, force-push, destructive deletes) without explicit human confirmation.
 5. **Git mutations are sequential** — never run git write commands in parallel; inspect `git status --short` after any failed chained git command.
@@ -27,7 +27,7 @@
 ## 4. Definition of Done
 
 - All budgets in `docs/scope.md` honored (may go under, never over); done checklist complete.
-- `node web/selftest.mjs` green; game runs offline from `file://` on mobile + desktop.
+- `node selftest.mjs` green; game runs offline from `file://` on mobile + desktop.
 - User playtest passed (full run, daily reproducible, auto-pause works); fixes logged in `docs/build.md`.
 
 ## 5. Memory

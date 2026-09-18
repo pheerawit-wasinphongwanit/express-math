@@ -3,15 +3,15 @@
 ## What shipped (files + how to run)
 
 ```
-web/index.html    # shell + full CSS (screens, themes, feedback animations) — open in any browser
-web/data.js       # PURE DATA: waves/mixes/tiers/copy — mechanical transcription of docs/story.md
-web/core.js       # PURE LOGIC: PRNG, 6 question generators, run state machine — no DOM
-web/engine.js     # browser runtime: screens, time-bank timer, feedback, audio (4 beeps), daily, auto-pause
-web/selftest.mjs  # node web/selftest.mjs — zero-dep verification gate
+index.html    # shell + full CSS (screens, themes, feedback animations) — open in any browser
+data.js       # PURE DATA: waves/mixes/tiers/copy — mechanical transcription of docs/story.md
+core.js       # PURE LOGIC: PRNG, 6 question generators, run state machine — no DOM
+engine.js     # browser runtime: screens, time-bank timer, feedback, audio (4 beeps), daily, auto-pause
+selftest.mjs  # node selftest.mjs — zero-dep verification gate
 docs/             # decisions.md, scope.md, story.md (design source of truth, synced from nexus-agent/game/)
 ```
 
-Run: open `web/index.html` (works offline from `file://`) or serve the repo root and visit `/web/`.
+Run: open `index.html` (works offline from `file://`) or serve the repo root and visit `/web/`.
 Remote: `https://github.com/pheerawit-wasinphongwanit/express-math` (SSH URL failed — no SSH key in build env; pushed via HTTPS).
 
 ## Self-test results
