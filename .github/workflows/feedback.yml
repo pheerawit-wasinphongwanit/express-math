@@ -1,0 +1,45 @@
+name: feedback-intake
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  ack-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: label + ack comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if ! gh issue view "$NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | grep -qx feedback; then
+            gh issue edit "$NUMBER" --repo "$REPO" --add-label feedback
+          fi
+          gh issue comment "$NUMBER" --repo "$REPO" --body "ขอบคุณสำหรับฟีดแบ็กครับ 🚂 บันทึกเข้าคิวแล้ว — จะได้รับการดำเนินการในรอบพัฒนาถัดไป"
+
+      - name: notify owner via telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "telegram secrets not set — skipping notification"
+            exit 0
+          fi
+          TEXT=$(printf '📣 ฟีดแบ็กใหม่ %s #%s\n%s\n\n%s\n\n%s' \
+            "$REPO" "$NUMBER" "$ISSUE_TITLE" "$(printf '%s' "$ISSUE_BODY" | head -c 400)" "$ISSUE_URL")
+          curl -sS -o /dev/null -w "telegram HTTP %{http_code}\n" \
+            -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg chat_id "$TELEGRAM_CHAT_ID" --arg text "$TEXT" \
+              '{chat_id: $chat_id, text: $text, disable_web_page_preview: true}')"

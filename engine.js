@@ -66,6 +66,9 @@ function renderMenu() {
   $('playBtn').textContent = CP.menu.play;
   $('dailyBtn').textContent = CP.menu.daily;
   $('t_hint').textContent = CP.menu.hint;
+  const fb = $('feedbackLink');
+  fb.textContent = CP.menu.feedback;
+  fb.href = D.feedbackUrl;
   const best = store.get(K.best) || 0;
   const today = store.get(K.dailyPrefix + dateKey());
   $('menuStats').innerHTML =

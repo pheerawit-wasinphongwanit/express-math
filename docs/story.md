@@ -24,7 +24,7 @@
 ## Spine (run structure — anchors / tight vs open)
 
 ```
-BOOT → เมนู (open: เล่นเรื่อยๆ / ด่วนประจำวัน + best + mute)
+BOOT → เมนู (open: เล่นเรื่อยๆ / ด่วนประจำวัน + best + mute + ลิงก์ฟีดแบ็ก→GitHub issue)
 → นับถอย 3-2-1 (tight, 1.5s)
 → W1 (open: วงตอบโจทย์ player-paced) → [คะแนน ≥150] interstitial "สถานีถัดไป" (tight, 1.5s)
 → W2 (open) → [≥500] → W3 (open) → [≥1,200] → W4 (open, จนเวลาหมด)
@@ -80,7 +80,7 @@ Question = { type, prompt, choices[3–4], correctIndex, rewardSec }
 | wave-up | interstitial "🚉 สถานีถัดไป" · สีธีมเปลี่ยน · beep#3 |
 | เวลาหมด | สั่นหนัก · beep#4 · slow fade → หน้าผล (คะแนนใหญ่ → tier → สถิติย่อ: ถูก/ผิด, streak สูงสุด, สถานี) · ปุ่ม "อีก run" ใหญ่สุด |
 
-**Budget ที่ใช้:** UI copy ไทย ≈ เมนู 20 + เล่น 12 + ผล 18 + events 8 = **58/60 คำ** · beeps 4/4 (ถูก/ผิด/milestone-wave/จบ)
+**Budget ที่ใช้:** UI copy ไทย = **39/60 คำ** (นับจริงใน self-test, รวมคำ "ฟีดแบ็ก") · beeps 4/4 (ถูก/ผิด/milestone-wave/จบ)
 
 ## Playthrough matrix (พิสูจน์ทุก tier reach ได้)
 
@@ -94,6 +94,7 @@ Question = { type, prompt, choices[3–4], correctIndex, rewardSec }
 Free run: seed สุ่มใหม่ + ปริมาณโจทย์ที่ต่างกันได้ต่อ wave > 1,000 รูปแบบ (operand space × types × ตำแหน่งคำตอบ) → ซ้ำรู้สึกไม่ซ้ำ · Daily: seed คงที่ต่อวัน**โดยตั้งใจ** (คุยโชว์กันได้) · ความลึก replay = best-chasing + daily streak
 
 ## Assumed decisions (ใหม่จาก stage นี้ — ค้านได้)
+0. **ปุ่มฟีดแบ็กบนเมนู** (user decision 2026-09-18): ลิงก์เปล่าไปหน้าสร้าง GitHub issue พร้อม template — เป็น shell link ไม่ใช่ system ใหม่ ไม่แตะ systems budget
 1. **เพดาน timeBank = 50 วิ** (ปรับจาก 90 แรก ๆ): self-test พบว่าเทพสะสมเวลาถึง 90 ทำให้ run ยาว ~158 วิ เกินกรอบ 60–120 → ลดเพดาน + reward W3/W4 เป็น 2/1 + milestone +6 ให้ run เทพลง ~110–125 วิ (จูนผ่าน self-test ก่อน playtest ตามสัญญา scope)
 2. ลำดับเรขาคณิต (×2) โผล่เฉพาะ W4 — ยังนับเป็น type "เติมลำดับ" ชนิดเดิม
 3. เกณฑ์ tier ปรับได้หลัง playtest จริง (จูนครั้งแรกด้วย self-test: 300/900/1,500/2,600 ให้ T5 = ระดับเทพตัวจริงเท่านั้น)

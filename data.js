@@ -40,7 +40,7 @@ const DATA = {
   // UI copy (Thai) — budget ≤ 60 words total (scope). Audio: 4 beeps max.
   copy: {
     menu:   { title: 'ด่วนคณิต', sub: 'EXPRESS MATH', play: 'เริ่มเล่น', daily: 'ด่วนประจำวัน',
-              best: 'สถิติสูงสุด', today: 'วันนี้', hint: 'ตอบถูกได้เวลา ตอบผิดเสียเวลา' },
+              best: 'สถิติสูงสุด', today: 'วันนี้', hint: 'ตอบถูกได้เวลา ตอบผิดเสียเวลา', feedback: '📣 ฟีดแบ็ก' },
     play:   { count3: '3', count2: '2', count1: '1', go: 'ไป!', nextStation: 'สถานีถัดไป',
               secBonus: '+6 วิ', secPenalty: '−5 วิ',
               paused: 'หยุดชั่วคราว', tapToResume: 'แตะเพื่อเล่นต่อ' },
@@ -51,6 +51,9 @@ const DATA = {
 
   // localStorage keys (scope: 2 game keys + mute preference)
   keys: { best: 'express-math:best', dailyPrefix: 'express-math:daily:', mute: 'express-math:mute' },
+
+  // feedback intake (story.md assumed decision #0 — shell link, not a system)
+  feedbackUrl: 'https://github.com/pheerawit-wasinphongwanit/express-math/issues/new?labels=feedback&template=feedback.yml',
 };
 
 global.EXPRESS_DATA = DATA;

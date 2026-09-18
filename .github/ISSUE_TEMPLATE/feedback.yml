@@ -1,0 +1,30 @@
+name: 📣 ฟีดแบ็ก
+description: บอกอาการบั๊ก / ข้อเสนอแนะเกม ด่วนคณิต EXPRESS MATH
+labels: [feedback]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: ประเภท
+      options:
+        - 🐞 บั๊ก (เล่นแล้วผิดปกติ)
+        - 💡 ข้อเสนอแนะ / อยากได้ฟีเจอร์
+        - ⚖️ ความสมดุลเกม (ง่าย/ยากไป)
+        - อื่น ๆ
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: รายละเอียด
+      description: เล่าเท่าที่จำได้เลยครับ — กำลังเล่นสถานีไหน เกิดอะไรขึ้น / อยากได้อะไร
+      placeholder: เช่น "ตอบถูกแล้วแต่ขึ้น ❌ ตอนโจทย์ 7 × 8 สถานี 2"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: เครื่อง / เบราว์เซอร์ (ถ้าจำได้)
+      placeholder: เช่น iPhone Safari / Android Chrome
+    validations:
+      required: false
