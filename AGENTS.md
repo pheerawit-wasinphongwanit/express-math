@@ -30,7 +30,16 @@
 - `node selftest.mjs` green; game runs offline from `file://` on mobile + desktop.
 - User playtest passed (full run, daily reproducible, auto-pause works); fixes logged in `docs/build.md`.
 
-## 5. Memory
+## 5. Feedback Intake (standing instruction)
+
+Feedback lives in GitHub Issues — the durable queue (label `feedback`, open = pending). No separate ledger file: issues are the canonical record.
+
+- **At session start, or whenever the user asks**: `gh issue list --label feedback --state open` — triage every open item BEFORE other work.
+- Triage routing (spec-first, never code-only): bug/balance/feature → propose the change in `docs/story.md` (or `docs/scope.md` if budgets move) → get user approval → mirror into code → re-run `node selftest.mjs` → comment the resolution on the issue → close it (`gh api -X PATCH repos/pheerawit-wasinphongwanit/express-math/issues/N -f state=closed` — REST, not GraphQL).
+- "Won't fix" is a valid resolution — say why in the closing comment.
+- Every feedback round handled lands a one-line note in `docs/build.md`.
+
+## 6. Memory
 
 - On user corrections, rework requests, or verification failures: append a lesson to `memory/lessons.md` (Signal / Root cause / Lesson / Scope).
 - Periodically distill validated lessons into the pattern list below; prune stale entries.
