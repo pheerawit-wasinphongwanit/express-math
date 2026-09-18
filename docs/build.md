@@ -45,3 +45,9 @@ Remote: `https://github.com/pheerawit-wasinphongwanit/express-math` (SSH URL fai
 4. **Haptics not implemented** — `navigator.vibrate` is on the scope cut list (#6); contract honored.
 5. **localStorage uses 3 keys** (`best`, `daily:<date>`, `mute`) — story.md checklist already required mute persistence; scope's "2 keys" covered the game-progress keys only.
 6. Tier table + wave rewards differ from scope's original numbers — legitimized via story.md tuning clauses (assumed decisions #1/#3), scope synced.
+
+## Hosting
+
+- Repo made **public** (user decision — GitHub Pages on private repos needs Pro) via API.
+- GitHub Pages: branch `main`, root `/` — API constraint: branch-source only serves `/` or `/docs`, so game files moved from `web/` to repo root (commit `refactor: move game files...`); design docs stay in `docs/` (unpublished).
+- Live: https://pheerawit-wasinphongwanit.github.io/express-math/ — all 4 files verified HTTP 200.
