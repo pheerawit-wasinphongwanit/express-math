@@ -51,3 +51,10 @@ Remote: `https://github.com/pheerawit-wasinphongwanit/express-math` (SSH URL fai
 - Repo made **public** (user decision — GitHub Pages on private repos needs Pro) via API.
 - GitHub Pages: branch `main`, root `/` — API constraint: branch-source only serves `/` or `/docs`, so game files moved from `web/` to repo root (commit `refactor: move game files...`); design docs stay in `docs/` (unpublished).
 - Live: https://pheerawit-wasinphongwanit.github.io/express-math/ — all 4 files verified HTTP 200.
+
+## Feedback intake (2026-09-18, user request)
+
+- Channel: GitHub Issues — form `.github/ISSUE_TEMPLATE/feedback.yml` (ประเภท/รายละเอียด/เครื่อง)
+- In-game: ปุ่ม 📣 ฟีดแบ็กบนเมนู → เปิดหน้า new-issue พร้อม template (story.md assumed decision #0, shell link ไม่ใช่ system)
+- Background service: `.github/workflows/feedback.yml` — ทำงานทันทีเมื่อ issue ถูกสร้าง (GitHub Actions = infra ของ GitHub รันตลอด ไม่ผูกกับเครื่อง agent): ติด label + ตอบกลับขอบคุณ + ส่งแจ้งเตือน Telegram ถึงเจ้าของ (รอ secret)
+- E2E test: issue #1 → run 12s → label ✓ comment ✓ (Telegram pending secrets)
