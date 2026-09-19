@@ -44,6 +44,7 @@
   .btn:active { transform: scale(.97); }
   .btn.primary { background: var(--theme); color: #06121f; }
   .btn.big { padding: 20px 22px; font-size: 1.3rem; }
+  #menu .subnote { color: var(--dim); font-size: .78rem; margin-top: -12px; }
   #menu .hint { color: var(--dim); font-size: .85rem; margin-top: 8px; }
   .statline { display: flex; gap: 16px; color: var(--dim); font-size: .95rem; }
   .statline b { color: var(--text); font-variant-numeric: tabular-nums; }
@@ -120,6 +121,7 @@
     <div class="statline" id="menuStats"></div>
     <button id="playBtn" class="btn primary big"></button>
     <button id="dailyBtn" class="btn big"></button>
+    <div class="subnote" id="dailyHint"></div>
     <a id="feedbackLink" class="btn" target="_blank" rel="noopener"></a>
     <div class="hint" id="t_hint"></div>
   </section>

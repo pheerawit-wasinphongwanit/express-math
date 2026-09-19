@@ -65,6 +65,7 @@ function renderMenu() {
   $('t_sub').textContent = CP.menu.sub;
   $('playBtn').textContent = CP.menu.play;
   $('dailyBtn').textContent = CP.menu.daily;
+  $('dailyHint').textContent = CP.menu.dailyHint;
   $('t_hint').textContent = CP.menu.hint;
   const fb = $('feedbackLink');
   fb.textContent = CP.menu.feedback;

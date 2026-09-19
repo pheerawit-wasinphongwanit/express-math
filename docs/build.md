@@ -29,6 +29,10 @@ Remote: `https://github.com/pheerawit-wasinphongwanit/express-math` (SSH URL fai
 [5] budgets: UI copy 38/60 words · beeps 4/4 · 4 waves · 6 types · 5 tiers
 ```
 
+## Changelog
+
+**Menu daily-mode explainer (2026-09-19, player question via feedback):** player asked how ด่วนประจำวัน differs from เริ่มเล่น → added one-line hint under the daily button (copy `menu.dailyHint` in data.js, `#dailyHint` subnote in index.html, wired in renderMenu). Copy budget 42/60 ✓ · self-test 29/29 ✓. No rule/data change — pure copy/UI.
+
 ## Playtest notes & fixes
 
 **Tuning round 1 (self-test driven, before any human play):**
