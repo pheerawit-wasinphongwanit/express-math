@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ห.ร.ม. · ค.ร.น. — ทบทวนรายวัน เตรียมสอบ ม.1</title>
+<meta name="description" content="Infographic แบบ interactive ทบทวน ห.ร.ม. (GCD) และ ค.ร.น. (LCM) สำหรับ ป.6 เตรียมสอบเข้า ม.1 พร้อมโจทย์ชุด 02B และโจทย์สุ่มรายวัน">
+<style>
+:root{
+  --ink:#1e293b; --muted:#64748b; --bg:#f1f5f9; --card:#ffffff; --line:#e2e8f0;
+  --indigo:#6366f1; --violet:#8b5cf6; --sky:#0284c7; --sky-l:#e0f2fe;
+  --amber:#d97706; --amber-l:#fef3c7; --green:#059669; --green-l:#d1fae5;
+  --rose:#e11d48; --rose-l:#ffe4e6; --teal:#0d9488; --teal-l:#ccfbf1;
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Sarabun','IBM Plex Sans Thai','Noto Sans Thai','Leelawadee UI','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;font-size:17px}
+.hero{background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#a855f7);color:#fff;padding:34px 18px 30px;text-align:center}
+.hero h1{font-size:1.65rem;font-weight:800;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.18)}
+.hero p.sub{margin-top:8px;font-size:1.02rem;opacity:.95}
+.hero .chips{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hero .chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:5px 14px;border-radius:999px;font-size:.92rem;font-weight:600;backdrop-filter:blur(4px)}
+.hero a.chip{text-decoration:none;color:#fff;cursor:pointer}
+nav.tabs{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(15,23,42,.06)}
+nav.tabs .in{max-width:920px;margin:0 auto;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav.tabs .in::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;padding:12px 15px;font-size:.9rem;font-weight:700;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs a:hover,nav.tabs a:active{color:var(--indigo)}
+main{max-width:920px;margin:0 auto;padding:18px 14px 60px}
+section.card{background:var(--card);border-radius:var(--radius);box-shadow:0 4px 18px rgba(15,23,42,.07);margin:22px 0;overflow:hidden;border:1px solid var(--line)}
+section.card>header{display:flex;align-items:center;gap:12px;padding:16px 20px;color:#fff}
+section.card>header .no{flex:0 0 auto;width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:800;border:1px solid rgba(255,255,255,.4)}
+section.card>header h2{font-size:1.18rem;font-weight:800}
+section.card>header .tag{margin-left:auto;font-size:.75rem;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:999px;font-weight:600}
+section.card .body{padding:18px 20px 22px}
+section.card[data-theme=percent]>header{background:linear-gradient(120deg,#0284c7,#38bdf8)}
+section.card[data-theme=lcm]>header{background:linear-gradient(120deg,#0d9488,#2dd4bf)}
+section.card[data-theme=modes]>header{background:linear-gradient(120deg,#d97706,#f59e0b)}
+section.card[data-theme=traps]>header{background:linear-gradient(120deg,#e11d48,#fb7185)}
+section.card[data-theme=quiz]>header{background:linear-gradient(120deg,#7c3aed,#a855f7)}
+section.card[data-theme=daily]>header{background:linear-gradient(120deg,#6366f1,#818cf8)}
+.lead{font-size:1rem;color:var(--muted);margin-bottom:14px}
+.formula{background:var(--ink);color:#fde68a;border-radius:14px;padding:14px 16px;text-align:center;font-size:1.12rem;font-weight:700;letter-spacing:.3px;margin:12px 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.formula small{display:block;color:#cbd5e1;font-weight:500;font-size:.82rem;margin-top:6px;letter-spacing:0}
+.note{border-radius:12px;padding:11px 14px;font-size:.94rem;margin:12px 0;border:1px dashed}
+.note.tip{background:var(--green-l);border-color:#6ee7b7;color:#065f46}
+.note.warn{background:var(--rose-l);border-color:#fda4af;color:#9f1239}
+.note.info{background:var(--sky-l);border-color:#7dd3fc;color:#075985}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:700px){.grid2{grid-template-columns:1fr 1fr}}
+.demo-box{border:1px solid var(--line);border-radius:14px;padding:14px;background:#f8fafc}
+.demo-box h3{font-size:1rem;margin-bottom:10px;color:var(--ink)}
+input[type=number],input[type=text]{font:inherit;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;width:100%;background:#fff;color:var(--ink)}
+input[type=number]:focus,input[type=text]:focus{outline:2px solid #93c5fd;border-color:#60a5fa}
+label.fl{display:block;font-size:.85rem;font-weight:700;color:var(--muted);margin:10px 0 4px}
+button{font:inherit;font-weight:700;border:none;border-radius:12px;padding:10px 18px;cursor:pointer;transition:transform .08s,box-shadow .15s;color:#fff}
+button:active{transform:scale(.97)}
+.btn-indigo{background:linear-gradient(120deg,#6366f1,#818cf8)}
+.btn-sky{background:linear-gradient(120deg,#0284c7,#38bdf8)}
+.btn-amber{background:linear-gradient(120deg,#d97706,#fbbf24)}
+.btn-green{background:linear-gradient(120deg,#059669,#34d399)}
+.btn-rose{background:linear-gradient(120deg,#e11d48,#fb7185)}
+.btn-violet{background:linear-gradient(120deg,#7c3aed,#a78bfa)}
+.btn-teal{background:linear-gradient(120deg,#0d9488,#2dd4bf)}
+.btn-ghost{background:#eef2ff;color:#4338ca}
+button:disabled{opacity:.45;cursor:not-allowed}
+.out{margin-top:12px;border-radius:12px;padding:12px 14px;background:#f8fafc;border:1px solid var(--line);font-size:.95rem;display:none}
+.out.show{display:block}
+.out .ansline{font-size:1.05rem;font-weight:800}
+.step{margin:4px 0;padding-left:10px;border-left:3px solid #cbd5e1}
+.step b{color:var(--indigo)}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chipd{background:#e2e8f0;border-radius:8px;padding:2px 9px;font-size:.88rem;font-weight:700;color:#475569}
+.chipd.common{background:var(--sky-l);border:1.5px solid #38bdf8;color:#075985}
+.chipd.hit{background:var(--green-l);border:1.5px solid #34d399;color:#065f46}
+table.sd{border-collapse:collapse;margin:8px auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(15,23,42,.08)}
+table.sd td,table.sd th{border:1px solid var(--line);padding:6px 13px;text-align:center;font-variant-numeric:tabular-nums}
+table.sd th{background:#f1f5f9;font-size:.85rem}
+table.sd td.d{background:var(--amber-l);color:#92400e;font-weight:800}
+table.sd tr.rest td{color:#9f1239;font-weight:800}
+/* keyword cards */
+.kw{display:grid;grid-template-columns:1fr;gap:12px;margin:10px 0}
+@media(min-width:700px){.kw{grid-template-columns:1fr 1fr}}
+.kw .box{border-radius:14px;padding:14px;border:2px solid}
+.kw .box h3{font-size:1.05rem;display:flex;gap:8px;align-items:center}
+.kw .box ul{margin:8px 0 0 20px;font-size:.92rem}
+.kw .gcd{background:#eff6ff;border-color:#93c5fd;color:#1e3a8a}
+.kw .lcm{background:#f0fdfa;border-color:#5eead4;color:#115e59}
+/* traps */
+.trap{border:1.5px solid #fecdd3;background:#fff;border-radius:14px;padding:14px 16px;margin:14px 0}
+.trap h3{font-size:1.02rem;color:#9f1239;display:flex;gap:8px;align-items:center}
+.trap p{font-size:.93rem;margin-top:6px}
+.trap .chip-ref{display:inline-block;font-size:.75rem;background:var(--rose-l);color:#9f1239;padding:2px 10px;border-radius:999px;font-weight:700;margin-top:8px}
+.sliderRow{display:flex;align-items:center;gap:12px}
+input[type=range]{flex:1;accent-color:#0284c7;height:34px}
+.bigNum{font-size:1.5rem;font-weight:800;color:var(--sky);min-width:70px;text-align:right}
+/* quiz */
+.quiz-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.timer{font-size:1.05rem;font-weight:800;background:var(--ink);color:#fde68a;border-radius:10px;padding:6px 14px;font-variant-numeric:tabular-nums}
+.timer.over{background:var(--rose);color:#fff}
+.dots{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.dot{width:30px;height:30px;border-radius:9px;border:2px solid var(--line);background:#fff;font-weight:800;color:var(--muted);font-size:.85rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.dot.current{border-color:var(--violet);color:var(--violet);outline:2px solid #ede9fe}
+.dot.answered{background:#ede9fe;border-color:#c4b5fd;color:#5b21b6}
+.dot.right{background:var(--green-l);border-color:#6ee7b7;color:#065f46}
+.dot.wrong{background:var(--rose-l);border-color:#fda4af;color:#9f1239}
+.qtext{font-size:1.05rem;font-weight:700;background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;padding:16px;margin:12px 0}
+.qtext q{font-style:italic}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.choices{grid-template-columns:1fr}}
+.choice{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:13px;padding:13px 12px;font-size:1rem;font-weight:700;text-align:left;display:flex;gap:10px;align-items:center}
+.choice .abc{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--muted)}
+.choice:hover{border-color:#c4b5fd}
+.choice.sel{border-color:var(--violet);background:#f5f3ff}
+.choice.sel .abc{background:var(--violet);color:#fff}
+.choice.correct{border-color:#10b981;background:var(--green-l)}
+.choice.correct .abc{background:#059669;color:#fff}
+.choice.incorrect{border-color:#f43f5e;background:var(--rose-l)}
+.choice.incorrect .abc{background:#e11d48;color:#fff}
+.quiz-nav{display:flex;gap:10px;margin-top:14px;justify-content:space-between;align-items:center}
+.qcount{font-size:.9rem;color:var(--muted);font-weight:700}
+.solution{display:none;margin-top:12px;border:1.5px solid #c4b5fd;background:#faf5ff;border-radius:14px;padding:14px}
+.solution.show{display:block}
+.solution h4{color:#6d28d9;font-size:.95rem;margin-bottom:6px}
+.solution p,.solution li{font-size:.92rem}
+.solution ol{padding-left:20px}
+.solution .why{color:#9f1239;font-size:.85rem;margin-top:8px;background:var(--rose-l);border-radius:9px;padding:8px 10px}
+.scorebox{text-align:center;padding:18px 10px}
+.scorebox .big{font-size:2.6rem;font-weight:800;background:linear-gradient(120deg,#7c3aed,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rules{display:grid;gap:10px;margin:10px 0}
+.rule{display:flex;gap:12px;align-items:flex-start;background:#fffbeb;border:1.5px solid #fde68a;border-radius:13px;padding:12px 14px}
+.rule .n{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:var(--amber);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.rule p{font-size:.93rem}
+/* daily */
+.daygen{margin-top:8px}
+.dq{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:#fff}
+.dq .qt{font-weight:700;font-size:.98rem;margin-bottom:8px}
+.dq .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.dq input{max-width:170px}
+.dq .fb{margin-top:10px;font-size:.9rem;border-radius:10px;padding:9px 12px;display:none}
+.dq .fb.ok{display:block;background:var(--green-l);color:#065f46;border:1px solid #6ee7b7}
+.dq .fb.no{display:block;background:var(--rose-l);color:#9f1239;border:1px solid #fda4af}
+.dq .steps{display:none;margin-top:10px}
+.dq.done .steps{display:block}
+.streakbox{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.stat{background:#eef2ff;border:1.5px solid #a5b4fc;color:#3730a3;border-radius:13px;padding:9px 16px;font-weight:800;font-size:.95rem}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:26px 16px 40px}
+.hidden{display:none!important}
+hr.soft{border:none;border-top:1px dashed var(--line);margin:18px 0}
+@media print{
+  nav.tabs,.hero .chips,button,input{display:none!important}
+  .solution,.dq .steps{display:block!important}
+  section.card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🧮 ห.ร.ม. · ค.ร.น.</h1>
+  <p class="sub">Infographic ทบทวนรายวัน เตรียมสอบเข้า ม.1 (ป.6)</p>
+  <div class="chips">
+    <a class="chip" href="../index.html">🎮 เล่นเกมด่วนคณิต</a>
+    <a class="chip" href="index.html">📚 สื่อทบทวนทั้งหมด</a>
+    <span class="chip" id="chipStreak">🔥 สตรีก: – วัน</span>
+    <span class="chip" id="chipDays">⭐ ทำแล้ว: – วัน</span>
+    <span class="chip" id="chipBest">🏆 ชุด 02B ดีสุด: –/8</span>
+  </div>
+</div>
+
+<nav class="tabs"><div class="in">
+  <a href="#sec-gcd">① ห.ร.ม. คืออะไร</a>
+  <a href="#sec-lcm">② ค.ร.น. คืออะไร</a>
+  <a href="#sec-method">③ วิธีหา (หารสั้น)</a>
+  <a href="#sec-traps">④ เลือกวิธี + กับดัก</a>
+  <a href="#sec-quiz">⑤ โจทย์ชุด 02B</a>
+  <a href="#sec-daily">⑥ ฝึกประจำวัน</a>
+</div></nav>
+
+<main>
+
+<!-- ================= 1. GCD ================= -->
+<section class="card" id="sec-gcd" data-theme="percent">
+  <header><span class="no">①</span><h2>ห.ร.ม. (ตัวหารร่วมมาก) คืออะไร</h2><span class="tag">แบ่งให้พอดี</span></header>
+  <div class="body">
+    <p class="lead">ห.ร.ม. คือ <b>จำนวนมากที่สุด</b>ที่หารทุกจำนวนที่กำหนดได้ <b>ลงตัวพอดี</b> — ลองใส่เลขสองจำนวนแล้วดูว่าตัวหารร่วมมีตัวไหนบ้าง</p>
+    <div class="demo-box">
+      <h3>🧪 ตัวหารร่วม — ใส่เลข 2 จำนวน</h3>
+      <div class="grid2">
+        <div>
+          <label class="fl">จำนวนที่ 1 (1–999)</label>
+          <input type="number" id="gcdA" value="84" min="1" max="999" step="1">
+          <label class="fl">จำนวนที่ 2 (1–999)</label>
+          <input type="number" id="gcdB" value="126" min="1" max="999" step="1">
+          <div style="margin-top:12px"><button class="btn-sky" id="gcdGo">หาตัวหารร่วม ▶</button></div>
+        </div>
+        <div>
+          <div class="out show" id="gcdOut"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note tip">💡 จำนวน <b>1</b> หารทุกจำนวนลงตัวเสมอ → ถ้าไม่มีตัวหารร่วมอื่นเลย ห.ร.ม. = 1 (เช่น 8 กับ 15)</div>
+    <div class="note info">📋 คำถามที่ใช้ ห.ร.ม.: "ตัดเป็นท่อน<b>ยาวเท่ากันที่สุด</b>ไม่มีเศษ" · "เสา<b>ห่างเท่ากันมากที่สุด</b>" · "แบ่งของให้<b>พอดี</b>กลุ่มใหญ่ที่สุด" — คีย์เวิร์ดคือ <b>เท่ากัน + มากที่สุด + ไม่มีเศษ</b></div>
+  </div>
+</section>
+
+<!-- ================= 2. LCM ================= -->
+<section class="card" id="sec-lcm" data-theme="lcm">
+  <header><span class="no">②</span><h2>ค.ร.น. (ตัวคร่อมรวมน้อย) คืออะไร</h2><span class="tag">รอให้ตรงกัน</span></header>
+  <div class="body">
+    <p class="lead">ค.ร.น. คือ <b>จำนวนน้อยที่สุด</b>ที่ทุกจำนวนที่กำหนดหารได้ <b>ลงตัว</b> (คือ "พอดีครบรอบพร้อมกัน") — ดูอนุกรมพหุคูณแล้วจะเห็นทันที</p>
+    <div class="demo-box">
+      <h3>🧪 อนุกรมพหุคูณ — ใส่เลข 2 จำนวน</h3>
+      <div class="grid2">
+        <div>
+          <label class="fl">จำนวนที่ 1</label>
+          <input type="number" id="lcmA" value="12" min="1" max="999" step="1">
+          <label class="fl">จำนวนที่ 2</label>
+          <input type="number" id="lcmB" value="16" min="1" max="999" step="1">
+          <div style="margin-top:12px"><button class="btn-teal" id="lcmGo">หาพหุคูณร่วม ▶</button></div>
+        </div>
+        <div>
+          <div class="out show" id="lcmOut"></div>
+        </div>
+      </div>
+    </div>
+    <div class="formula">ค.ร.น.(a, b) = a × b ÷ ห.ร.ม.(a, b)<small>เช่น 12 กับ 16: ห.ร.ม. = 4 → ค.ร.น. = 12 × 16 ÷ 4 = 48 ✓ (ใช้ได้กับ 2 จำนวน)</small></div>
+    <div class="note warn">⚠️ เช็กเร็ว: คำตอบของ ค.ร.น. ต้อง<b>ไม่น้อยกว่า</b>ตัวเลขที่ใหญ่ที่สุดในโจทย์ — ตอบแล้วกวาดตาดูหนึ่งรอบเสมอ</div>
+  </div>
+</section>
+
+<!-- ================= 3. METHOD ================= -->
+<section class="card" id="sec-method" data-theme="modes">
+  <header><span class="no">③</span><h2>วิธีหาแบบหารสั้น</h2><span class="tag">ใช้ได้ 2–3 จำนวน</span></header>
+  <div class="body">
+    <p class="lead">วิธีมาตรฐานที่ข้อสอบชอบออก — ใส่เลขแล้วดูตารางหารสั้นทั้งสองแบบเทียบกัน</p>
+    <div class="demo-box">
+      <h3>🧪 ใส่ 2 หรือ 3 จำนวน (คั่นด้วยเว้นวรรค เช่น 84 126 210)</h3>
+      <input type="text" id="sdIn" value="84 126 210" placeholder="เช่น 20 30 45">
+      <div style="margin-top:12px"><button class="btn-amber" id="sdGo">สร้างตาราง ▶</button></div>
+      <div class="out" id="sdOut"></div>
+    </div>
+    <div class="grid2">
+      <div class="note info">📋 <b>ห.ร.ม.</b> = ผลคูณของตัวหารที่หาร<b>ทุกจำนวน</b>ลงตัว (หารพร้อมกันทั้งแถว — ตัวไหนหารไม่ลงตัวก็หยุด)</div>
+      <div class="note info">📋 <b>ค.ร.น.</b> = ผลคูณของตัวหารทั้งหมด <b>× แถวสุดท้าย</b> (ตัวหารหารได้<b>อย่างน้อย 2 จำนวน</b> — ตัวที่หารไม่ลงตัว "ยกลง" เป็นเดิม)</div>
+    </div>
+    <div class="formula">ห.ร.ม. × ค.ร.น. = ผลคูณของสองจำนวน (เฉพาะ 2 จำนวนเท่านั้น!)<small>เช่น ห.ร.ม.(a,b) = 6 และ a × b = 360 → ค.ร.น. = 360 ÷ 6 = 60 — ข้อสอบชอบถามตรง ๆ แบบนี้</small></div>
+  </div>
+</section>
+
+<!-- ================= 4. CHOOSE + TRAPS ================= -->
+<section class="card" id="sec-traps" data-theme="traps">
+  <header><span class="no">④</span><h2>เลือก ห.ร.ม./ค.ร.น. ยังไง + กับดักข้อสอบ</h2><span class="tag">จากข้อที่เคยพลาด</span></header>
+  <div class="body">
+    <p class="lead">โจทย์ทั้งชุด 02 ที่น้องเคยพลาด ไม่ได้พลาดเพราะคิดเลขผิด แต่พลาดเพราะ (1) เลือกผิดวิธี (2) ตอบไม่ตรงกับที่ถาม — การ์ดคีย์เวิร์ดนี้แก้ปัญหาข้อแรก</p>
+    <div class="kw">
+      <div class="box gcd">
+        <h3>📦 → ใช้ ห.ร.ม.</h3>
+        <ul>
+          <li>"ตัดเป็นท่อน<b>เท่ากันที่ยาวที่สุด</b> ไม่มีเศษ"</li>
+          <li>"เสา/ธง <b>ห่างเท่ากันมากที่สุด</b> + มีที่มุม"</li>
+          <li>"แบ่งของเป็นกลุ่ม<b>ใหญ่ที่สุด</b>แบบ<b>พอดี</b>"</li>
+          <li>"แผ่น/ชิ้น <b>ใหญ่เท่ากันที่สุด</b> ใช้วัสดุจนหมด"</li>
+        </ul>
+      </div>
+      <div class="box lcm">
+        <h3>🔁 → ใช้ ค.ร.น.</h3>
+        <ul>
+          <li>"<b>พร้อมกันอีกครั้ง</b> / ครั้งถัดไป / เจอกันอีกที"</li>
+          <li>"กลับมาถึงจุดเริ่มต้น<b>พร้อมกัน</b>"</li>
+          <li>"ครบรอบ<b>พร้อมกัน</b> / วนกลับมาตรงกัน"</li>
+          <li>จัดของเป็น<b>กล่องเท่ากันน้อยที่สุด</b>โดยไม่เกิน</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 1: "พร้อมกันอีกครั้ง" แล้วไป<b>บวกกัน</b> หรือใช้ ห.ร.ม.</h3>
+      <p>คนวิ่งรอบละ 12 และ 16 นาที เริ่มพร้อมกัน — เลื่อนดูว่าจะเจอกันอีกครั้งเมื่อไร</p>
+      <div class="sliderRow">
+        <input type="range" id="mkX" min="2" max="30" value="12" aria-label="รอบแรก (นาที)">
+        <span class="bigNum"><span id="mkXv">12</span> น.</span>
+      </div>
+      <div class="sliderRow">
+        <input type="range" id="mkY" min="2" max="30" value="16" aria-label="รอบสอง (นาที)">
+        <span class="bigNum"><span id="mkYv">16</span> น.</span>
+      </div>
+      <div class="out show" id="mkOut"></div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 1, 2, 8 ของชุด 02B — ตัวลวง "บวกกัน" (12+16=28) กับ "ห.ร.ม." (4) ถูกวางไว้ในตัวเลือกเสมอ</span>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 2: หา ห.ร.ม. ได้แล้วยังไม่จบ — <b>โจทย์ถามอะไร?</b></h3>
+      <p>เชือก 84, 126, 210 ซม. ตัดท่อนเท่ากันยาวสุด → ห.ร.ม. = 42 แต่ถ้าถาม "<b>กี่ท่อน</b>" ต้องหารต่อ: 84÷42 + 126÷42 + 210÷42 = 2+3+5 = <b>10 ท่อน</b> (ตอบ 42 = พลาดทันที ทั้งที่คิด ห.ร.ม. ถูก!)</p>
+      <div class="note warn">📋 กฎ: เจอ ห.ร.ม./ค.ร.น. แล้ว <b>กลับไปวงคำถาม</b> — "ความยาว?" ตอบตัวเลขนั้น · "กี่ท่อน/กี่ต้น/กี่แผ่น/กี่กลุ่ม?" ต้องหารต่อ · "รวมกี่ชิ้น?" อาจต้องบวก</div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 3 (ตัวลวง ก.42) และ ข้อ 4 (ตัวลวง ก.18 = ระยะห่าง ไม่ใช่จำนวนเสา)</span>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 3: "หารแล้ว<b>เหลือเศษเท่ากัน</b>" → ห.ร.ม. ของ<b>ผลต่าง</b></h3>
+      <p>จำนวนมากสุดที่หาร 47, 83, 137 แล้วเหลือเศษเท่ากัน → เอา<b>ตัวใหญ่ลบตัวเล็ก</b>: 83−47 = 36, 137−83 = 54 → ห.ร.ม.(36, 54) = <b>18</b> (ตรวจ: 47÷18 เหลือ 11, 83÷18 เหลือ 11, 137÷18 เหลือ 11 ✓)</p>
+      <div class="demo-box">
+        <h3>🧪 ลองเอง — ใส่ 3 จำนวน (ที่หารแล้วเศษเท่ากัน)</h3>
+        <div class="grid2">
+          <div>
+            <input type="text" id="rmIn" value="47 83 137" placeholder="เช่น 47 83 137">
+            <div style="margin-top:12px"><button class="btn-rose" id="rmGo">หาตัวหารมากสุด ▶</button></div>
+          </div>
+          <div><div class="out show" id="rmOut"></div></div>
+        </div>
+      </div>
+      <div class="note warn">📋 คำตอบคือ <b>ตัวหาร</b> ไม่ใช่ "เศษ" — ตัวเลือกที่เป็นเศษ (เช่น 11) คือกับดัก</div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 5 ของชุด 02B (ตัวลวง ก.11 คือเศษ)</span>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 4: หารแล้ว "<b>ขาด</b>เท่ากันทุกตัว" → ค.ร.น. − ที่ขาด</h3>
+      <p>จำนวนน้อยสุดที่ 14 หารแล้วขาด 4 (เหลือ 10), 21 หารแล้วขาด 4 (เหลือ 17), 35 หารแล้วขาด 4 (เหลือ 31) → ทุกตัว<b>ขาดเท่ากัน 4</b> → คำตอบ = ค.ร.น.(14,21,35) − 4 = 210 − 4 = <b>206</b></p>
+      <div class="formula">ขาดเท่ากัน k ทุกตัว → คำตอบ = ค.ร.น. − k<small>ระวังทิศทาง: "ขาด" ใช้ลบ · ถ้าเป็น "เศ้าเท่ากัน" ใช้ผลต่าง (กับดัก 3) — สองแบบนี้คนละเรื่องกัน!</small></div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 6 ของชุด 02B (ตัวลวง ก.210 = ลืมลบ, ข.214 = บวกแทนลบ)</span>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 5: "รอบงาน" = วันทำงาน <b>+ วันหยุด</b></h3>
+      <p>"ทำงาน 4 วันหยุด 1 วัน" → รอบงานยาว <b>5</b> วัน ไม่ใช่ 4 · คนที่รอบ 5, 7, 10 วันจะพร้อมกันทุก ค.ร.น.(5,7,10) = 70 วัน — ลืมบวกวันหยุด = ตอบผิดทั้งข้อ</p>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 8 ของชุด 02B — อีกกับดักย่อย: ถาม "ครั้งที่ 3" ต้อง +140 วัน ไม่ใช่ +70 (ครั้งที่ 2)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. QUIZ 02B ================= -->
+<section class="card" id="sec-quiz" data-theme="quiz">
+  <header><span class="no">⑤</span><h2>โจทย์ชุด 02B — ชุดซ้อมแบบแปร</h2><span class="tag">8 ข้อ · 13 นาที</span></header>
+  <div class="body">
+    <!-- intro -->
+    <div id="quizIntro">
+      <p class="lead">ชุดนี้คือ <b>โจทย์แบบเดียวกับ 3 ข้อที่เคยพลาดในชุด 02 แต่ตัวเลขใหม่</b> — วัด 2 อย่างโดยเฉพาะ: (1) เลือกวิธีถูกไหม (2) ตอบตรงกับที่ถามไหม · ทำเหมือนสอบจริง: <b>จับเวลา 13 นาที · ทำครบ 8 ข้อก่อนดูเฉลย</b> (ผิดไม่เป็นไร ได้ข้อมูล)</p>
+      <h3 style="font-size:1rem;margin:8px 0">🧠 ก่อนเริ่ม — ท่อง 4 บรรทัดนี้ (จากไฟล์ชุดโจทย์)</h3>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><p>"<b>พร้อมกันอีกครั้ง / ครั้งถัดไป / เจอกันอีกที</b>" = ค.ร.น. — <b>ห้ามเอาตัวเลขมาบวกกัน</b> · เช็กเร็ว: คำตอบต้องไม่น้อยกว่าตัวเลขที่ใหญ่สุด</p></div>
+        <div class="rule"><span class="n">2</span><p>หา ห.ร.ม. ได้แล้ว<b>ยังไม่จบ</b> — กลับไปอ่านคำถามว่าถาม "ความยาว" หรือ "กี่ท่อน/กี่ต้น/กี่แผ่น" แล้ว<b>หารต่อ</b></p></div>
+        <div class="rule"><span class="n">3</span><p>"หารแล้ว<b>เหลือเศษเท่ากัน</b>" → ห.ร.ม. ของ<b>ผลต่าง</b> — คำตอบคือตัวหาร <b>ไม่ใช่เศษ</b></p></div>
+        <div class="rule"><span class="n">4</span><p>หารแล้ว "<b>ขาด</b>" เท่ากันทุกตัว → <b>ค.ร.น. − ที่ขาด</b> · รอบงาน = วันทำงาน + วันหยุด · ห.ร.ม. × ค.ร.น. = ผลคูณสองจำนวนเสมอ</p></div>
+      </div>
+      <button class="btn-violet" id="quizStart" style="font-size:1.05rem;padding:12px 26px">▶ เริ่มทำ + จับเวลา 13:00</button>
+    </div>
+
+    <!-- play -->
+    <div id="quizPlay" class="hidden">
+      <div class="quiz-top">
+        <span class="timer" id="quizTimer">13:00</span>
+        <span class="qcount" id="qCount">ข้อ 1 / 8</span>
+        <div class="dots" id="qDots"></div>
+      </div>
+      <div class="qtext" id="qText"></div>
+      <div class="choices" id="qChoices"></div>
+      <div class="quiz-nav">
+        <button class="btn-ghost" id="qPrev">◀ ข้อก่อน</button>
+        <button class="btn-ghost" id="qNext">ข้อถัดไป ▶</button>
+      </div>
+    </div>
+
+    <!-- result -->
+    <div id="quizResult" class="hidden"></div>
+  </div>
+</section>
+
+<!-- ================= 6. DAILY ================= -->
+<section class="card" id="sec-daily" data-theme="daily">
+  <header><span class="no">⑥</span><h2>ฝึกประจำวัน — สุ่มโจทย์ใหม่ทุกวัน</h2><span class="tag">5 ข้อ/วัน</span></header>
+  <div class="body">
+    <p class="lead">กดปุ่มเพื่อสุ่มโจทย์ 5 ข้อ (เลขใหม่ทุกครั้ง ผสม ห.ร.ม./ค.ร.น./เศษเท่ากัน/ขาดเท่ากัน) → พิมพ์คำตอบ → กด "ตรวจ" ทีละข้อ → ทำครบ 5 ข้อเพื่อรับดาววันนี้ ⭐</p>
+    <button class="btn-indigo" id="genBtn" style="font-size:1.02rem">🎲 สุ่มโจทย์วันนี้</button>
+    <div class="daygen" id="dayList"></div>
+    <div class="out" id="dayDone"><div class="ansline">🎉 ครบ 5 ข้อแล้ว! ได้ดาววันนี้ 1 ดวง — พรุ่งนี้เจอกันชุดใหม่ (วันละ 10 นาทีก็พอ)</div></div>
+    <div class="streakbox">
+      <span class="stat" id="statStreak">🔥 สตรีก: –</span>
+      <span class="stat" id="statDays">⭐ รวม: – วัน</span>
+      <span class="stat" id="statToday">📅 วันนี้: ยังไม่เสร็จ</span>
+    </div>
+    <div class="note tip" style="margin-top:14px">💡 แผนทบทวน: วันนี้อ่าน ①–④ ให้คล่อง → ทำ ⑤ จับเวลา → เก็บดาวที่ ⑥ · พรุ่งนี้ทำ ⑥ อย่างเดียว 10 นาที · วันเว้นวันย้อนมาทำ ⑤ ซ้ำ (จำแบบเดียวกับชุดร้อยละ)</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  สร้างจากชุดโจทย์ "คณิตศาสตร์ — ห.ร.ม./ค.ร.น. ชุดแปร 02B" (ไฟล์แนบ Telegram · ระดับ ป.6 เตรียมสอบเข้า ม.1) · ใช้งานออฟไลน์ได้ · ความคืบหน้าเก็บในเครื่องนี้เท่านั้น (localStorage)
+</footer>
+
+<script>
+/* ================= pure helpers (unit-tested) ================= */
+function fmt(n){ var r = Math.round(n*100)/100; return r.toLocaleString('en-US'); }
+function gcd2(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ var t=b; b=a%b; a=t; } return a; }
+function gcdN(arr){ return arr.reduce(function(x,y){ return gcd2(x,y); }); }
+function lcm2(a,b){ if(a===0||b===0) return 0; return a/gcd2(a,b)*b; }
+function lcmN(arr){ return arr.reduce(function(x,y){ return lcm2(x,y); }); }
+function divisors(n){
+  var r=[], i;
+  for(i=1;i*i<=n;i++){ if(n%i===0){ r.push(i); if(i!==n/i) r.push(n/i); } }
+  return r.sort(function(a,b){ return a-b; });
+}
+function isPrime(n){
+  if(n<2) return false;
+  for(var i=2;i*i<=n;i++){ if(n%i===0) return false; }
+  return true;
+}
+/* short-division table for GCD: divide only primes that divide EVERY number */
+function gcdTable(arr){
+  var nums = arr.slice(), steps = [];
+  for(;;){
+    var p = 0;
+    for(var d=2; d<=Math.min.apply(null,nums); d++){
+      if(isPrime(d) && nums.every(function(x){ return x%d===0; })){ p=d; break; }
+    }
+    if(!p) break;
+    steps.push({ d:p, nums:nums.slice() });
+    nums = nums.map(function(x){ return x/p; });
+  }
+  return { steps:steps, rest:nums, value:steps.reduce(function(a,s){ return a*s.d; },1) };
+}
+/* short-division table for LCM: divide primes that divide >= 2 numbers, carry others down */
+function lcmTable(arr){
+  var nums = arr.slice(), steps = [];
+  outer: for(;;){
+    for(var d=2; d<=Math.max.apply(null,nums); d++){
+      if(!isPrime(d)) continue;
+      var hits = nums.filter(function(x){ return x%d===0; }).length;
+      if(hits>=2){
+        steps.push({ d:d, nums:nums.slice() });
+        nums = nums.map(function(x){ return x%d===0 ? x/d : x; });
+        continue outer;
+      }
+    }
+    break;
+  }
+  var val = steps.reduce(function(a,s){ return a*s.d; },1) * nums.reduce(function(a,x){ return a*x; },1);
+  return { steps:steps, rest:nums, value:val };
+}
+function datePlusDays(isoStart, days){
+  var d = new Date(isoStart + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0,10);
+}
+
+/* ---- daily question generator (integer answers by construction) ---- */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+var MEET_PAIRS = [[4,6],[6,8],[6,9],[8,12],[9,12],[10,15],[12,16],[12,18],[15,20],[18,24],[20,30],[24,36]];
+function genMeet(){
+  var pair = pick(MEET_PAIRS), a = pair[0], b = pair[1], L = lcm2(a,b);
+  var ctx = pick([
+    { s:'รถเมล์ 2 สาย ออกจากท่าพร้อมกัน สายแรกออกทุก', u:'นาที สายที่สองออกทุก' },
+    { s:'นักวิ่ง 2 คน ออกวิ่งจากจุดเริ่มต้นพร้อมกัน คนแรกวิ่งครบรอบใช้', u:'นาที คนที่สองใช้' },
+    { s:'กระดิ่ง 2 ใบดังพร้อมกัน ใบแรกดังทุก', u:'นาที ใบที่สองดังทุก' }
+  ]);
+  var second = ' นาที ทั้งคู่จะมาพร้อมกันอีกครั้งในอีกกี่นาที';
+  return {
+    q: ctx.s + ' ' + a + ctx.u + ' ' + b + second,
+    ans: L, unit: 'นาที',
+    steps: '"พร้อมกันอีกครั้ง" = ค.ร.น. → ค.ร.น.(' + a + ', ' + b + ') = ' + a + '×' + b + '÷' + gcd2(a,b) + ' = <b>' + L + ' นาที</b> (ห้ามบวกกัน: ' + (a+b) + ' ผิด!)'
+  };
+}
+function genCut(){
+  var g = pick([6,7,8,9,10,12,14,15,18,21,24,30]);
+  var m = shuffle([2,3,5]).slice(0,3);
+  var lens = m.map(function(x){ return g*x; });
+  var total = m[0]+m[1]+m[2];
+  var askCount = Math.random() < 0.6;
+  var thing = pick([{s:'เชือก', u:'เซนติเมตร', p:'ท่อน'}, {s:'ไม้', u:'เมตร', p:'ท่อน'}, {s:'เหล็ก', u:'เซนติเมตร', p:'ท่อน'}]);
+  if(askCount){
+    return {
+      q: thing.s + ' 3 ท่อนยาว ' + lens[0] + ', ' + lens[1] + ' และ ' + lens[2] + ' ' + thing.u + ' ต้องการตัดเป็นท่อนที่ยาวเท่ากันและยาวที่สุดโดยไม่มีเศษเหลือ จะได้ทั้งหมดกี่' + thing.p,
+      ans: total, unit: thing.p,
+      steps: 'ห.ร.ม.(' + lens.join(', ') + ') = <b>' + g + '</b> ' + thing.u + ' (ความยาวต่อท่อน)<br>จำนวนท่อน = ' + lens[0] + '÷' + g + ' + ' + lens[1] + '÷' + g + ' + ' + lens[2] + '÷' + g + ' = ' + m.join('+') + ' = <b>' + total + ' ' + thing.p + '</b> (หารต่อเสมอ!)'
+    };
+  }
+  return {
+    q: thing.s + ' 3 ท่อนยาว ' + lens[0] + ', ' + lens[1] + ' และ ' + lens[2] + ' ' + thing.u + ' ต้องการตัดเป็นท่อนที่ยาวเท่ากันและยาวที่สุดโดยไม่มีเศษเหลือ แต่ละท่อนยาวเท่าไร',
+    ans: g, unit: thing.u,
+    steps: '"ยาวเท่ากันที่สุด ไม่มีเศษ" = ห.ร.ม. → ห.ร.ม.(' + lens.join(', ') + ') = <b>' + g + ' ' + thing.u + '</b> (ข้อนี้ถาม "ความยาว" จึงไม่ต้องหารต่อ)'
+  };
+}
+function genPosts(){
+  var g = pick([6,8,9,10,12,15,18]);
+  var m1 = 3 + Math.floor(Math.random()*4);
+  var cand = [3,4,5,6].filter(function(m){ return gcd2(m1,m)===1; });
+  var m2 = pick(cand);
+  var w = g*m1, h = g*m2, posts = 2*(m1+m2);
+  return {
+    q: 'ที่ดินรูปสี่เหลี่ยมผืนผ้า กว้าง ' + w + ' เมตร ยาว ' + h + ' เมตร ต้องการปักเสารั้วรอบที่ดิน โดยให้เสาแต่ละต้นห่างเท่ากันมากที่สุด และมีเสาอยู่ที่มุมทั้งสี่ ต้องใช้เสาทั้งหมดกี่ต้น',
+    ans: posts, unit: 'ต้น',
+    steps: '"ห่างเท่ากันมากที่สุด + มุมทั้งสี่" = ห.ร.ม. → ห.ร.ม.(' + w + ', ' + h + ') = <b>' + g + '</b> เมตร (ระยะห่าง)<br>เส้นรอบรูป = 2×(' + w + '+' + h + ') = ' + (2*(w+h)) + ' เมตร → เสา = ' + (2*(w+h)) + ' ÷ ' + g + ' = <b>' + posts + ' ต้น</b>'
+  };
+}
+function genRemain(){
+  var g = pick([8,9,10,12,14,15,16,18,20,21,22,24]);
+  var r = 1 + Math.floor(Math.random()*(g-1));
+  var a = 5 + Math.floor(Math.random()*8);
+  var n1 = a*g + r, n2 = (a+1)*g + r, n3 = (a+3)*g + r;
+  return {
+    q: 'จำนวนนับที่มากที่สุดจำนวนหนึ่ง เมื่อนำไปหาร ' + n1 + ', ' + n2 + ' และ ' + n3 + ' แล้วจะเหลือเศษเท่ากัน จำนวนนับที่มากที่สุดนั้นคือจำนวนใด',
+    ans: g, unit: '',
+    steps: '"เศษเท่ากัน" → ห.ร.ม. ของผลต่าง: ' + (n2-n1) + ' และ ' + (n3-n2) + '<br>ห.ร.ม.(' + (n2-n1) + ', ' + (n3-n2) + ') = <b>' + gcdN([n2-n1, n3-n2]) + '</b> (ตรวจ: ทุกตัว÷' + g + ' เหลือเศษ ' + r + ' เท่ากัน ✓) — คำตอบคือตัวหาร ไม่ใช่เศษ ' + r
+  };
+}
+function genDeficit(){
+  var pair = pick([[14,21],[12,18],[15,20],[18,24],[21,28],[9,12],[16,24]]);
+  var d1 = pair[0], d2 = pair[1], L = lcm2(d1,d2);
+  var k = 2 + Math.floor(Math.random()*Math.min(4, d1-2));
+  var ans = L - k;
+  return {
+    q: 'จำนวนนับที่น้อยที่สุดจำนวนหนึ่ง เมื่อนำ ' + d1 + ' ไปหารจะขาด ' + k + ' (เหลือ ' + (d1-k) + ') และนำ ' + d2 + ' ไปหารจะขาด ' + k + ' (เหลือ ' + (d2-k) + ') จำนวนนับที่น้อยที่สุดนั้นคือจำนวนใด',
+    ans: ans, unit: '',
+    steps: 'ทุกตัว "ขาดเท่ากัน ' + k + '" → คำตอบ = ค.ร.น. − ' + k + '<br>ค.ร.น.(' + d1 + ', ' + d2 + ') = ' + L + ' → ' + L + ' − ' + k + ' = <b>' + ans + '</b>'
+  };
+}
+function genProd(){
+  var g = pick([4,6,8,9,10,12]);
+  var m1 = pick([2,3,4,5]);
+  var cand = [2,3,5,7].filter(function(m){ return gcd2(m1,m)===1; });
+  var m2 = pick(cand);
+  var a = g*m1, b = g*m2, P = a*b;
+  return {
+    q: 'กำหนดว่า ห.ร.ม. ของ ' + a + ' และ ' + b + ' เป็น ' + g + ' แล้ว ค.ร.น. ของสองจำนวนนี้คือเท่าใด (เคล็ด: ห.ร.ม. × ค.ร.น. = ผลคูณ)',
+    ans: P/g, unit: '',
+    steps: 'ห.ร.ม. × ค.ร.น. = a × b → ค.ร.น. = (' + a + ' × ' + b + ') ÷ ' + g + ' = ' + P + ' ÷ ' + g + ' = <b>' + (P/g) + '</b>'
+  };
+}
+function genDaily(){
+  var others = shuffle(['meet','cut','posts','remain','deficit','prod']).slice(0,3);
+  var all = shuffle(others.concat(['meet','cut']));
+  var gens = { meet:genMeet, cut:genCut, posts:genPosts, remain:genRemain, deficit:genDeficit, prod:genProd };
+  return all.map(function(t){ return gens[t](); });
+}
+
+/* ---- quiz data: ชุด 02B จากไฟล์แนบ ---- */
+var QUIZ = [
+  {
+    q: 'รถเมล์ 3 สาย ออกจากท่ารถทุก ๆ 20 นาที, 30 นาที และ 45 นาที ตามลำดับ ถ้ารถทั้งสามสายออกจากท่าพร้อมกันครั้งแรกเวลา 6.40 น. รถทั้งสามสายจะออกจากท่าพร้อมกันอีกครั้งในเวลาใด',
+    c: ['6.45 น.', '8.15 น.', '9.40 น.', '12.40 น.'], a: 2,
+    sol: '<ol><li>"พร้อมกันอีกครั้ง" = <b>ค.ร.น.</b>(20, 30, 45)</li><li>หารสั้น: ÷2 → 10,15,45 · ÷3 → 5,15,45... ภาพรวม: ค.ร.น. = 2²×3²×5 = <b>180 นาที = 3 ชั่วโมง</b></li><li>6.40 + 3 ชม. = <b>9.40 น.</b> ✓</li></ol>',
+    why: 'เช็กเร็ว: คำตอบต้องห่างจาก 6.40 เป็นจำนวนนาทีที่หาร 20, 30, 45 ทุกตัวลงตัว — 8.15 ห่าง 95 นาที ไม่ลงตัว, 12.40 ห่าง 360 นาที = คูณ 2 เกิน (360 ก็ลงตัวจริงแต่ไม่ใช่ "ครั้งแรกที่เจอกัน")'
+  },
+  {
+    q: 'นักวิ่ง 2 คน วิ่งรอบสนาม คนแรกวิ่งครบ 1 รอบใช้เวลา 12 นาที คนที่สองใช้เวลา 16 นาที ทั้งสองคนออกวิ่งจากจุดเริ่มต้นพร้อมกันเวลา 7.00 น. ทั้งสองคนจะกลับมาถึงจุดเริ่มต้นพร้อมกันครั้งถัดไปเวลาใด',
+    c: ['7.48 น.', '7.04 น.', '7.28 น.', '8.36 น.'], a: 0,
+    sol: '<ol><li>"พร้อมกันครั้งถัดไป" = <b>ค.ร.น.</b>(12, 16)</li><li>ค.ร.น. = 12×16 ÷ ห.ร.ม.(12,16) = 192 ÷ 4 = <b>48 นาที</b></li><li>7.00 + 48 นาที = <b>7.48 น.</b> ✓</li></ol>',
+    why: 'กับดักสองตัวคลาสสิก: 7.04 น. = ห.ร.ม. 4 นาที (ผิดวิธี) · 7.28 น. = 12+16 นาที (บวกกัน — ท่องข้อ 1)'
+  },
+  {
+    q: 'เชือก 3 เส้น ยาว 84 เซนติเมตร, 126 เซนติเมตร และ 210 เซนติเมตร ต้องการตัดเชือกทั้งสามเส้นเป็นท่อนที่ยาวเท่ากันและยาวที่สุด โดยไม่มีเศษเหลือ จะได้เชือกทั้งหมดกี่ท่อน',
+    c: ['42 ท่อน', '5 ท่อน', '420 ท่อน', '10 ท่อน'], a: 3,
+    sol: '<ol><li>"ยาวเท่ากันที่สุด ไม่มีเศษ" = <b>ห.ร.ม.</b>(84, 126, 210) = <b>42</b> ซม. (ความยาวต่อท่อน)</li><li>แต่โจทย์ถาม "<b>กี่ท่อน</b>" → หารต่อ: 84÷42 + 126÷42 + 210÷42 = 2+3+5</li><li>= <b>10 ท่อน</b> ✓</li></ol>',
+    why: 'ก.42 = ตอบความยาวต่อท่อน (เจอ ห.ร.ม. ถูกแต่ตอบผิดสิ่งที่ถาม — ท่องข้อ 2) · ค.420 = ค.ร.น. (ผิดวิธี) · ข.5 = จำนวนเส้น'
+  },
+  {
+    q: 'ที่ดินรูปสี่เหลี่ยมผืนผ้า กว้าง 90 เมตร ยาว 126 เมตร ต้องการปักเสารั้วรอบที่ดิน โดยให้เสาแต่ละต้นห่างเท่ากันมากที่สุด และมีเสาอยู่ที่มุมทั้งสี่มุม ต้องใช้เสาทั้งหมดกี่ต้น',
+    c: ['18 ต้น', '24 ต้น', '12 ต้น', '35 ต้น'], a: 1,
+    sol: '<ol><li>"ห่างเท่ากันมากที่สุด + มุมทั้งสี่" = ระยะห่างคือ <b>ห.ร.ม.</b>(90, 126) = <b>18</b> เมตร</li><li>โจทย์ถาม "กี่ต้น" → เส้นรอบรูป = 2×(90+126) = 432 เมตร</li><li>เสา = 432 ÷ 18 = <b>24 ต้น</b> ✓</li></ol>',
+    why: 'ก.18 = ระยะห่าง ไม่ใช่จำนวนเสา (ตอบผิดสิ่งที่ถาม) · ค.12 = 90÷18 + 126÷18 (ลืมคูณสอง — นับแค่สองด้าน) · ง.35 = 5×7 (คูณแทนการบวก)'
+  },
+  {
+    q: 'จำนวนนับที่มากที่สุดจำนวนหนึ่ง เมื่อนำไปหาร 47, 83 และ 137 แล้วจะเหลือเศษเท่ากัน จำนวนนับที่มากที่สุดนั้นคือจำนวนใด',
+    c: ['11', '36', '18', '90'], a: 2,
+    sol: '<ol><li>"เศษเท่ากัน" → ตัวหารมากสุด = <b>ห.ร.ม. ของผลต่าง</b></li><li>83−47 = 36 · 137−83 = 54</li><li>ห.ร.ม.(36, 54) = <b>18</b> ✓ (ตรวจ: 47÷18 เหลือ 11 · 83÷18 เหลือ 11 · 137÷18 เหลือ 11 — เท่ากันจริง)</li></ol>',
+    why: 'ก.11 = "เศษ" ไม่ใช่ "ตัวหาร" (ท่องข้อ 3) · ข.36 = ห.ร.ม. ของผลต่างแคะคู่แรก (36,54 ต้องเอาทั้งคู่)'
+  },
+  {
+    q: 'จำนวนนับที่น้อยที่สุดจำนวนหนึ่ง เมื่อนำ 14 ไปหารเหลือเศษ 10 นำ 21 ไปหารเหลือเศษ 17 และนำ 35 ไปหารเหลือเศษ 31 ตามลำดับ จำนวนนับที่น้อยที่สุดนั้นคือจำนวนใด',
+    c: ['206', '214', '210', '416'], a: 0,
+    sol: '<ol><li>มองใหม่: 14 หารแล้วเหลือ 10 = <b>ขาด 4</b> · 21 หารแล้วเหลือ 17 = <b>ขาด 4</b> · 35 หารแล้วเหลือ 31 = <b>ขาด 4</b> — ขาดเท่ากันทุกตัว!</li><li>คำตอบ = ค.ร.น.(14, 21, 35) − 4 = 210 − 4</li><li>= <b>206</b> ✓ (ตรวจ: 206÷14 = 14 เหลือ 10 ✓)</li></ol>',
+    why: 'ก.210 = ค.ร.น. เฉย ๆ (ลืมลบ) · ข.214 = บวกแทนลบ · ง.416 = 2×210−4 (ไม่ใช่ "น้อยที่สุด")'
+  },
+  {
+    q: 'กำหนดให้ a และ b เป็นจำนวนเฉพาะ และ P = a × b × b × b, S = a × a × b ผลคูณของ ห.ร.ม. และ ค.ร.น. ของ P และ S คือข้อใด',
+    c: ['ab', 'a³b⁴', 'a²b³', 'a³b³'], a: 1,
+    sol: '<ol><li>P = a·b³ · S = a²·b → <b>ห.ร.ม.</b> = เอากำลัง<b>น้อย</b>ของตัวร่วม = a·b</li><li><b>ค.ร.น.</b> = เอากำลัง<b>มาก</b>ของทุกตัว = a²·b³</li><li>คูณกัน: a·b × a²·b³ = <b>a³b⁴</b> ✓ (ใช้กฎ ห.ร.ม.×ค.ร.น. = ผลคูณ = a·b³ × a²·b = a³b⁴ ก็ได้คำตอบเดียวกัน!)</li></ol>',
+    why: 'ก.ab = ห.ร.ม. เฉย ๆ · ค.a²b³ = ค.ร.น. เฉย ๆ — โจทย์ถาม "ผลคูณของทั้งสอง" (ท่องข้อ 4: ห.ร.ม. × ค.ร.น. = ผลคูณเสมอ)'
+  },
+  {
+    q: 'พี่น้อง 3 คนทำงานคนละที่ ต้นทำงานติดต่อกัน 4 วันแล้วหยุด 1 วัน · แพรทำงานติดต่อกัน 6 วันแล้วหยุด 1 วัน · บีมทำงานติดต่อกัน 9 วันแล้วหยุด 1 วัน ทั้งสามคนจะกลับบ้านเฉพาะวันที่ตัวเองหยุด ถ้าวันที่ 1 เมษายน เป็นครั้งแรกที่ทั้งสามคนกลับบ้านพร้อมกัน ทั้งสามคนจะกลับบ้านพร้อมกันเป็นครั้งที่ 3 ในวันใด',
+    c: ['15 พฤษภาคม', '10 มิถุนายน', '12 มิถุนายน', '19 สิงหาคม'], a: 3,
+    sol: '<ol><li>รอบงาน = ทำ + หยุด → ต้น = <b>5</b> วัน · แพร = <b>7</b> วัน · บีม = <b>10</b> วัน (อย่าลืมบวกวันหยุด!)</li><li>พร้อมกันทุก ค.ร.น.(5, 7, 10) = <b>70 วัน</b></li><li>ครั้งที่ 1 = 1 เม.ย. · ครั้งที่ 2 = +70 วัน (10 มิ.ย.) · <b>ครั้งที่ 3 = +140 วัน = 19 สิงหาคม</b> ✓</li></ol>',
+    why: 'ข.10 มิ.ย. = ครั้งที่ 2 (จับ "ครั้งที่ 3" ไม่ได้) · ถ้าลืม +วันหยุด (รอบ 4,6,9) จะตกรอบ 36 วันแล้วเลือกวันผิดทั้งแถว'
+  }
+];
+var QUIZ_ANSWERS = ['ค','ก','ง','ข','ค','ก','ข','ง'];
+var ABC = ['ก','ข','ค','ง'];
+
+/* ---- storage (graceful) ---- */
+var store = (function(){
+  try{ var t='__gl_t'; localStorage.setItem(t,'1'); localStorage.removeItem(t); return localStorage; }
+  catch(e){ var m={}; return { getItem:function(k){return k in m?m[k]:null;}, setItem:function(k,v){m[k]=String(v);}, removeItem:function(k){delete m[k];} }; }
+})();
+function todayISO(d){ return (d||new Date()).toLocaleDateString('en-CA'); }
+function loadProgress(){
+  try{ return JSON.parse(store.getItem('gcdLcmStudyV1')) || {}; }catch(e){ return {}; }
+}
+function saveProgress(p){ store.setItem('gcdLcmStudyV1', JSON.stringify(p)); }
+function markToday(){
+  var p = loadProgress();
+  p.days = p.days || [];
+  if(p.days.indexOf(todayISO()) < 0){ p.days.push(todayISO()); }
+  saveProgress(p);
+}
+function calcStreak(days){
+  if(!days || !days.length) return 0;
+  var set = {}; days.forEach(function(d){ set[d]=1; });
+  var cur = new Date();
+  if(!set[todayISO(cur)]) cur.setDate(cur.getDate()-1);
+  var n = 0;
+  while(set[todayISO(cur)]){ n++; cur.setDate(cur.getDate()-1); }
+  return n;
+}
+
+/* expose pure fns for tests */
+globalThis.__GL = { fmt:fmt, gcd2:gcd2, gcdN:gcdN, lcm2:lcm2, lcmN:lcmN, divisors:divisors, isPrime:isPrime,
+  gcdTable:gcdTable, lcmTable:lcmTable, datePlusDays:datePlusDays,
+  genDaily:genDaily, genMeet:genMeet, genCut:genCut, genPosts:genPosts, genRemain:genRemain, genDeficit:genDeficit, genProd:genProd,
+  QUIZ:QUIZ, QUIZ_ANSWERS:QUIZ_ANSWERS, calcStreak:calcStreak, todayISO:todayISO };
+
+/* ================= DOM wiring (browser only) ================= */
+if (typeof document !== 'undefined') { document.addEventListener('DOMContentLoaded', function(){ init(); }); }
+function init(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+
+function refreshStats(){
+  var p = loadProgress();
+  var streak = calcStreak(p.days);
+  var doneToday = (p.days || []).indexOf(todayISO()) >= 0;
+  $('chipStreak').textContent = '🔥 สตรีก: ' + streak + ' วัน';
+  $('chipDays').textContent = '⭐ ทำแล้ว: ' + (p.days ? p.days.length : 0) + ' วัน';
+  $('chipBest').textContent = '🏆 ชุด 02B ดีสุด: ' + (p.best02b != null ? p.best02b + '/8' : '–');
+  $('statStreak').textContent = '🔥 สตรีก: ' + streak + ' วัน';
+  $('statDays').textContent = '⭐ รวม: ' + (p.days ? p.days.length : 0) + ' วัน';
+  $('statToday').textContent = doneToday ? '📅 วันนี้: ได้ดาวแล้ว ⭐' : '📅 วันนี้: ยังไม่เสร็จ';
+}
+
+/* ---- ① gcd explorer ---- */
+function runGcd(){
+  var a = parseInt($('gcdA').value,10), b = parseInt($('gcdB').value,10), out = $('gcdOut');
+  if(!a || !b || a<1 || b<1 || a>999 || b>999){ out.innerHTML = 'ใส่เลข 1–999 สองจำนวนก่อนนะ'; return; }
+  var da = divisors(a), db = divisors(b);
+  var setB = {}; db.forEach(function(d){ setB[d]=1; });
+  var common = da.filter(function(d){ return setB[d]; });
+  var g = gcd2(a,b);
+  var chip = function(arr, cls){ return '<span class="chipd' + (cls?' '+cls:'') + '">' + arr.join('</span> <span class="chipd' + (cls?' '+cls:'') + '">') + '</span>'; };
+  out.innerHTML =
+    '<div class="step">ตัวหารของ ' + a + ': ' + chip(da) + '</div>' +
+    '<div class="step">ตัวหารของ ' + b + ': ' + chip(db) + '</div>' +
+    '<div class="step">ตัวหาร<b>ร่วม</b>: ' + chip(common,'common') + '</div>' +
+    '<div class="ansline" style="color:#075985">ห.ร.ม.(' + a + ', ' + b + ') = ตัวร่วมที่ใหญ่สุด = ' + g + ' ✅</div>';
+}
+$('gcdGo').addEventListener('click', runGcd);
+runGcd();
+
+/* ---- ② lcm explorer ---- */
+function runLcm(){
+  var a = parseInt($('lcmA').value,10), b = parseInt($('lcmB').value,10), out = $('lcmOut');
+  if(!a || !b || a<1 || b<1 || a>999 || b>999){ out.innerHTML = 'ใส่เลข 1–999 สองจำนวนก่อนนะ'; return; }
+  var L = lcm2(a,b), g = gcd2(a,b);
+  var seqA = [], seqB = [];
+  for(var i=1; i<=Math.min(12, L/a); i++) seqA.push(a*i);
+  for(var j=1; j<=Math.min(12, L/b); j++) seqB.push(b*j);
+  var chip = function(arr, hit){ return arr.map(function(x){ return '<span class="chipd' + (x===L?' hit':'') + '">' + x + '</span>'; }).join(' '); };
+  var html =
+    '<div class="step">พหุคูณของ ' + a + ': ' + chip(seqA) + (L/a>12 ? ' …' : '') + '</div>' +
+    '<div class="step">พหุคูณของ ' + b + ': ' + chip(seqB) + (L/b>12 ? ' …' : '') + '</div>';
+  if(L/a<=12 && L/b<=12){
+    html += '<div class="step">ตัวที่<b>ตรงกัน</b>ครั้งแรก: <span class="chipd hit">' + L + '</span></div>';
+  }
+  html += '<div class="ansline" style="color:#115e59">ค.ร.น.(' + a + ', ' + b + ') = ' + a + '×' + b + '÷' + g + ' = <b>' + L + '</b> ✅</div>';
+  if(L < Math.max(a,b)) html += '<div class="ansline" style="color:#9f1239">⚠️ ผิดแน่นอน — ค.ร.น. ต้องไม่น้อยกว่า ' + Math.max(a,b) + '</div>';
+  out.innerHTML = html;
+}
+$('lcmGo').addEventListener('click', runLcm);
+runLcm();
+
+/* ---- ③ short division ---- */
+function sdTable(t, title){
+  var h = '<div class="step"><b>' + title + '</b></div>';
+  h += '<table class="sd"><tr><th>ตัวหาร</th><th colspan="' + t.steps[0].nums.length + '">จำนวน</th></tr>';
+  t.steps.forEach(function(s){
+    h += '<tr><td class="d">' + s.d + '</td>' + s.nums.map(function(n){ return '<td>' + n + '</td>'; }).join('') + '</tr>';
+  });
+  h += '<tr class="rest"><td></td>' + t.rest.map(function(n){ return '<td>' + n + '</td>'; }).join('') + '</tr></table>';
+  return h;
+}
+function runSd(){
+  var out = $('sdOut');
+  var raw = $('sdIn').value.trim().split(/[\s,]+/).map(Number).filter(function(x){ return x>=1 && x<=999; });
+  if(raw.length < 2 || raw.length > 3){ out.innerHTML = 'ใส่ 2 หรือ 3 จำนวน (1–999) คั่นด้วยเว้นวรรค'; out.classList.add('show'); return; }
+  var gt = gcdTable(raw), lt = lcmTable(raw);
+  var h = '';
+  if(gt.steps.length){
+    h += sdTable(gt, 'ตารางหา ห.ร.ม. (หารเฉพาะที่หารทุกตัวลงตัว)') +
+      '<div class="step">ห.ร.ม. = ผลคูณตัวหาร = ' + gt.steps.map(function(s){ return s.d; }).join(' × ') + ' = <b>' + gt.value + '</b></div>';
+  } else {
+    h += '<div class="step"><b>ห.ร.ม.</b>: ไม่มีจำนวนเฉพาะที่หารทุกตัวลงตัว → ห.ร.ม. = <b>1</b></div>';
+  }
+  h += '<hr class="soft">';
+  if(lt.steps.length){
+    h += sdTable(lt, 'ตารางหา ค.ร.น. (หารได้อย่างน้อย 2 ตัว — ตัวที่ไม่ลงตัวยกลง)') +
+      '<div class="step">ค.ร.น. = (' + lt.steps.map(function(s){ return s.d; }).join(' × ') + ') × (' + lt.rest.join(' × ') + ') = <b>' + lt.value + '</b></div>';
+  } else {
+    h += '<div class="step"><b>ค.ร.น.</b> = ผลคูณของทั้งหมด = ' + raw.join(' × ') + ' = <b>' + lt.value + '</b></div>';
+  }
+  if(raw.length === 2){
+    h += '<div class="step">ตรวจกฎ: ห.ร.ม. × ค.ร.น. = ' + gt.value*lt.value + ' = ' + raw[0] + '×' + raw[1] + ' = ' + (raw[0]*raw[1]) + ' ✓</div>';
+  }
+  out.innerHTML = h;
+  out.classList.add('show');
+}
+$('sdGo').addEventListener('click', runSd);
+runSd();
+
+/* ---- ④ meet sim ---- */
+function runMk(){
+  var x = Number($('mkX').value), y = Number($('mkY').value);
+  $('mkXv').textContent = x; $('mkYv').textContent = y;
+  var L = lcm2(x,y), g = gcd2(x,y);
+  $('mkOut').innerHTML =
+    '<div class="step">ค.ร.น.(' + x + ', ' + y + ') = ' + x + '×' + y + '÷' + g + ' = <b>' + L + ' นาที</b> → เจอกันอีกครั้งเมื่อ ' + L + ' นาที</div>' +
+    '<div class="ansline" style="color:#9f1239">กับดัก: ' + (x+y) + ' (บวกกัน) และ ' + g + ' (ห.ร.ม.) — สองคำตอบนี้ผิดทั้งคู่!</div>';
+}
+$('mkX').addEventListener('input', runMk);
+$('mkY').addEventListener('input', runMk);
+runMk();
+
+/* ---- ④ remainder-equal sim ---- */
+function runRm(){
+  var out = $('rmOut');
+  var raw = $('rmIn').value.trim().split(/[\s,]+/).map(Number).filter(function(x){ return x>=2 && x<=999; });
+  if(raw.length !== 3){ out.innerHTML = 'ใส่ 3 จำนวน (คั่นด้วยเว้นวรรค)'; return; }
+  raw.sort(function(a,b){ return a-b; });
+  var d1 = raw[1]-raw[0], d2 = raw[2]-raw[1];
+  var g = gcdN([d1,d2]);
+  var r = raw[0] % g;
+  var same = (raw[1]%g === r) && (raw[2]%g === r);
+  out.innerHTML =
+    '<div class="step">ผลต่าง: ' + raw[1] + '−' + raw[0] + ' = ' + d1 + ' · ' + raw[2] + '−' + raw[1] + ' = ' + d2 + '</div>' +
+    '<div class="step">ห.ร.ม.(' + d1 + ', ' + d2 + ') = <b>' + g + '</b></div>' +
+    (same
+      ? '<div class="ansline" style="color:#065f46">ตัวหารมากสุด = ' + g + ' (ทุกตัว÷' + g + ' เหลือเศษ ' + r + ' เท่ากัน ✓) — คำตอบคือ "ตัวหาร" ไม่ใช่เศษ ' + r + '</div>'
+      : '<div class="ansline" style="color:#9f1239">เลขชุดนี้หารแล้วเศษไม่เท่ากัน (เศษต่างกัน: ' + raw[0]%g + ', ' + raw[1]%g + ', ' + raw[2]%g + ') — ลองเลขอื่น</div>');
+}
+$('rmGo').addEventListener('click', runRm);
+runRm();
+
+/* ---- ⑤ quiz ---- */
+var QN = 8, TOTAL_SEC = 780;
+var qIdx = 0, answers = [null,null,null,null,null,null,null,null], submitted = false, timerId = null, secondsLeft = TOTAL_SEC, overtime = 0;
+function mmss(s){ var m = Math.floor(s/60), ss = s%60; return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss; }
+function renderDots(){
+  var d = $('qDots'); d.innerHTML = '';
+  for(var i=0;i<QN;i++){
+    (function(i){
+      var el = document.createElement('span');
+      var cls = 'dot';
+      if(submitted){ cls += answers[i]===QUIZ[i].a ? ' right' : ' wrong'; }
+      else if(answers[i]!=null){ cls += ' answered'; }
+      if(i===qIdx && !submitted){ cls += ' current'; }
+      el.className = cls; el.textContent = i+1;
+      el.addEventListener('click', function(){ qIdx = i; renderQ(); });
+      d.appendChild(el);
+    })(i);
+  }
+}
+function renderQ(){
+  var Q = QUIZ[qIdx];
+  $('qCount').textContent = 'ข้อ ' + (qIdx+1) + ' / ' + QN;
+  $('qText').textContent = 'ข้อ ' + (qIdx+1) + '. ' + Q.q;
+  var box = $('qChoices'); box.innerHTML = '';
+  Q.c.forEach(function(ch, i){
+    var b = document.createElement('button');
+    var cls = 'choice';
+    if(submitted){
+      if(i===Q.a) cls += ' correct';
+      else if(i===answers[qIdx]) cls += ' incorrect';
+    } else if(answers[qIdx]===i){ cls += ' sel'; }
+    b.className = cls;
+    b.innerHTML = '<span class="abc">' + ABC[i] + '</span>' + ch;
+    b.disabled = submitted;
+    b.addEventListener('click', function(){ answers[qIdx] = i; renderQ(); });
+    box.appendChild(b);
+  });
+  $('qPrev').disabled = qIdx===0;
+  $('qNext').textContent = (qIdx===QN-1 ? 'ส่งคำตอบ ✓' : 'ข้อถัดไป ▶');
+  $('qNext').disabled = (qIdx===QN-1 && answers.some(function(a){ return a==null; }));
+  renderDots();
+}
+function tick(){
+  if(secondsLeft > 0){ secondsLeft--; }
+  else { overtime++; $('quizTimer').classList.add('over'); }
+  $('quizTimer').textContent = overtime>0 ? '+'+mmss(overtime) : mmss(secondsLeft);
+}
+$('quizStart').addEventListener('click', function(){
+  qIdx = 0; answers = [null,null,null,null,null,null,null,null]; submitted = false; secondsLeft = TOTAL_SEC; overtime = 0;
+  $('quizIntro').classList.add('hidden'); $('quizResult').classList.add('hidden');
+  $('quizPlay').classList.remove('hidden');
+  $('quizTimer').classList.remove('over'); $('quizTimer').textContent = mmss(TOTAL_SEC);
+  if(timerId) clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+  renderQ();
+});
+$('qPrev').addEventListener('click', function(){ if(qIdx>0){ qIdx--; renderQ(); } });
+$('qNext').addEventListener('click', function(){
+  if(qIdx < QN-1){ qIdx++; renderQ(); }
+  else { submitQuiz(); }
+});
+function submitQuiz(){
+  submitted = true;
+  if(timerId){ clearInterval(timerId); timerId = null; }
+  var score = 0;
+  answers.forEach(function(a,i){ if(a===QUIZ[i].a) score++; });
+  var used = (TOTAL_SEC - secondsLeft) + overtime;
+  var p = loadProgress();
+  if(p.best02b == null || score > p.best02b){ p.best02b = score; saveProgress(p); }
+  var emo = score>=8 ? '🎉' : (score===7 ? '👍' : (score>=5 ? '🙂' : '💪'));
+  var msg = score>=8 ? 'เยี่ยมมาก! ครบทุกข้อ — พร้อมสอบเต็มที่' : (score===7 ? 'เก่งมาก เกือบเต็ม!' : (score>=5 ? 'ผ่านเกณฑ์ — ดูจุดที่พลาดแล้วทำซ้ำอีกครั้ง' : 'ไม่เป็นไร นี่คือชุดซ้อม — อ่านเฉลยทุกข้อแล้วลองใหม่ จะเก่งขึ้นแน่นอน'));
+  var line = answers.map(function(a,i){ return (i+1)+': '+ABC[a==null?0:a]; }).join(' ');
+  var h = '<div class="scorebox"><div class="big">' + emo + ' ' + score + '/' + QN + '</div><p>' + msg + '</p>' +
+    '<p style="color:var(--muted);font-size:.9rem;margin-top:4px">ใช้เวลา ' + mmss(used) + (overtime>0 ? ' (เกิน ' + mmss(overtime) + ')' : '') + ' · เก็บสรุปไว้เลย: <b>02B: ' + line + '</b></p></div><hr class="soft">';
+  QUIZ.forEach(function(Q,i){
+    var ok = answers[i]===Q.a;
+    h += '<div class="dq" style="' + (ok ? 'border-color:#6ee7b7' : 'border-color:#fda4af') + '">' +
+      '<div class="qt">' + (ok?'✅':'❌') + ' ข้อ ' + (i+1) + ' — ตอบ: ' + ABC[answers[i]==null?0:answers[i]] + ' · เฉลย: ' + ABC[Q.a] + '</div>' +
+      '<div class="solution show"><h4>วิธีทำ</h4>' + Q.sol +
+      '<div class="why">🕵️ ทำไมตัวเลือกอื่นถึงล่อเรา: ' + Q.why + '</div></div></div>';
+  });
+  h += '<div style="text-align:center;margin-top:16px"><button class="btn-violet" id="quizRetry">🔄 ทำชุดนี้อีกครั้ง</button></div>';
+  $('quizPlay').classList.add('hidden');
+  $('quizResult').innerHTML = h;
+  $('quizResult').classList.remove('hidden');
+  $('quizRetry').addEventListener('click', function(){
+    $('quizResult').classList.add('hidden');
+    $('quizIntro').classList.remove('hidden');
+    window.scrollTo({ top: $('sec-quiz').offsetTop - 70, behavior: 'smooth' });
+  });
+  refreshStats();
+}
+
+/* ---- ⑥ daily ---- */
+var daily = [];
+function renderDaily(){
+  var box = $('dayList'); box.innerHTML = '';
+  daily.forEach(function(d, i){
+    var el = document.createElement('div');
+    el.className = 'dq';
+    el.innerHTML = '<div class="qt">ข้อ ' + (i+1) + '. ' + d.q + '</div>' +
+      '<div class="row"><input type="text" inputmode="decimal" placeholder="ตอบ (ตัวเลข)" aria-label="คำตอบข้อ ' + (i+1) + '">' +
+      '<button class="btn-indigo">ตรวจ</button>' + (d.unit ? '<span style="font-weight:700;color:var(--muted)">' + d.unit + '</span>' : '') + '</div>' +
+      '<div class="fb"></div><div class="steps">' + d.steps + '</div>';
+    var inp = el.querySelector('input'), btn = el.querySelector('button'), fb = el.querySelector('.fb');
+    btn.addEventListener('click', function(){
+      var raw = inp.value.replace(/[, ]/g, '');
+      var v = parseFloat(raw);
+      if(isNaN(v)){ fb.className='fb no'; fb.textContent='พิมพ์ตัวเลขก่อนนะ เช่น 210 หรือ 1,206'; return; }
+      d.checked = true;
+      var ok = Math.abs(v - d.ans) < 0.005;
+      if(ok){ fb.className='fb ok'; fb.textContent='✅ ถูกต้อง! เก่งมาก'; }
+      else { fb.className='fb no'; fb.textContent='❌ ยังไม่ถูก — เฉลย: ' + fmt(d.ans) + ' ' + d.unit + ' (ดูวิธีทำด้านล่าง)'; }
+      el.classList.add('done');
+      inp.disabled = true; btn.disabled = true;
+      checkDailyDone();
+    });
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') btn.click(); });
+    box.appendChild(el);
+  });
+  $('dayDone').classList.remove('show');
+}
+function checkDailyDone(){
+  if(daily.length && daily.every(function(d){ return d.checked; })){
+    markToday();
+    $('dayDone').classList.add('show');
+    refreshStats();
+  }
+}
+$('genBtn').addEventListener('click', function(){
+  daily = genDaily();
+  renderDaily();
+});
+
+refreshStats();
+}
+</script>
+</body>
+</html>

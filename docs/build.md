@@ -89,3 +89,11 @@ Triage: feature/balance → user เลือกทาง A "รีเมธ run
 - เมนูเกม: +ปุ่ม "📖 ทบทวนร้อยละ" (shell link เปิดแท็บใหม่ ตามแบบ feedbackLink / story.md ข้อ 6) · copy 44→46/60
 - ตรวจ: selftest 34/34 · หน้า study: tag-balance/id-ref/node --check + 8,043-assertion suite (เก็บ suite ที่ nexus-agent /tmp ใช้ตรวจซ้ำได้)
 - แผน: push main → GitHub Pages (legacy root) → ตรวจ URL จริง 200
+
+## 2026-09-20 — feature round: study hub + ห.ร.ม./ค.ร.น. page (user request "ทำของ ห.ร.ม กับ ค.ร.น มาให้ด้วย")
+
+ที่มา: ผู้ปกครองส่ง PDF "ห.ร.ม./ค.ร.น. ชุดแปร 02B" (8 ข้อ, ป.6→ม.1) มาทาง Telegram — ขอต่อจากหน้าร้อยละ (จัดเป็นรอบเดียวกับ decision #6)
+- เพิ่ม `study/gcd-lcm-02b.html` — โครง 6 ส่วนเดียวกับหน้าร้อยละ: ตัวหารร่วม/พหุคูณ interactive · ตารางหารสั้น (ห.ร.ม./ค.ร.น. ทั้งสองแบบ) · การ์ดคีย์เวิร์ดเลือกวิธี + กับดัก 5 ข้อ (บวกกัน/ตอบผิดสิ่งที่ถาม/เศษเท่ากัน→ผลต่าง/ขาดเท่ากัน→ค.ร.น.−k/รอบงาน) · ควิซ 02B จับเวลา 13:00 · สุ่มโจทย์รายวัน 6 ชนิด — localStorage `gcdLcmStudyV1`
+- เพิ่ม `study/index.html` (hub รวมสื่อ) + ปุ่มเมนูเกมเปลี่ยนเป็น "📚 ทบทวน" ชี้ hub — copy คงเดิม 46/60 (2 คำเท่าเดิม) · ทั้งสองหน้า study เพิ่มชิปนำทางกลับเกม/hub
+- fuzz จับบั๊กจริง 2 ตัวก่อนส่ง: genPosts เมื่อ m1=m2 → gcd(w,h)≠g (คำตอบผิด) แก้บังคับ gcd(m1,m2)=1 · QUIZ_ANSWERS ข้อ 6 เป็น 'ก' (206) ไม่ใช่ 'ค'
+- ตรวจ: selftest 34/34 · หน้าใหม่ tag-balance/id-ref/node --check + 357,900-assertion suite (ตารางหารสั้น fuzz 300 ชุดเทียบ gcdN/lcmN · generator 500 รอบ semantic ครบ · Q8 date math Apr1+140=Aug 19)
