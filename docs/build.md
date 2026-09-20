@@ -63,3 +63,10 @@ Remote: `https://github.com/pheerawit-wasinphongwanit/express-math` (SSH URL fai
 - Background service: `.github/workflows/feedback.yml` — ทำงานทันทีเมื่อ issue ถูกสร้าง (GitHub Actions = infra ของ GitHub รันตลอด ไม่ผูกกับเครื่อง agent): ติด label + ตอบกลับขอบคุณ + ส่งแจ้งเตือน Telegram ถึงเจ้าของ
 - E2E test: issue #1 → run 12s → label ✓ comment ✓ · issue 2 → telegram HTTP 200 ✓ (secrets set 2026-09-18)
 - Triage round 2026-09-18 (PM): both [test] issues passed — owner confirmed Telegram receipt for #2. Closed same round with resolution comments (#1, #2) after PAT granted Issues write; feedback queue empty.
+
+## 2026-09-20 — feedback round: issue #3 (อยากได้เกมภาษาอังกฤษ)
+
+Triage: feature = เกมใหม่ ไม่ใช่โหมดในด่วนคณิต (ขัดสัญญา scope) → ตัดสินใจแยกเป็น sibling game
+«ด่วนภาษา EXPRESS ENGLISH» (repo `express-english`, สร้างตาม pattern repo-ต่อ-เกม)
+ผ่าน pipeline เต็ม (grill→scope→story→build) + self-test 77/77 + deploy Pages แล้ว
+ปิด issue พร้อมลิงก์เกม + ช่องทางฟีดแบ็กใหม่ — คิวฟีดแบ็กด่วนคณิตว่าง
