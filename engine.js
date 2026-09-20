@@ -70,6 +70,9 @@ function renderMenu() {
   const fb = $('feedbackLink');
   fb.textContent = CP.menu.feedback;
   fb.href = D.feedbackUrl;
+  const st = $('studyLink');
+  st.textContent = CP.menu.study;
+  st.href = D.studyUrl;
   const best = store.get(K.best) || 0;
   const today = store.get(K.dailyPrefix + dateKey());
   $('menuStats').innerHTML =

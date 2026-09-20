@@ -81,3 +81,11 @@ Triage: feature/balance → user เลือกทาง A "รีเมธ run
 - งบที่ขยับ (approved): playtime 60–120 → 90–180 วิ · ชนิดโจทย์ 8 · คงเดิม: โหมด 2 จอ 3 beeps 4 systems 2 localStorage keys
 - self-test 34/34 (ใหม่: invariant pct/ooo · [3b] โบนัสเลื่อนชั้น · [4b] กราฟเวลารุ่ง) · copy 44/60 · sim 300 seeds: median weak 41s / mid 90s / strong 172s, max 189s
 - CSS: #question.long สำหรับโจทย์ยาว (a × b − c × d = ?)
+
+## 2026-09-20 — feature round: study-aid page ร้อยละ กำไร ขาดทุน (user request นอกคิวฟีดแบ็ก)
+
+ที่มา: ผู้ปกครองส่ง PDF "ร้อยละ ชุดแปร 01C" (ป.6 เตรียม ม.1) มาทาง Telegram ขอ interactive infographic แล้วขอเอาขึ้นเว็บ (ตัวเลือก A: ใส่ repo + ลิงก์จากเกม)
+- เพิ่ม `study/percent-01c.html` — single-file zero-dep (~64 KB): concept ร้อยละ + สูตร 3 โหมด + กำไร-ขาดทุน + กับดัก 4 ข้อ + ควิซ 01C จับเวลา 8:00 (เฉลยทีละ step + distractor analysis) + สุ่มโจทย์รายวัน/สตรีค — localStorage `pctStudyV1` ของหน้าเอง ไม่ชน keys เกม
+- เมนูเกม: +ปุ่ม "📖 ทบทวนร้อยละ" (shell link เปิดแท็บใหม่ ตามแบบ feedbackLink / story.md ข้อ 6) · copy 44→46/60
+- ตรวจ: selftest 34/34 · หน้า study: tag-balance/id-ref/node --check + 8,043-assertion suite (เก็บ suite ที่ nexus-agent /tmp ใช้ตรวจซ้ำได้)
+- แผน: push main → GitHub Pages (legacy root) → ตรวจ URL จริง 200

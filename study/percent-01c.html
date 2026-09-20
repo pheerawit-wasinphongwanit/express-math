@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ร้อยละ · กำไร · ขาดทุน — ทบทวนรายวัน เตรียมสอบ ม.1</title>
+<meta name="description" content="Infographic แบบ interactive ทบทวน ร้อยละ กำไร ขาดทุน สำหรับ ป.6 เตรียมสอบเข้า ม.1 พร้อมโจทย์ชุด 01C และโจทย์สุ่มรายวัน">
+<style>
+:root{
+  --ink:#1e293b; --muted:#64748b; --bg:#f1f5f9; --card:#ffffff; --line:#e2e8f0;
+  --indigo:#6366f1; --violet:#8b5cf6; --sky:#0284c7; --sky-l:#e0f2fe;
+  --amber:#d97706; --amber-l:#fef3c7; --green:#059669; --green-l:#d1fae5;
+  --rose:#e11d48; --rose-l:#ffe4e6; --teal:#0d9488; --teal-l:#ccfbf1;
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Sarabun','IBM Plex Sans Thai','Noto Sans Thai','Leelawadee UI','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;font-size:17px}
+.hero{background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#a855f7);color:#fff;padding:34px 18px 30px;text-align:center}
+.hero h1{font-size:1.65rem;font-weight:800;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.18)}
+.hero p.sub{margin-top:8px;font-size:1.02rem;opacity:.95}
+.hero .chips{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hero .chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:5px 14px;border-radius:999px;font-size:.92rem;font-weight:600;backdrop-filter:blur(4px)}
+.hero a.chip{text-decoration:none;color:#fff;cursor:pointer}
+nav.tabs{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(15,23,42,.06)}
+nav.tabs .in{max-width:920px;margin:0 auto;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav.tabs .in::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;padding:12px 15px;font-size:.9rem;font-weight:700;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs a:hover,nav.tabs a:active{color:var(--indigo)}
+main{max-width:920px;margin:0 auto;padding:18px 14px 60px}
+section.card{background:var(--card);border-radius:var(--radius);box-shadow:0 4px 18px rgba(15,23,42,.07);margin:22px 0;overflow:hidden;border:1px solid var(--line)}
+section.card>header{display:flex;align-items:center;gap:12px;padding:16px 20px;color:#fff}
+section.card>header .no{flex:0 0 auto;width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:800;border:1px solid rgba(255,255,255,.4)}
+section.card>header h2{font-size:1.18rem;font-weight:800}
+section.card>header .tag{margin-left:auto;font-size:.75rem;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:999px;font-weight:600}
+section.card .body{padding:18px 20px 22px}
+section.card[data-theme=percent]>header{background:linear-gradient(120deg,#0284c7,#38bdf8)}
+section.card[data-theme=modes]>header{background:linear-gradient(120deg,#d97706,#f59e0b)}
+section.card[data-theme=profit]>header{background:linear-gradient(120deg,#059669,#34d399)}
+section.card[data-theme=traps]>header{background:linear-gradient(120deg,#e11d48,#fb7185)}
+section.card[data-theme=quiz]>header{background:linear-gradient(120deg,#7c3aed,#a855f7)}
+section.card[data-theme=daily]>header{background:linear-gradient(120deg,#0d9488,#2dd4bf)}
+.lead{font-size:1rem;color:var(--muted);margin-bottom:14px}
+.formula{background:var(--ink);color:#fde68a;border-radius:14px;padding:14px 16px;text-align:center;font-size:1.12rem;font-weight:700;font-family:var(--font,'Sarabun'),sans-serif;letter-spacing:.3px;margin:12px 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.formula small{display:block;color:#cbd5e1;font-weight:500;font-size:.82rem;margin-top:6px;letter-spacing:0}
+.note{border-radius:12px;padding:11px 14px;font-size:.94rem;margin:12px 0;border:1px dashed}
+.note.tip{background:var(--green-l);border-color:#6ee7b7;color:#065f46}
+.note.warn{background:var(--rose-l);border-color:#fda4af;color:#9f1239}
+.note.info{background:var(--sky-l);border-color:#7dd3fc;color:#075985}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:700px){.grid2{grid-template-columns:1fr 1fr}}
+.demo-box{border:1px solid var(--line);border-radius:14px;padding:14px;background:#f8fafc}
+.demo-box h3{font-size:1rem;margin-bottom:10px;color:var(--ink)}
+/* percent grid */
+#pctGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:10px 0}
+#pctGrid span{aspect-ratio:1;background:#e2e8f0;border-radius:5px;transition:background .15s}
+#pctGrid span.on{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.sliderRow{display:flex;align-items:center;gap:12px}
+input[type=range]{flex:1;accent-color:#0284c7;height:34px}
+.bigNum{font-size:1.5rem;font-weight:800;color:var(--sky);min-width:70px;text-align:right}
+.eq{font-size:1rem;color:var(--muted);margin-top:6px}
+input[type=number],input[type=text]{font:inherit;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;width:100%;background:#fff;color:var(--ink)}
+input[type=number]:focus,input[type=text]:focus{outline:2px solid #93c5fd;border-color:#60a5fa}
+label.fl{display:block;font-size:.85rem;font-weight:700;color:var(--muted);margin:10px 0 4px}
+button{font:inherit;font-weight:700;border:none;border-radius:12px;padding:10px 18px;cursor:pointer;transition:transform .08s,box-shadow .15s;color:#fff}
+button:active{transform:scale(.97)}
+.btn-indigo{background:linear-gradient(120deg,#6366f1,#818cf8)}
+.btn-sky{background:linear-gradient(120deg,#0284c7,#38bdf8)}
+.btn-amber{background:linear-gradient(120deg,#d97706,#fbbf24)}
+.btn-green{background:linear-gradient(120deg,#059669,#34d399)}
+.btn-rose{background:linear-gradient(120deg,#e11d48,#fb7185)}
+.btn-violet{background:linear-gradient(120deg,#7c3aed,#a78bfa)}
+.btn-teal{background:linear-gradient(120deg,#0d9488,#2dd4bf)}
+.btn-ghost{background:#eef2ff;color:#4338ca}
+button:disabled{opacity:.45;cursor:not-allowed}
+.out{margin-top:12px;border-radius:12px;padding:12px 14px;background:#f8fafc;border:1px solid var(--line);font-size:.95rem;display:none}
+.out.show{display:block}
+.out .ansline{font-size:1.05rem;font-weight:800}
+.step{margin:4px 0;padding-left:10px;border-left:3px solid #cbd5e1}
+.step b{color:var(--indigo)}
+/* flashcards */
+.flash{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+.flash .fc{perspective:600px}
+.flash input{display:none}
+.flash label{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:86px;border-radius:14px;background:var(--sky-l);border:2px solid #7dd3fc;font-weight:800;color:#075985;cursor:pointer;transition:background .25s,border-color .25s;font-size:1.25rem;text-align:center;padding:8px}
+.flash label small{font-size:.8rem;font-weight:600;margin-top:3px}
+.flash label .back{display:none;font-size:1.02rem}
+.flash input:checked+label{background:var(--indigo);border-color:#4f46e5;color:#fff;transform:scale(1.03)}
+.flash input:checked+label .front{display:none}
+.flash input:checked+label .back{display:block}
+.flash .hint{grid-column:1/-1;font-size:.8rem;color:var(--muted);text-align:center}
+/* mode tabs */
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.modes button{background:#f1f5f9;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:8px 14px;font-size:.9rem}
+.modes button.active{background:var(--amber-l);border-color:var(--amber);color:var(--amber)}
+.barwrap{margin-top:12px}
+.bar-total{height:30px;background:#f1f5f9;border:1px solid var(--line);border-radius:9px;overflow:hidden;position:relative}
+.bar-part{height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;color:#78350f;font-weight:800;font-size:.85rem;white-space:nowrap;transition:width .3s;min-width:0;overflow:hidden}
+.bar-cap{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-top:4px}
+/* profit viz */
+.plviz{margin-top:12px}
+.plrow{display:flex;align-items:center;gap:10px;margin:7px 0}
+.plrow .lab{flex:0 0 92px;font-size:.88rem;font-weight:700;color:var(--muted)}
+.plrow .track{flex:1;height:26px;background:#f1f5f9;border-radius:8px;overflow:hidden}
+.plrow .fill{height:100%;border-radius:8px;transition:width .35s;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-weight:800;font-size:.82rem;white-space:nowrap}
+.fill.cost{background:linear-gradient(90deg,#0f766e,#14b8a6)}
+.fill.sell{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.badge{display:inline-block;padding:6px 16px;border-radius:999px;font-weight:800;font-size:1.05rem;margin:8px 0}
+.badge.profit{background:var(--green-l);color:#065f46;border:1.5px solid #6ee7b7}
+.badge.loss{background:var(--rose-l);color:#9f1239;border:1.5px solid #fda4af}
+.badge.same{background:#f1f5f9;color:#475569;border:1.5px solid #cbd5e1}
+/* traps */
+.trap{border:1.5px solid #fecdd3;background:#fff;border-radius:14px;padding:14px 16px;margin:14px 0}
+.trap h3{font-size:1.02rem;color:#9f1239;display:flex;gap:8px;align-items:center}
+.trap p{font-size:.93rem;margin-top:6px}
+.trap .chip-ref{display:inline-block;font-size:.75rem;background:var(--rose-l);color:#9f1239;padding:2px 10px;border-radius:999px;font-weight:700;margin-top:8px}
+.toggle{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.toggle button{font-size:.85rem;padding:8px 14px}
+.toggle button.sel-ok{outline:3px solid #6ee7b7}
+.toggle button.sel-bad{outline:3px solid #fda4af}
+.sqwrap{display:flex;align-items:flex-end;gap:26px;margin:12px 4px;height:150px}
+.sq{border-radius:8px;position:relative}
+.sq .cap{position:absolute;bottom:-24px;left:0;width:100%;text-align:center;font-size:.78rem;color:var(--muted);font-weight:700}
+.sq.orig{width:90px;background:#e2e8f0;border:2px dashed #94a3b8}
+.sq.new{background:linear-gradient(135deg,rgba(225,29,72,.55),rgba(251,113,133,.55));border:2px solid #e11d48;transition:width .3s,height .3s}
+.sq-lab{align-self:center;font-size:.95rem;font-weight:800;color:#9f1239}
+/* quiz */
+.quiz-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.timer{font-size:1.05rem;font-weight:800;background:var(--ink);color:#fde68a;border-radius:10px;padding:6px 14px;font-variant-numeric:tabular-nums}
+.timer.over{background:var(--rose);color:#fff}
+.dots{display:flex;gap:7px;margin-left:auto}
+.dot{width:30px;height:30px;border-radius:9px;border:2px solid var(--line);background:#fff;font-weight:800;color:var(--muted);font-size:.85rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.dot.current{border-color:var(--violet);color:var(--violet);outline:2px solid #ede9fe}
+.dot.answered{background:#ede9fe;border-color:#c4b5fd;color:#5b21b6}
+.dot.right{background:var(--green-l);border-color:#6ee7b7;color:#065f46}
+.dot.wrong{background:var(--rose-l);border-color:#fda4af;color:#9f1239}
+.qtext{font-size:1.05rem;font-weight:700;background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;padding:16px;margin:12px 0}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.choices{grid-template-columns:1fr}}
+.choice{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:13px;padding:13px 12px;font-size:1rem;font-weight:700;text-align:left;display:flex;gap:10px;align-items:center}
+.choice .abc{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--muted)}
+.choice:hover{border-color:#c4b5fd}
+.choice.sel{border-color:var(--violet);background:#f5f3ff}
+.choice.sel .abc{background:var(--violet);color:#fff}
+.choice.correct{border-color:#10b981;background:var(--green-l)}
+.choice.correct .abc{background:#059669;color:#fff}
+.choice.incorrect{border-color:#f43f5e;background:var(--rose-l)}
+.choice.incorrect .abc{background:#e11d48;color:#fff}
+.quiz-nav{display:flex;gap:10px;margin-top:14px;justify-content:space-between;align-items:center}
+.qcount{font-size:.9rem;color:var(--muted);font-weight:700}
+.solution{display:none;margin-top:12px;border:1.5px solid #c4b5fd;background:#faf5ff;border-radius:14px;padding:14px}
+.solution.show{display:block}
+.solution h4{color:#6d28d9;font-size:.95rem;margin-bottom:6px}
+.solution p,.solution li{font-size:.92rem}
+.solution ol{padding-left:20px}
+.solution .why{color:#9f1239;font-size:.85rem;margin-top:8px;background:var(--rose-l);border-radius:9px;padding:8px 10px}
+.scorebox{text-align:center;padding:18px 10px}
+.scorebox .big{font-size:2.6rem;font-weight:800;background:linear-gradient(120deg,#7c3aed,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rules{display:grid;gap:10px;margin:10px 0}
+.rule{display:flex;gap:12px;align-items:flex-start;background:#fffbeb;border:1.5px solid #fde68a;border-radius:13px;padding:12px 14px}
+.rule .n{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:var(--amber);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.rule p{font-size:.93rem}
+/* daily */
+.daygen{margin-top:8px}
+.dq{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:#fff}
+.dq .qt{font-weight:700;font-size:.98rem;margin-bottom:8px}
+.dq .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.dq input{max-width:170px}
+.dq .fb{margin-top:10px;font-size:.9rem;border-radius:10px;padding:9px 12px;display:none}
+.dq .fb.ok{display:block;background:var(--green-l);color:#065f46;border:1px solid #6ee7b7}
+.dq .fb.no{display:block;background:var(--rose-l);color:#9f1239;border:1px solid #fda4af}
+.dq .steps{display:none;margin-top:10px}
+.dq.done .steps{display:block}
+.streakbox{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.stat{background:var(--teal-l);border:1.5px solid #5eead4;color:#115e59;border-radius:13px;padding:9px 16px;font-weight:800;font-size:.95rem}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:26px 16px 40px}
+.hidden{display:none!important}
+hr.soft{border:none;border-top:1px dashed var(--line);margin:18px 0}
+@media print{
+  nav.tabs,.hero .chips,button,input{display:none!important}
+  .solution,.dq .steps{display:block!important}
+  section.card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>📊 ร้อยละ · กำไร · ขาดทุน</h1>
+  <p class="sub">Infographic ทบทวนรายวัน เตรียมสอบเข้า ม.1 (ป.6)</p>
+  <div class="chips">
+    <a class="chip" href="../index.html">🎮 เล่นเกมด่วนคณิต</a>
+    <span class="chip" id="chipStreak">🔥 สตรีก: – วัน</span>
+    <span class="chip" id="chipDays">⭐ ทำแล้ว: – วัน</span>
+    <span class="chip" id="chipBest">🏆 ชุด 01C ดีสุด: –/5</span>
+  </div>
+</div>
+
+<nav class="tabs"><div class="in">
+  <a href="#sec-percent">① ร้อยละคืออะไร</a>
+  <a href="#sec-modes">② สูตร 3 โหมด</a>
+  <a href="#sec-profit">③ กำไร–ขาดทุน</a>
+  <a href="#sec-traps">④ กับดักข้อสอบ</a>
+  <a href="#sec-quiz">⑤ โจทย์ชุด 01C</a>
+  <a href="#sec-daily">⑥ ฝึกประจำวัน</a>
+</div></nav>
+
+<main>
+
+<!-- ================= 1. PERCENT ================= -->
+<section class="card" id="sec-percent" data-theme="percent">
+  <header><span class="no">①</span><h2>ร้อยละ (เปอร์เซ็นต์) คืออะไร</h2><span class="tag">ฐาน 100</span></header>
+  <div class="body">
+    <p class="lead">ร้อยละ คือการเทียบปริมาณกับ <b>"ฐาน 100"</b> — ลากสไลเดอร์เล่นดูสิ แล้วจะเข้าใจทันที</p>
+
+    <div class="demo-box">
+      <h3>🧪 ตาราง 100 ช่อง — ลองเลื่อนดู</h3>
+      <div class="sliderRow">
+        <input type="range" id="pctSlider" min="0" max="100" value="45" aria-label="ร้อยละที่ต้องการแสดง">
+        <span class="bigNum"><span id="pctVal">45</span>%</span>
+      </div>
+      <div id="pctGrid" aria-hidden="true"></div>
+      <p class="eq" id="pctEq">45% = 45/100 = 0.45</p>
+    </div>
+
+    <div class="formula">ร้อยละ r ของ n &nbsp;=&nbsp; r ÷ 100 × n
+      <small>เช่น ร้อยละ 25 ของ 40 = 25 ÷ 100 × 40 = <b>10</b></small>
+    </div>
+
+    <div class="grid2">
+      <div class="demo-box">
+        <h3>🔁 แปลงไปมา: ร้อยละ ↔ ทศนิยม ↔ เศษส่วน</h3>
+        <label class="fl">พิมพ์ ร้อยละ (%)</label>
+        <input type="number" id="cvP" value="75" step="any">
+        <label class="fl">พิมพ์ ทศนิยม</label>
+        <input type="number" id="cvD" value="0.75" step="any">
+        <label class="fl">เศษส่วน (คำนวณให้อัตโนมัติ)</label>
+        <input type="text" id="cvF" value="3/4" readonly>
+        <p class="eq">ตัวอย่าง: 50% = 0.5 = ½ &nbsp;·&nbsp; 25% = 0.25 = ¼ &nbsp;·&nbsp; 120% = 1.2 = 6/5</p>
+      </div>
+      <div class="demo-box">
+        <h3>🧮 ลองคิด: ร้อยละ r ของจำนวน n</h3>
+        <label class="fl">ร้อยละ r (%)</label>
+        <input type="number" id="mcR" value="25" step="any">
+        <label class="fl">จำนวน n</label>
+        <input type="number" id="mcN" value="340" step="any">
+        <div style="margin-top:12px"><button class="btn-sky" id="mcGo">คำนวณ ▶</button></div>
+        <div class="out" id="mcOut"></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:16px;font-size:1rem">🃏 การ์ดท่อง — แตะเพื่อพลิกดูเศษส่วน</h3>
+    <div class="flash">
+      <div class="fc"><input type="checkbox" id="f1"><label for="f1"><span class="front">50%<small>แตะ!</small></span><span class="back">= ½ ครึ่งหนึ่ง</span></label></div>
+      <div class="fc"><input type="checkbox" id="f2"><label for="f2"><span class="front">25%<small>แตะ!</small></span><span class="back">= ¼ หนึ่งในสี่</span></label></div>
+      <div class="fc"><input type="checkbox" id="f3"><label for="f3"><span class="front">20%<small>แตะ!</small></span><span class="back">= 1/5</span></label></div>
+      <div class="fc"><input type="checkbox" id="f4"><label for="f4"><span class="front">10%<small>แตะ!</small></span><span class="back">= 1/10</span></label></div>
+      <div class="fc"><input type="checkbox" id="f5"><label for="f5"><span class="front">75%<small>แตะ!</small></span><span class="back">= ¾ สามในสี่</span></label></div>
+      <div class="fc"><input type="checkbox" id="f6"><label for="f6"><span class="front">200%<small>แตะ!</small></span><span class="back">= 2 เท่า (เกินทั้งหมด!)</span></label></div>
+      <p class="hint">แตะการ์ดเพื่อพลิกดูเฉลย — พยายามนึกคำตอบในใจก่อนพลิกทุกครั้ง จะจำได้แน่นขึ้น</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. MODES ================= -->
+<section class="card" id="sec-modes" data-theme="modes">
+  <header><span class="no">②</span><h2>โจทย์ร้อยละมีแค่ 3 โหมด</h2><span class="tag">จำเป็นชุด</span></header>
+  <div class="body">
+    <p class="lead">โจทย์ร้อยละทุกข้อ ถามได้แค่ 3 แบบ — ดูว่าโจทย์ <b>ให้อะไรมา</b> กับ <b>ถามหาอะไร</b> แล้วเลือกสูตร</p>
+    <div class="modes">
+      <button id="modeA" class="active">🅰 รู้ทั้งหมด → หา<b>ส่วน</b></button>
+      <button id="modeB">🅱 รู้ทั้งคู่ → หา<b>ร้อยละ</b></button>
+      <button id="modeC">🅲 รู้ส่วน → หา<b>ทั้งหมด</b></button>
+    </div>
+    <div class="formula" id="modeFormula">ส่วน = ทั้งหมด × r/100<small>เช่น ของ 40 คน มาเรียน 25% → 40 × 25/100 = 10 คน</small></div>
+
+    <div class="demo-box">
+      <h3 id="modeTitle">🅰 หา "ส่วน" — รู้ทั้งหมด + รู้ร้อยละ</h3>
+      <div class="grid2">
+        <div>
+          <label class="fl" id="lblX">ทั้งหมด (n)</label>
+          <input type="number" id="modeX" value="40" step="any">
+          <label class="fl" id="lblY">ร้อยละ (r %)</label>
+          <input type="number" id="modeY" value="25" step="any">
+          <div style="margin-top:12px"><button class="btn-amber" id="modeGo">คำนวณ ▶</button></div>
+        </div>
+        <div>
+          <div class="out show" id="modeOut"></div>
+          <div class="barwrap">
+            <div class="bar-total"><div class="bar-part" id="modeBar" style="width:25%">ส่วน</div></div>
+            <div class="bar-cap"><span id="barL">ส่วนที่ถาม (r%)</span><span>ทั้งหมด = 100%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="note tip">💡 เคล็ดลับรู้ใน 3 วิ: <b>วงหน่วยของคำตอบ</b>ในโจทย์ก่อน — ถาม "กี่คน/กี่บาท" ตอบเป็นจำนวน ถาม "ร้อยละเท่าใด" ค่อยตอบเป็น %</div>
+  </div>
+</section>
+
+<!-- ================= 3. PROFIT/LOSS ================= -->
+<section class="card" id="sec-profit" data-theme="profit">
+  <header><span class="no">③</span><h2>กำไร–ขาดทุน</h2><span class="tag">หารด้วยต้นทุน!</span></header>
+  <div class="body">
+    <p class="lead">แค่จำ 2 บรรทัดนี้ แล้วโจทย์กำไร–ขาดทุนจะไม่มีพลาด</p>
+    <div class="grid2">
+      <div>
+        <div class="formula">กำไร = ราคาขาย − ต้นทุน<small>ขายแพงกว่าทุน → กำไร (ขาย &gt; ทุน)</small></div>
+        <div class="formula">ขาดทุน = ต้นทุน − ราคาขาย<small>ขายถูกกว่าทุน → ขาดทุน (ขาย &lt; ทุน)</small></div>
+      </div>
+      <div>
+        <div class="formula">กำไร(หรือขาดทุน) % = จำนวน ÷ ต้นทุน × 100<small>⚠️ หารด้วย "ต้นทุน" เสมอ — ไม่ใช่ราคาขาย!</small></div>
+      </div>
+    </div>
+
+    <div class="demo-box">
+      <h3>🧪 ทดลองเอง — ใส่ต้นทุนกับราคาขาย</h3>
+      <div class="grid2">
+        <div>
+          <label class="fl">ต้นทุน (บาท)</label>
+          <input type="number" id="plCost" value="3200" step="any" min="0">
+          <label class="fl">ราคาขาย (บาท)</label>
+          <input type="number" id="plSell" value="4000" step="any" min="0">
+          <div style="margin-top:12px"><button class="btn-green" id="plGo">คำนวณ ▶</button></div>
+        </div>
+        <div>
+          <div class="out show" id="plOut"></div>
+          <div class="plviz">
+            <div class="plrow"><span class="lab">ต้นทุน</span><div class="track"><div class="fill cost" id="plBarC">3,200</div></div></div>
+            <div class="plrow"><span class="lab">ราคาขาย</span><div class="track"><div class="fill sell" id="plBarS">4,000</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="note warn">⚠️ กับดักอันดับ 1 ของข้อสอบ: "ได้กำไรร้อยละเท่าใด" ต้องเทียบกับ <b>ต้นทุน</b> — ซื้อ 3,200 ขาย 4,000 → กำไร 800 ÷ <b>3,200</b> = 25% (ไม่ใช่ 800 ÷ 4,000 = 20%)</div>
+  </div>
+</section>
+
+<!-- ================= 4. TRAPS ================= -->
+<section class="card" id="sec-traps" data-theme="traps">
+  <header><span class="no">④</span><h2>กับดักที่ข้อสอบชอบวาง</h2><span class="tag">4 กับดัก</span></header>
+  <div class="body">
+    <p class="lead">โจทย์ชุดที่เคยทำ (01B/01C) พลาดกันที่ 4 จุดนี้ — เล่นๆ กับเครื่องมือข้างล่างให้คล่อง แล้วข้อสอบจะไม่หลอกได้</p>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 1: "ลด x% แล้วขึ้น x% กลับมาเท่าเดิม" — <u>ไม่จริง!</u></h3>
+      <p>เพราะการขึ้นราคาคิดจาก <b>ฐานที่ลดแล้ว (ตัวเลขที่เล็กลง)</b> ดังนั้นราคาสุดท้ายจะ <b>ต่ำกว่าเดิมเสมอ</b></p>
+      <div class="sliderRow">
+        <input type="range" id="rfX" min="5" max="50" value="25" step="5" aria-label="ร้อยละที่ลดแล้วขึ้น">
+        <span class="bigNum"><span id="rfXv">25</span>%</span>
+      </div>
+      <div class="out show" id="rfOut"></div>
+      <div class="formula">ราคาสุดท้าย = P × (100−x)/100 × (100+x)/100<small>ลอง x = 10 → เหลือ 99% ของราคาเดิม · x = 25 → เหลือ 93.75%</small></div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 5 ของชุด 01C (ลด 25% ขึ้น 25% → 2,000 กลายเป็น 1,875)</span>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 2: ด้านเพิ่ม 20% แล้วคิดว่าพื้นที่เพิ่ม 20% — <u>ผิด!</u></h3>
+      <p>พื้นที่ = กว้าง × ยาว → ต้อง <b>คูณกันสองชั้น</b>: ×1.20 ××1.20 = ×1.44 → พื้นที่เพิ่ม <b>44%</b> (ไม่ใช่ 40% และไม่ใช่ 20%)</p>
+      <div class="sliderRow">
+        <input type="range" id="arX" min="10" max="50" value="20" step="5" aria-label="ร้อยละที่ขยายด้าน">
+        <span class="bigNum">+<span id="arXv">20</span>%</span>
+      </div>
+      <div class="sqwrap">
+        <div class="sq orig" style="height:90px"><span class="cap">เดิม</span></div>
+        <div class="sq new" id="arSq" style="width:108px;height:108px"><span class="cap">ขยายแล้ว</span></div>
+        <div class="sq-lab" id="arOut"></div>
+      </div>
+      <div class="formula">พื้นที่เพิ่ม = ((1 + r/100)² − 1) × 100%<small>r=10 → +21% · r=20 → +44% · r=50 → +125% (มากกว่า 2 เท่า!)</small></div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 4 ของชุด 01C (ขยายกว้าง-ยาว 20% → พื้นที่เพิ่ม 44%)</span>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 3: หารผิดฐาน (กำไรหารด้วยราคาขาย)</h3>
+      <p>ต้นทุน 600 บาท ตั้งขาย 900 บาท กำไร 300 บาท — กดเทียบดูว่าหารผิดฐานแล้วต่างกันแค่ไหน</p>
+      <div class="toggle">
+        <button class="btn-green" id="baseOk">✅ หารด้วยต้นทุน 600 (ถูก)</button>
+        <button class="btn-rose" id="baseBad">❌ หารด้วยราคาขาย 900 (ผิด)</button>
+      </div>
+      <div class="out show" id="baseOut"></div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 2 และ ข้อ 3 ของชุด 01C — ตัวลวง "ร้อยละ 20" ในข้อ 2 มาจากการหารด้วยราคาขายพอดี</span>
+    </div>
+
+    <div class="trap">
+      <h3>⚠️ กับดัก 4: ตอบผิดหน่วย</h3>
+      <p>โจทย์ถาม <b>"มีนักเรียนทั้งหมดกี่คน"</b> → ต้องตอบเป็น "จำนวนคน" เท่านั้น — ตัวเลือกที่ตอบเป็น "ร้อยละ 15" คือกับดัก (และ 289 ก็เป็นกับดักจากการคิดผิดฐาน)</p>
+      <div class="note info">📋 เช็คก่อนส่งกระดาษทุกครั้ง: (1) โจทย์ถามหา "อะไร" (2) หน่วยเป็น "คน / บาท / ชิ้น / %" (3) ตัวเลขสมเหตุสมผลกับโจทย์ไหม</div>
+      <span class="chip-ref">📌 โจทย์จริง: ข้อ 1 ของชุด 01C (ตัวเลือก ข. คือกับดักหน่วย)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. QUIZ 01C ================= -->
+<section class="card" id="sec-quiz" data-theme="quiz">
+  <header><span class="no">⑤</span><h2>โจทย์ชุด 01C — วัดซ้ำจากไฟล์แนบ</h2><span class="tag">5 ข้อ · 8 นาที</span></header>
+  <div class="body">
+    <!-- intro -->
+    <div id="quizIntro">
+      <p class="lead">ชุดนี้คือ <b>ชุดวัดซ้ำ</b> (ไม่ใช่ชุดซ้อม) — ทำเหมือนสอบจริง: <b>จับเวลา 8 นาที · ห้ามเปิดเฉลย · ทำครบทั้ง 5 ข้อก่อนดูผล</b></p>
+      <h3 style="font-size:1rem;margin:8px 0">🧠 ก่อนเริ่ม — ท่อง 3 บรรทัดนี้ (มาจากข้อที่เคยพลาด)</h3>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><p><b>วงหน่วยของคำตอบ</b>ในโจทย์ก่อน — ถามว่า "กี่คน" ห้ามตอบเป็น "ร้อยละ"</p></div>
+        <div class="rule"><span class="n">2</span><p><b>กำไรกี่ %</b> → หารด้วย<b>ต้นทุน</b>เสมอ และเขียน "กำไร = ขาย − ทุน" ก่อนคิด %</p></div>
+        <div class="rule"><span class="n">3</span><p><b>ด้านเพิ่ม</b> → พื้นที่เพิ่ม<b>มากกว่า</b>นั้น เพราะพื้นที่คือ กว้าง × ยาว</p></div>
+      </div>
+      <button class="btn-violet" id="quizStart" style="font-size:1.05rem;padding:12px 26px">▶ เริ่มทำ + จับเวลา 8:00</button>
+    </div>
+
+    <!-- play -->
+    <div id="quizPlay" class="hidden">
+      <div class="quiz-top">
+        <span class="timer" id="quizTimer">08:00</span>
+        <span class="qcount" id="qCount">ข้อ 1 / 5</span>
+        <div class="dots" id="qDots"></div>
+      </div>
+      <div class="qtext" id="qText"></div>
+      <div class="choices" id="qChoices"></div>
+      <div class="quiz-nav">
+        <button class="btn-ghost" id="qPrev">◀ ข้อก่อน</button>
+        <button class="btn-ghost" id="qNext">ข้อถัดไป ▶</button>
+      </div>
+    </div>
+
+    <!-- result -->
+    <div id="quizResult" class="hidden"></div>
+  </div>
+</section>
+
+<!-- ================= 6. DAILY ================= -->
+<section class="card" id="sec-daily" data-theme="daily">
+  <header><span class="no">⑥</span><h2>ฝึกประจำวัน — สุ่มโจทย์ใหม่ทุกวัน</h2><span class="tag">5 ข้อ/วัน</span></header>
+  <div class="body">
+    <p class="lead">กดปุ่มเพื่อสุ่มโจทย์ 5 ข้อ (เลขใหม่ทุกครั้ง) → พิมพ์คำตอบ → กด "ตรวจ" ทีละข้อ → ทำครบ 5 ข้อเพื่อรับดาววันนี้ ⭐</p>
+    <button class="btn-teal" id="genBtn" style="font-size:1.02rem">🎲 สุ่มโจทย์วันนี้</button>
+    <div class="daygen" id="dayList"></div>
+    <div class="out" id="dayDone"><div class="ansline">🎉 ครบ 5 ข้อแล้ว! ได้ดาววันนี้ 1 ดวง — กลับมาใหม่พรุ่งนี้นะ (วันละ 10 นาทีก็พอ)</div></div>
+    <div class="streakbox">
+      <span class="stat" id="statStreak">🔥 สตรีก: –</span>
+      <span class="stat" id="statDays">⭐ รวม: – วัน</span>
+      <span class="stat" id="statToday">📅 วันนี้: ยังไม่เสร็จ</span>
+    </div>
+    <div class="note tip" style="margin-top:14px">💡 แผนทบทวน: วันนี้อ่าน ①–④ → ทำ ⑤ จับเวลา → เก็บดาวที่ ⑥ · พรุ่งนี้ข้ามไป ⑥ ได้เลย และวันเว้นวันย้อนมาทำ ⑤ ซ้ำ (เหมือนวิธีเว้น 1 วันของชุด 01B → 01C)</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  สร้างจากชุดโจทย์ "คณิตศาสตร์ — ร้อยละ ชุดแปร 01C" (ไฟล์แนบ Telegram · ระดับ ป.6 เตรียมสอบเข้า ม.1) · ใช้งานออฟไลน์ได้ · ความคืบหน้าเก็บในเครื่องนี้เท่านั้น (localStorage)
+</footer>
+
+<script>
+/* ================= pure helpers (unit-tested) ================= */
+function fmt(n){
+  var r = Math.round(n * 100) / 100;
+  return r.toLocaleString('en-US');
+}
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ var t=b; b=a%b; a=t; } return a||1; }
+function fracStr(pct){
+  var num = Math.round(pct*10000), den = 1000000;
+  var g = gcd(num,den);
+  num/=g; den/=g;
+  if(den===1) return String(num);
+  return num + '/' + den;
+}
+function partOf(total, r){ return total * r / 100; }
+function rateOf(part, total){ return part / total * 100; }
+function totalFromPart(part, r){ return part * 100 / r; }
+function profitInfo(cost, sell){
+  if(!(cost > 0)) return null;
+  var diff = sell - cost;
+  var kind = diff > 0 ? 'profit' : (diff < 0 ? 'loss' : 'same');
+  return { kind: kind, amount: Math.abs(diff), pct: Math.abs(diff) / cost * 100, diff: diff };
+}
+function areaPct(r){ return (Math.pow(1 + r/100, 2) - 1) * 100; }
+function riseFall(price, x){ return price * (100 - x) / 100 * (100 + x) / 100; }
+function riseFallPct(x){ return (x*x) / 100; } /* net loss percent */
+
+/* ---- daily question generator (integers guaranteed) ---- */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+var RATES = [5,10,15,20,25,40,50,60,75,80];
+var COSTS = [200,300,400,500,600,800,1000,1200,1500,2000,2400,3000,4000,5000];
+var RF_PRICES = { 10:[1200,1500,2000,3000,5000], 20:[1200,2000,2800,4000,6000], 25:[1600,3200,4800,6400,8000] };
+
+function genPart(){
+  var ctx = pick([
+    {t:'โรงเรียนแห่งหนึ่งมีนักเรียนทั้งหมด __ คน วันนี้มาเรียนแล้วร้อยละ R มาเรียนไปแล้วกี่คน', u:'คน'},
+    {t:'ร้านค้าแห่งหนึ่งมีสินค้าทั้งหมด __ ชิ้น ขายไปแล้วร้อยละ R ขายไปแล้วกี่ชิ้น', u:'ชิ้น'},
+    {t:'น้องออมเงินได้ทั้งหมด __ บาท นำไปใช้ไปแล้วร้อยละ R ใช้ไปแล้วกี่บาท', u:'บาท'}
+  ]);
+  var total = pick([20,40,60,80,100,120,160,200,240,300,340,400,500]);
+  var r = pick(RATES);
+  var p = total * r / 100;
+  return {
+    q: ctx.t.replace('__', total).replace('R', r),
+    ans: p, unit: ctx.u,
+    steps: 'ส่วน = ทั้งหมด × r/100 = ' + total + ' × ' + r + '/100 = <b>' + fmt(p) + ' ' + ctx.u + '</b>'
+  };
+}
+function genRate(){
+  var total = pick([20,40,60,80,100,120,160,200,240,300,400]);
+  var r = pick(RATES);
+  var p = total * r / 100;
+  return {
+    q: 'ห้องเรียนห้องหนึ่งมีนักเรียน ' + total + ' คน วันนี้มาเรียน ' + p + ' คน มาเรียนคิดเป็นร้อยละเท่าใด',
+    ans: r, unit: '%',
+    steps: 'ร้อยละ = ส่วน ÷ ทั้งหมด × 100 = ' + p + ' ÷ ' + total + ' × 100 = <b>' + r + '%</b>'
+  };
+}
+function genTotal(){
+  var total = pick([100,120,160,200,240,300,340,400,500]);
+  var r = pick(RATES);
+  var p = total * r / 100;
+  return {
+    q: 'โรงเรียนแห่งหนึ่งวันนี้มีนักเรียนมาเรียน ' + p + ' คน ซึ่งคิดเป็นร้อยละ ' + r + ' ของนักเรียนทั้งหมด โรงเรียนนี้มีนักเรียนทั้งหมดกี่คน',
+    ans: total, unit: 'คน',
+    steps: '1% = ' + p + ' ÷ ' + r + ' = ' + fmt(p/r) + ' คน → 100% = ' + fmt(p/r) + ' × 100 = <b>' + total + ' คน</b>'
+  };
+}
+function genProfit(){
+  var c = pick(COSTS);
+  var pct = pick([5,10,12,15,20,25,40,50]);
+  var loss = Math.random() < 0.4;
+  var diff = c * pct / 100;
+  var s = loss ? c - diff : c + diff;
+  var word = loss ? 'ขาดทุน' : 'กำไร';
+  return {
+    q: 'พ่อซื้อสินค้ามาในราคา ' + fmt(c) + ' บาท ต่อมาขายต่อในราคา ' + fmt(s) + ' บาท พ่อ' + word + 'ร้อยละเท่าใด',
+    ans: pct, unit: '%',
+    steps: word + ' = |ขาย − ทุน| = |' + fmt(s) + ' − ' + fmt(c) + '| = ' + fmt(diff) + ' บาท<br>' + word + '% = ' + fmt(diff) + ' ÷ ' + fmt(c) + ' × 100 = <b>' + pct + '%</b> (หารด้วยต้นทุนเสมอ)'
+  };
+}
+function genRiseFall(){
+  var x = pick([10,20,25]);
+  var P = pick(RF_PRICES[x]);
+  var mid = P * (100 - x) / 100;
+  var fin = riseFall(P, x);
+  return {
+    q: 'สินค้าชนิดหนึ่งราคา ' + fmt(P) + ' บาท ร้านลดราคาลงร้อยละ ' + x + ' ต่อมาปรับราคาขึ้นร้อยละ ' + x + ' จากราคาที่ลดแล้ว ตอนนี้ราคากี่บาท',
+    ans: fin, unit: 'บาท',
+    steps: 'ลด ' + x + '%: ' + fmt(P) + ' × ' + (100-x) + '/100 = ' + fmt(mid) + ' บาท<br>ขึ้น ' + x + '% (จากฐานใหม่!): ' + fmt(mid) + ' × ' + (100+x) + '/100 = <b>' + fmt(fin) + ' บาท</b> — ไม่กลับเป็น ' + fmt(P) + ' เพราะฐานเปลี่ยน'
+  };
+}
+function genDaily(){
+  /* always include profit & riseFall + 3 others, shuffled */
+  var others = shuffle(['part','rate','total','part','rate','total']).slice(0,3);
+  var all = shuffle(others.concat(['profit','riseFall']));
+  var gens = { part: genPart, rate: genRate, total: genTotal, profit: genProfit, riseFall: genRiseFall };
+  return all.map(function(t){ return gens[t](); });
+}
+
+/* ---- quiz data: ชุด 01C จากไฟล์แนบ ---- */
+var QUIZ = [
+  {
+    q: 'โรงเรียนแห่งหนึ่งวันนี้มีนักเรียนมาเรียน 340 คน ซึ่งคิดเป็นร้อยละ 85 ของนักเรียนทั้งหมด โรงเรียนนี้มีนักเรียนทั้งหมดกี่คน',
+    c: ['289 คน', 'ร้อยละ 15', '400 คน', '391 คน'], a: 2,
+    sol: '<ol><li>โจทย์ถาม "<b>ทั้งหมดกี่คน</b>" (โหมด 🅲) — ตอบเป็นจำนวนคน ไม่ใช่ร้อยละ</li><li>หา 1% ก่อน: 340 ÷ 85 = <b>4 คน</b></li><li>100% = 4 × 100 = <b>400 คน</b> ✓</li></ol>',
+    why: 'ตัวลวง "ร้อยละ 15" = กับดักหน่วย (ถามกี่คนแต่ตอบ %) · "289 คน" = 340 × 0.85 (เอา 340 ไปคูณ 85% ทั้งที่ 340 คือ 85% อยู่แล้ว — ฐานผิด)'
+  },
+  {
+    q: 'พ่อซื้อโทรศัพท์มือสองมาในราคา 3,200 บาท ต่อมาขายต่อให้เพื่อนในราคา 4,000 บาท พ่อได้กำไรร้อยละเท่าใด',
+    c: ['ร้อยละ 125', 'ร้อยละ 20', 'ร้อยละ 25', 'ร้อยละ 80'], a: 2,
+    sol: '<ol><li>กำไร = ขาย − ทุน = 4,000 − 3,200 = <b>800 บาท</b></li><li>กำไร% = 800 ÷ <b>ต้นทุน 3,200</b> × 100 = <b>25%</b> ✓</li></ol>',
+    why: '"125%" มาจาก 4,000 ÷ 3,200 (ลืมลบต้นทุน) · "20%" มาจาก 800 ÷ 4,000 (หารด้วยราคาขาย — ฐานผิด!)'
+  },
+  {
+    q: 'ร้านหนังสือซื้อหนังสือมาเล่มละ 600 บาท แล้วตั้งราคาขายไว้ 900 บาท (ซึ่งเป็นราคาที่จะได้กำไรร้อยละ 50) ต่อมาร้านลดราคาให้ลูกค้าร้อยละ 20 จากราคาที่ตั้งไว้ ร้านหนังสือยังได้กำไรร้อยละเท่าใด (เทียบกับต้นทุน)',
+    c: ['ร้อยละ 16.67', 'ร้อยละ 30', 'ร้อยละ 120', 'ร้อยละ 20'], a: 3,
+    sol: '<ol><li>ราคาขายจริงหลังลด: 900 × (100−20)/100 = <b>720 บาท</b></li><li>กำไรใหม่ = 720 − 600 = <b>120 บาท</b></li><li>กำไร% = 120 ÷ <b>ต้นทุน 600</b> × 100 = <b>20%</b> ✓</li></ol>',
+    why: '"30%" ลืมลดราคา (300 ÷ 600) · "16.67%" คือ 120 ÷ 720 (หารด้วยราคาขาย) — โจทย์บอกชัดว่า "เทียบกับต้นทุน"'
+  },
+  {
+    q: 'รูปสี่เหลี่ยมผืนผ้ารูปหนึ่ง ถ้าขยายทั้งด้านกว้างและด้านยาวขึ้นอย่างละร้อยละ 20 พื้นที่ของรูปสี่เหลี่ยมผืนผ้ารูปใหม่จะเพิ่มขึ้นร้อยละเท่าใด',
+    c: ['ร้อยละ 44', 'ร้อยละ 20', 'ร้อยละ 40', 'ร้อยละ 144'], a: 0,
+    sol: '<ol><li>พื้นที่ใหม่ = (กว้าง × 1.2) × (ยาว × 1.2) = พื้นที่เดิม × <b>1.44</b></li><li>เพิ่มขึ้น = 1.44 − 1 = 0.44 = <b>44%</b> ✓</li></ol>',
+    why: '"40%" = 20+20 (บวกกัน — ผิด เพราะต้องคูณกัน) · "144%" คือพื้นที่ใหม่ 144% แต่ลืมลบ 100 ออก'
+  },
+  {
+    q: 'สินค้าชนิดหนึ่งราคา 2,000 บาท เดือนแรกร้านลดราคาลงร้อยละ 25 เดือนต่อมาร้านปรับราคาขึ้นร้อยละ 25 จากราคาที่ลดแล้ว ตอนนี้สินค้าชิ้นนี้ราคากี่บาท',
+    c: ['2,000 บาท', '1,500 บาท', '2,500 บาท', '1,875 บาท'], a: 3,
+    sol: '<ol><li>ลด 25%: 2,000 × 75/100 = <b>1,500 บาท</b></li><li>ขึ้น 25% ของ 1,500 (ฐานใหม่!): 1,500 × 125/100 = <b>1,875 บาท</b> ✓</li></ol>',
+    why: '"2,000 บาท" คือกับดักฐานเปลี่ยน — ลด x% แล้วขึ้น x% ไม่มีวันกลับเท่าเดิม เพราะการขึ้นคิดจากตัวเลขที่เล็กลงแล้ว'
+  }
+];
+var QUIZ_ANSWERS = ['ค','ค','ง','ก','ง']; /* ก=0 ข=1 ค=2 ง=3 */
+var ABC = ['ก','ข','ค','ง'];
+
+/* ---- storage (graceful) ---- */
+var store = (function(){
+  try{ var t='__pct_t'; localStorage.setItem(t,'1'); localStorage.removeItem(t); return localStorage; }
+  catch(e){ var m={}; return { getItem:function(k){return k in m?m[k]:null;}, setItem:function(k,v){m[k]=String(v);}, removeItem:function(k){delete m[k];} }; }
+})();
+function todayISO(d){ return (d||new Date()).toLocaleDateString('en-CA'); }
+function loadProgress(){
+  try{ return JSON.parse(store.getItem('pctStudyV1')) || {}; }catch(e){ return {}; }
+}
+function saveProgress(p){ store.setItem('pctStudyV1', JSON.stringify(p)); }
+function markToday(){
+  var p = loadProgress();
+  p.days = p.days || [];
+  if(p.days.indexOf(todayISO()) < 0){ p.days.push(todayISO()); }
+  saveProgress(p);
+}
+function calcStreak(days){
+  if(!days || !days.length) return 0;
+  var set = {}; days.forEach(function(d){ set[d]=1; });
+  var cur = new Date();
+  if(!set[todayISO(cur)]) cur.setDate(cur.getDate()-1); /* streak alive if practiced yesterday */
+  var n = 0;
+  while(set[todayISO(cur)]){ n++; cur.setDate(cur.getDate()-1); }
+  return n;
+}
+
+/* expose pure fns for tests */
+globalThis.__PCT = { fmt:fmt, fracStr:fracStr, partOf:partOf, rateOf:rateOf, totalFromPart:totalFromPart,
+  profitInfo:profitInfo, areaPct:areaPct, riseFall:riseFall, riseFallPct:riseFallPct,
+  genDaily:genDaily, genPart:genPart, genRate:genRate, genTotal:genTotal, genProfit:genProfit, genRiseFall:genRiseFall,
+  QUIZ:QUIZ, QUIZ_ANSWERS:QUIZ_ANSWERS, calcStreak:calcStreak, todayISO:todayISO };
+
+/* ================= DOM wiring (browser only) ================= */
+if (typeof document !== 'undefined') { document.addEventListener('DOMContentLoaded', function(){ init(); }); }
+function init(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+
+/* ---- hero + daily stats ---- */
+function refreshStats(){
+  var p = loadProgress();
+  var streak = calcStreak(p.days);
+  var doneToday = (p.days || []).indexOf(todayISO()) >= 0;
+  $('chipStreak').textContent = '🔥 สตรีก: ' + streak + ' วัน';
+  $('chipDays').textContent = '⭐ ทำแล้ว: ' + (p.days ? p.days.length : 0) + ' วัน';
+  $('chipBest').textContent = '🏆 ชุด 01C ดีสุด: ' + (p.best01c != null ? p.best01c + '/5' : '–');
+  $('statStreak').textContent = '🔥 สตรีก: ' + streak + ' วัน';
+  $('statDays').textContent = '⭐ รวม: ' + (p.days ? p.days.length : 0) + ' วัน';
+  $('statToday').textContent = doneToday ? '📅 วันนี้: ได้ดาวแล้ว ⭐' : '📅 วันนี้: ยังไม่เสร็จ';
+}
+
+/* ---- ① percent grid ---- */
+var grid = $('pctGrid');
+for(var i=0;i<100;i++){ grid.appendChild(document.createElement('span')); }
+var cells = grid.children;
+function updGrid(){
+  var v = Number($('pctSlider').value);
+  $('pctVal').textContent = v;
+  for(var i=0;i<100;i++){ cells[i].className = i < v ? 'on' : ''; }
+  $('pctEq').textContent = v + '% = ' + v + '/100 = ' + (v/100) + '  ·  ถ้าทั้งหมด 40 คน → ' + v + '% ของ 40 คน = ' + fmt(v*40/100) + ' คน';
+}
+$('pctSlider').addEventListener('input', updGrid);
+updGrid();
+
+/* converter */
+function syncCv(from){
+  var P = $('cvP'), D = $('cvD'), F = $('cvF');
+  var pct;
+  if(from==='p'){ pct = parseFloat(P.value); if(isNaN(pct)) return; D.value = Math.round(pct)/100; }
+  else { var d = parseFloat(D.value); if(isNaN(d)) return; pct = Math.round(d*10000)/100; P.value = pct; }
+  F.value = fracStr(pct);
+}
+$('cvP').addEventListener('input', function(){ syncCv('p'); });
+$('cvD').addEventListener('input', function(){ syncCv('d'); });
+
+/* mini calc */
+$('mcGo').addEventListener('click', function(){
+  var r = parseFloat($('mcR').value), n = parseFloat($('mcN').value);
+  var out = $('mcOut');
+  if(isNaN(r) || isNaN(n)){ out.innerHTML = '<span style="color:#e11d48">กรอกตัวเลขให้ครบก่อนนะ</span>'; out.classList.add('show'); return; }
+  var ans = partOf(n, r);
+  out.innerHTML = '<div class="step">' + r + '% ของ ' + fmt(n) + ' = ' + r + ' ÷ 100 × ' + fmt(n) + '</div>' +
+    '<div class="step">= ' + (r/100) + ' × ' + fmt(n) + '</div>' +
+    '<div class="ansline">= ' + fmt(ans) + ' ✅</div>';
+  out.classList.add('show');
+});
+
+/* ---- ② modes ---- */
+var MODES = {
+  A: { title:'🅰 หา "ส่วน" — รู้ทั้งหมด + รู้ร้อยละ', fx:'ส่วน = ทั้งหมด × r/100',
+       ex:'เช่น ของ 40 คน มาเรียน 25% → 40 × 25/100 = 10 คน',
+       lx:'ทั้งหมด (n)', ly:'ร้อยละ (r %)', dx:40, dy:25 },
+  B: { title:'🅱 หา "ร้อยละ" — รู้ส่วน + รู้ทั้งหมด', fx:'ร้อยละ = ส่วน ÷ ทั้งหมด × 100',
+       ex:'เช่น มา 10 คน จาก 40 คน → 10 ÷ 40 × 100 = 25%',
+       lx:'ส่วน (จำนวนที่รู้)', ly:'ทั้งหมด (n)', dx:10, dy:40 },
+  C: { title:'🅲 หา "ทั้งหมด" — รู้ส่วน + รู้ร้อยละ', fx:'ทั้งหมด = ส่วน × 100 ÷ r',
+       ex:'เช่น 340 คน คือ 85% → 340 × 100 ÷ 85 = 400 คน',
+       lx:'ส่วน (จำนวนที่รู้)', ly:'ร้อยละ (r %)', dx:340, dy:85 }
+};
+var curMode = 'A';
+function setMode(m){
+  curMode = m;
+  ['A','B','C'].forEach(function(k){ $('mode'+k).className = (k===m ? 'active' : ''); });
+  var d = MODES[m];
+  $('modeTitle').textContent = d.title;
+  $('modeFormula').innerHTML = d.fx + '<small>' + d.ex + '</small>';
+  $('lblX').textContent = d.lx; $('lblY').textContent = d.ly;
+  $('modeX').value = d.dx; $('modeY').value = d.dy;
+  runMode();
+}
+function runMode(){
+  var x = parseFloat($('modeX').value), y = parseFloat($('modeY').value), out = $('modeOut'), html = '', bar = 0;
+  if(isNaN(x) || isNaN(y)){ out.innerHTML = 'กรอกตัวเลขให้ครบก่อนนะ'; return; }
+  if(curMode==='A'){
+    var p = partOf(x, y); bar = y;
+    html = '<div class="step">ส่วน = ทั้งหมด × r/100 = ' + fmt(x) + ' × ' + y + '/100</div><div class="ansline">= ' + fmt(p) + ' ✅</div>';
+  } else if(curMode==='B'){
+    if(x===0 && y===0){ out.innerHTML='กรอกตัวเลขก่อนนะ'; return; }
+    var r = rateOf(x, y); bar = r;
+    html = '<div class="step">ร้อยละ = ส่วน ÷ ทั้งหมด × 100 = ' + fmt(x) + ' ÷ ' + fmt(y) + ' × 100</div><div class="ansline">= ' + fmt(r) + '% ✅</div>';
+  } else {
+    if(y===0){ out.innerHTML='ร้อยละเป็น 0 ใช้ไม่ได้นะ'; return; }
+    var t = totalFromPart(x, y); bar = y;
+    html = '<div class="step">1% = ส่วน ÷ r = ' + fmt(x) + ' ÷ ' + y + ' = ' + fmt(x/y) + '</div><div class="step">100% = ' + fmt(x/y) + ' × 100</div><div class="ansline">= ' + fmt(t) + ' ✅</div>';
+  }
+  out.innerHTML = html;
+  var bw = Math.max(0, Math.min(100, bar));
+  $('modeBar').style.width = bw + '%';
+  $('modeBar').textContent = bw >= 18 ? ('ส่วน ' + fmt(bar) + (curMode==='B' ? '%' : '')) : '';
+}
+$('modeA').addEventListener('click', function(){ setMode('A'); });
+$('modeB').addEventListener('click', function(){ setMode('B'); });
+$('modeC').addEventListener('click', function(){ setMode('C'); });
+$('modeGo').addEventListener('click', runMode);
+setMode('A');
+
+/* ---- ③ profit/loss ---- */
+function runPL(){
+  var c = parseFloat($('plCost').value), s = parseFloat($('plSell').value), out = $('plOut');
+  if(isNaN(c) || isNaN(s) || !(c>0)){ out.innerHTML = 'กรอกต้นทุนเป็นตัวเลขมากกว่า 0 ก่อนนะ'; return; }
+  var info = profitInfo(c, s);
+  var badge = info.kind==='profit' ? '<span class="badge profit">📈 กำไร</span>' : (info.kind==='loss' ? '<span class="badge loss">📉 ขาดทุน</span>' : '<span class="badge same">➖ ทุนเท่ากัน (ไม่กำไรไม่ขาดทุน)</span>');
+  var word = info.kind==='profit' ? 'กำไร' : (info.kind==='loss' ? 'ขาดทุน' : 'ส่วนต่าง');
+  var diffWord = info.kind==='same' ? 'ส่วนต่าง' : word;
+  out.innerHTML = badge +
+    '<div class="step">' + diffWord + ' = |ขาย − ทุน| = |' + fmt(s) + ' − ' + fmt(c) + '| = ' + fmt(info.amount) + ' บาท</div>' +
+    '<div class="step">' + word + '% = ' + fmt(info.amount) + ' ÷ ต้นทุน ' + fmt(c) + ' × 100 = <b>' + fmt(info.pct) + '%</b></div>';
+  var mx = Math.max(c, s) || 1;
+  $('plBarC').style.width = (c/mx*100) + '%'; $('plBarC').textContent = fmt(c);
+  $('plBarS').style.width = (s/mx*100) + '%'; $('plBarS').textContent = fmt(s);
+}
+$('plGo').addEventListener('click', runPL);
+runPL();
+
+/* ---- ④ trap sims ---- */
+function runRF(){
+  var x = Number($('rfX').value);
+  $('rfXv').textContent = x;
+  var P = 2000, mid = P*(100-x)/100, fin = riseFall(P, x), net = riseFallPct(x);
+  $('rfOut').innerHTML =
+    '<div class="step">ราคาเดิม 2,000 บาท → ลด ' + x + '% เหลือ <b>' + fmt(mid) + '</b> บาท</div>' +
+    '<div class="step">ขึ้น ' + x + '% จาก ' + fmt(mid) + ' (ฐานใหม่!) → <b>' + fmt(fin) + ' บาท</b></div>' +
+    '<div class="ansline" style="color:#9f1239">ต่ำกว่าเดิม ' + fmt(P-fin) + ' บาท (−' + fmt(net) + '%) — ไม่มีวันกลับเท่าเดิม</div>';
+}
+$('rfX').addEventListener('input', runRF);
+runRF();
+
+function runAR(){
+  var x = Number($('arX').value);
+  $('arXv').textContent = x;
+  var k = 1 + x/100, inc = areaPct(x);
+  var base = 90, sq = $('arSq');
+  sq.style.width = (base*k) + 'px'; sq.style.height = (base*k) + 'px';
+  $('arOut').innerHTML = '×' + k.toFixed(2) + ' ×' + k.toFixed(2) + ' = ×' + (k*k).toFixed(4) + '<br>พื้นที่เพิ่ม <b>+' + fmt(inc) + '%</b>';
+}
+$('arX').addEventListener('input', runAR);
+runAR();
+
+function showBase(ok){
+  $('baseOk').className = 'btn-green' + (ok ? ' sel-ok' : '');
+  $('baseBad').className = 'btn-rose' + (ok ? '' : ' sel-bad');
+  if(ok){
+    $('baseOut').innerHTML = '<div class="ansline" style="color:#065f46">กำไร 300 ÷ ต้นทุน 600 × 100 = <b>50%</b> ✅ ถูกต้อง — ข้อสอบถามแบบนี้เสมอ</div>';
+  } else {
+    $('baseOut').innerHTML = '<div class="ansline" style="color:#9f1239">300 ÷ ราคาขาย 900 × 100 = 33.33% ❌ ผิด! ฐานที่ถูกคือ "ต้นทุน" — ตัวเลขต่างกันมาก</div>';
+  }
+}
+$('baseOk').addEventListener('click', function(){ showBase(true); });
+$('baseBad').addEventListener('click', function(){ showBase(false); });
+showBase(true);
+
+/* ---- ⑤ quiz ---- */
+var qIdx = 0, answers = [null,null,null,null,null], submitted = false, timerId = null, secondsLeft = 480, overtime = 0;
+function mmss(s){ var m = Math.floor(s/60), ss = s%60; return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss; }
+function renderDots(){
+  var d = $('qDots'); d.innerHTML = '';
+  for(var i=0;i<5;i++){
+    (function(i){
+      var el = document.createElement('span');
+      var cls = 'dot';
+      if(submitted){ cls += answers[i]===QUIZ[i].a ? ' right' : ' wrong'; }
+      else if(answers[i]!=null){ cls += ' answered'; }
+      if(i===qIdx && !submitted){ cls += ' current'; }
+      el.className = cls; el.textContent = i+1;
+      el.addEventListener('click', function(){ qIdx = i; renderQ(); });
+      d.appendChild(el);
+    })(i);
+  }
+}
+function renderQ(){
+  var Q = QUIZ[qIdx];
+  $('qCount').textContent = 'ข้อ ' + (qIdx+1) + ' / 5';
+  $('qText').textContent = 'ข้อ ' + (qIdx+1) + '. ' + Q.q;
+  var box = $('qChoices'); box.innerHTML = '';
+  Q.c.forEach(function(ch, i){
+    var b = document.createElement('button');
+    b.className = 'choice';
+    var cls = 'choice';
+    if(submitted){
+      if(i===Q.a) cls += ' correct';
+      else if(i===answers[qIdx]) cls += ' incorrect';
+    } else if(answers[qIdx]===i){ cls += ' sel'; }
+    b.className = cls;
+    b.innerHTML = '<span class="abc">' + ABC[i] + '</span>' + ch;
+    b.disabled = submitted;
+    b.addEventListener('click', function(){ answers[qIdx] = i; renderQ(); });
+    box.appendChild(b);
+  });
+  $('qPrev').disabled = qIdx===0;
+  $('qNext').textContent = (qIdx===4 ? 'ส่งคำตอบ ✓' : 'ข้อถัดไป ▶');
+  $('qNext').disabled = (qIdx===4 && answers.some(function(a){ return a==null; }));
+  renderDots();
+}
+function tick(){
+  if(secondsLeft > 0){ secondsLeft--; }
+  else { overtime++; $('quizTimer').classList.add('over'); }
+  $('quizTimer').textContent = overtime>0 ? '+'+mmss(overtime) : mmss(secondsLeft);
+}
+$('quizStart').addEventListener('click', function(){
+  qIdx = 0; answers = [null,null,null,null,null]; submitted = false; secondsLeft = 480; overtime = 0;
+  $('quizIntro').classList.add('hidden'); $('quizResult').classList.add('hidden');
+  $('quizPlay').classList.remove('hidden');
+  $('quizTimer').classList.remove('over'); $('quizTimer').textContent = '08:00';
+  if(timerId) clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+  renderQ();
+});
+$('qPrev').addEventListener('click', function(){ if(qIdx>0){ qIdx--; renderQ(); } });
+$('qNext').addEventListener('click', function(){
+  if(qIdx < 4){ qIdx++; renderQ(); }
+  else { submitQuiz(); }
+});
+function submitQuiz(){
+  submitted = true;
+  if(timerId){ clearInterval(timerId); timerId = null; }
+  var score = 0;
+  answers.forEach(function(a,i){ if(a===QUIZ[i].a) score++; });
+  var used = (480 - secondsLeft) + overtime;
+  var p = loadProgress();
+  if(p.best01c == null || score > p.best01c){ p.best01c = score; saveProgress(p); }
+  var emo = score===5 ? '🎉' : (score===4 ? '👍' : (score===3 ? '🙂' : '💪'));
+  var msg = score===5 ? 'เยี่ยมมาก! พร้อมสอบเต็มที่' : (score>=4 ? 'เก่งมาก เกือบเต็ม!' : (score===3 ? 'ผ่านเกณฑ์ — ทบทวนจุดที่พลาดอีกนิด' : 'ไม่เป็นไร กลับไปอ่าน ①–④ แล้วลองใหม่ จะเก่งขึ้นแน่นอน'));
+  var line = answers.map(function(a,i){ return (i+1)+': '+ABC[a==null?0:a]; }).join(' ');
+  var h = '<div class="scorebox"><div class="big">' + emo + ' ' + score + '/5</div><p>' + msg + '</p>' +
+    '<p style="color:var(--muted);font-size:.9rem;margin-top:4px">ใช้เวลา ' + mmss(used) + (overtime>0 ? ' (เกิน ' + mmss(overtime) + ')' : '') + ' · เก็บสรุปไว้เลย: <b>01C: ' + line + '</b></p></div><hr class="soft">';
+  QUIZ.forEach(function(Q,i){
+    var ok = answers[i]===Q.a;
+    h += '<div class="dq" style="' + (ok ? 'border-color:#6ee7b7' : 'border-color:#fda4af') + '">' +
+      '<div class="qt">' + (ok?'✅':'❌') + ' ข้อ ' + (i+1) + ' — ตอบ: ' + ABC[answers[i]==null?0:answers[i]] + ' · เฉลย: ' + ABC[Q.a] + '</div>' +
+      '<div class="solution show"><h4>วิธีทำ</h4>' + Q.sol +
+      '<div class="why">🕵️ ทำไมตัวเลือกอื่นถึงล่อเรา: ' + Q.why + '</div></div></div>';
+  });
+  h += '<div style="text-align:center;margin-top:16px"><button class="btn-violet" id="quizRetry">🔄 ทำชุดนี้อีกครั้ง</button></div>';
+  $('quizPlay').classList.add('hidden');
+  $('quizResult').innerHTML = h;
+  $('quizResult').classList.remove('hidden');
+  $('quizRetry').addEventListener('click', function(){
+    $('quizResult').classList.add('hidden');
+    $('quizIntro').classList.remove('hidden');
+    window.scrollTo({ top: $('sec-quiz').offsetTop - 70, behavior: 'smooth' });
+  });
+  refreshStats();
+}
+
+/* ---- ⑥ daily ---- */
+var daily = [];
+function renderDaily(){
+  var box = $('dayList'); box.innerHTML = '';
+  daily.forEach(function(d, i){
+    var el = document.createElement('div');
+    el.className = 'dq';
+    el.innerHTML = '<div class="qt">ข้อ ' + (i+1) + '. ' + d.q + '</div>' +
+      '<div class="row"><input type="text" inputmode="decimal" placeholder="ตอบ (ตัวเลข)' + '" aria-label="คำตอบข้อ ' + (i+1) + '">' +
+      '<button class="btn-teal">ตรวจ</button><span style="font-weight:700;color:var(--muted)">' + d.unit + '</span></div>' +
+      '<div class="fb"></div><div class="steps">' + d.steps + '</div>';
+    var inp = el.querySelector('input'), btn = el.querySelector('button'), fb = el.querySelector('.fb');
+    btn.addEventListener('click', function(){
+      var raw = inp.value.replace(/[, ]/g, '');
+      var v = parseFloat(raw);
+      if(isNaN(v)){ fb.className='fb no'; fb.textContent='พิมพ์ตัวเลขก่อนนะ เช่น 400 หรือ 1,875'; return; }
+      d.checked = true;
+      var ok = Math.abs(v - d.ans) < 0.005;
+      if(ok){ fb.className='fb ok'; fb.textContent='✅ ถูกต้อง! เก่งมาก'; }
+      else { fb.className='fb no'; fb.textContent='❌ ยังไม่ถูก — เฉลย: ' + fmt(d.ans) + ' ' + d.unit + ' (ดูวิธีทำด้านล่าง)'; }
+      el.classList.add('done');
+      inp.disabled = true; btn.disabled = true;
+      checkDailyDone();
+    });
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') btn.click(); });
+    box.appendChild(el);
+  });
+  $('dayDone').classList.remove('show');
+}
+function checkDailyDone(){
+  if(daily.length && daily.every(function(d){ return d.checked; })){
+    markToday();
+    $('dayDone').classList.add('show');
+    refreshStats();
+  }
+}
+$('genBtn').addEventListener('click', function(){
+  daily = genDaily();
+  renderDaily();
+});
+
+refreshStats();
+}
+</script>
+</body>
+</html>

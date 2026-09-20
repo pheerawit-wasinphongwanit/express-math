@@ -42,7 +42,7 @@ const DATA = {
   copy: {
     menu:   { title: 'ด่วนคณิต', sub: 'EXPRESS MATH', play: 'เริ่มเล่น', daily: 'ด่วนประจำวัน',
               dailyHint: 'โจทย์ชุดเดียวกันทั้งวัน เทียบคะแนนกับเพื่อนได้',
-              best: 'สถิติสูงสุด', today: 'วันนี้', hint: 'ตอบถูกได้เวลา ตอบผิดเสียเวลา', feedback: '📣 ฟีดแบ็ก' },
+              best: 'สถิติสูงสุด', today: 'วันนี้', hint: 'ตอบถูกได้เวลา ตอบผิดเสียเวลา', feedback: '📣 ฟีดแบ็ก', study: '📖 ทบทวนร้อยละ' },
     play:   { count3: '3', count2: '2', count1: '1', go: 'ไป!', levelUp: 'เลื่อนชั้น!', levelBonusSec: '+8 วิ',
               secBonus: '+8 วิ', secPenalty: '−5 วิ',
               paused: 'หยุดชั่วคราว', tapToResume: 'แตะเพื่อเล่นต่อ' },
@@ -56,6 +56,9 @@ const DATA = {
 
   // feedback intake (story.md assumed decision #0 — shell link, not a system)
   feedbackUrl: 'https://github.com/pheerawit-wasinphongwanit/express-math/issues/new?labels=feedback&template=feedback.yml',
+
+  // study-aid page (story.md assumed decision #6 — shell link, not a system)
+  studyUrl: 'study/percent-01c.html',
 };
 
 global.EXPRESS_DATA = DATA;
