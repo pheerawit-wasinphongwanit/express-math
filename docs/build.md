@@ -70,3 +70,14 @@ Triage: feature = เกมใหม่ ไม่ใช่โหมดในด�
 «ด่วนภาษา EXPRESS ENGLISH» (repo `express-english`, สร้างตาม pattern repo-ต่อ-เกม)
 ผ่าน pipeline เต็ม (grill→scope→story→build) + self-test 77/77 + deploy Pages แล้ว
 ปิด issue พร้อมลิงก์เกม + ช่องทางฟีดแบ็กใหม่ — คิวฟีดแบ็กด่วนคณิตว่าง
+
+## 2026-09-20 — feedback round: issue #4 (ไต่ระดับ ประถม→มหาลัย + ขยายเวลา)
+
+Triage: feature/balance → user เลือกทาง A "รีเมธ run เดิม" + อนุมัติแพ็กเกจเต็มทาง Telegram
+- รีเมธ 4 สถานี → 🎒ประถม · 📱ม.ต้น · 📐ม.ปลาย · 🎓มหาลัย (ไอคอนระดับ + สีธีมเดิม)
+- กราฟเวลาพลิก: reward 3/4/5/6 ตามระดับ (เดิม 4→1 ลดลง) · เลื่อนชั้น +8 วิ · เพดาน 50→75 · milestone 6→8 (จูน self-test ให้ median mid/strong เข้ากรอบ 90–180)
+- ชนิดโจทย์ 6→8: +ร้อยละ (p% ของ n — จำนวนเต็มเสมอ, W4 มี 75%) + ลำดับการคำนวณ (W3 a+b×c / W4 a×b−c×d — distractor เป็นกับดักลำดับคำนวณจริง)
+- Tier คะแนนปรับตาม sim จริง: 400/1,000/2,000/2,500 · W2 operand กลายเป็นตารางสูตรคูณ 2–12 · W4 ×,÷ 12–19
+- งบที่ขยับ (approved): playtime 60–120 → 90–180 วิ · ชนิดโจทย์ 8 · คงเดิม: โหมด 2 จอ 3 beeps 4 systems 2 localStorage keys
+- self-test 34/34 (ใหม่: invariant pct/ooo · [3b] โบนัสเลื่อนชั้น · [4b] กราฟเวลารุ่ง) · copy 44/60 · sim 300 seeds: median weak 41s / mid 90s / strong 172s, max 189s
+- CSS: #question.long สำหรับโจทย์ยาว (a × b − c × d = ?)

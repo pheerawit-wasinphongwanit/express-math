@@ -52,7 +52,7 @@ function show(name) {
 function applyTheme() {
   const w = D.waves[S ? S.wave : 0];
   document.documentElement.style.setProperty('--theme', w.theme);
-  if (S) $('station').textContent = `🚉 ${w.name}`;
+  if (S) $('station').textContent = `🚉 ${w.icon} ${w.name}`;
 }
 function overlay(html, mode) {
   overlayMode = mode;
@@ -152,7 +152,9 @@ function stopTimer() { clearInterval(timerId); timerId = null; }
 
 function nextQuestion() {
   q = C.makeQuestion(rng, D.waves[S.wave]);
-  $('question').textContent = q.prompt;
+  const qEl = $('question');
+  qEl.textContent = q.prompt;
+  qEl.classList.toggle('long', q.prompt.length > 12); // e.g. "19 × 17 − 14 × 11 = ?"
   const box = $('choices');
   box.innerHTML = '';
   q.choices.forEach((c, i) => {
@@ -197,7 +199,7 @@ function answer(i) {
   if (events.includes('waveup')) {
     freeze = true;
     const w = D.waves[S.wave];
-    overlay(`<div class="big">🚉</div><div class="banner">${CP.play.nextStation}</div><div class="note">${w.name}</div>`, 'wave');
+    overlay(`<div class="big">${w.icon}</div><div class="banner">${CP.play.levelUp}</div><div class="note">${w.name} · ${CP.play.levelBonusSec}</div>`, 'wave');
     beep.milestone();
     setTimeout(() => {
       overlay(null, null);

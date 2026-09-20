@@ -65,6 +65,7 @@
   @keyframes pulse { from { opacity: 1; } to { opacity: .55; } }
   #qwrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
   #question { font-size: clamp(2.4rem, 12vw, 3.4rem); font-weight: 800; font-variant-numeric: tabular-nums; text-align: center; letter-spacing: .01em; }
+  #question.long { font-size: clamp(1.5rem, 7.5vw, 2.1rem); } /* a × b − c × d = ? */
   #choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
   .choice {
     appearance: none; border: 2px solid #232e4d; cursor: pointer;

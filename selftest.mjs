@@ -32,6 +32,12 @@ for (let w = 0; w < DATA.waves.length; w++) {
       if (q.choices[q.correctIndex] !== q.meta.answer) bad++;
       if (q.type === 'div' && (q.meta.a % q.meta.b !== 0 || q.meta.answer !== q.meta.a / q.meta.b)) bad++;
       if (q.type === 'add' && cfg.addMaxResult && q.meta.answer > cfg.addMaxResult) bad++;
+      if (q.type === 'pct' && ((q.meta.p * q.meta.n) % 100 !== 0 || q.meta.answer !== (q.meta.p * q.meta.n) / 100)) bad++;
+      if (q.type === 'ooo') {
+        const m = q.meta;
+        const expect = m.d !== undefined ? m.a * m.b - m.c * m.d : m.a + m.b * m.c;
+        if (m.answer !== expect || expect < 0) bad++;
+      }
     }
     if (q.prompt.includes('NaN') || q.prompt.includes('undefined')) bad++;
   }
@@ -72,12 +78,24 @@ console.log('\n[3] Multiplier: 1 + floor(streak/5), cap 8; reset on wrong');
   ok(s.bank === Math.max(0, Math.min(DATA.maxBankSec, DATA.startBankSec + 7 * DATA.waves[0].rewardSec) - DATA.wrongPenaltySec), 'bank math: rewards (capped) then −5 penalty');
 }
 
+/* ---------- 3b. level-up bonus (เลื่อนชั้น +8 วิ, capped) ---------- */
+console.log('\n[3b] Level-up bonus: crossing a gate grants waveUpBonusSec, capped at maxBankSec');
+{
+  const s = Core.newRun(DATA);
+  s.score = DATA.waves[1].gate - 10; s.wave = 0; // one correct answer will cross the gate
+  const before = s.bank;
+  const events = Core.applyAnswer(s, DATA, true);
+  ok(events.includes('waveup'), 'crossing gate 150 fires waveup');
+  ok(s.wave === 1, 'wave advances to ม.ต้น');
+  ok(s.bank === Math.min(DATA.maxBankSec, before + DATA.waves[0].rewardSec + DATA.waveUpBonusSec), 'bank += reward + level-up bonus (capped)');
+}
+
 /* ---------- 4. simulation: tier reachability + run-length bands ---------- */
-console.log('\n[4] Player simulations (300 seeds each)');
+console.log('\n[4] Player simulations (300 seeds each) — time models reflect school-level difficulty');
 const MODELS = [
-  { name: 'weak   (acc .60, ~6.7s/q)', acc: 0.60, base: 6.0, perWave: 0.4 },
-  { name: 'mid    (acc .85, ~4.9s/q)', acc: 0.85, base: 4.2, perWave: 0.5 },
-  { name: 'strong (acc .97, ~3.9s/q)', acc: 0.97, base: 3.2, perWave: 0.6 },
+  { name: 'weak   (acc .60)',            acc: 0.60, base: 5.0, perWave: 0.8 },
+  { name: 'mid    (acc .85, ~4.2s ป.ถม → ~12s มหาลัย)', acc: 0.85, base: 4.2, perWave: 2.6 },
+  { name: 'strong (acc .97, ~3.0s ป.ถม → ~13s มหาลัย)', acc: 0.97, base: 3.0, perWave: 3.0 },
 ];
 function simulate(model, seed) {
   const rng = Core.mulberry32(seed);
@@ -99,19 +117,27 @@ for (const m of MODELS) {
   for (let i = 0; i < 300; i++) runs.push(simulate(m, 7919 * i + 13));
   results[m.name] = runs;
   const ts = runs.map((r) => r.t);
-  console.log(`  · ${m.name}: median run ${med(ts).toFixed(0)}s · scores ${Math.min(...runs.map(r => r.score))}–${Math.max(...runs.map(r => r.score))} · best wave ${Math.max(...runs.map(r => r.wave)) + 1}/4`);
-  ok(Math.max(...ts) <= 150, `${m.name}: no run exceeds 150s (max ${Math.max(...ts).toFixed(0)}s)`);
+  console.log(`  · ${m.name}: median run ${med(ts).toFixed(0)}s · scores ${Math.min(...runs.map(r => r.score))}–${Math.max(...runs.map(r => r.score))} · best level ${Math.max(...runs.map(r => r.wave)) + 1}/4`);
+  ok(Math.max(...ts) <= 200, `${m.name}: no run exceeds 200s (max ${Math.max(...ts).toFixed(0)}s)`);
 }
-ok(med(results[MODELS[0].name].map(r => r.t)) >= 40, 'weak model survives ≥ 40s (median)');
-ok(med(results[MODELS[1].name].map(r => r.t)) >= 60 && med(results[MODELS[1].name].map(r => r.t)) <= 125, 'mid model median in [60,125]s');
-ok(med(results[MODELS[2].name].map(r => r.t)) >= 60 && med(results[MODELS[2].name].map(r => r.t)) <= 125, 'strong model median in [60,125]s');
+ok(med(results[MODELS[0].name].map(r => r.t)) >= 40, 'weak model survives ≥ 40s (median — precedent: weak may end below band, scope band is for typical runs)');
+ok(med(results[MODELS[1].name].map(r => r.t)) >= 90 && med(results[MODELS[1].name].map(r => r.t)) <= 180, 'mid model median in [90,180]s');
+ok(med(results[MODELS[2].name].map(r => r.t)) >= 90 && med(results[MODELS[2].name].map(r => r.t)) <= 180, 'strong model median in [90,180]s');
 {
   const all = Object.values(results).flat();
   for (let ti = 0; ti < DATA.tiers.length; ti++) {
     ok(all.some((r) => r.tier === ti), `tier T${ti + 1} (${DATA.tiers[ti].name}) reached by some simulated player`);
   }
-  ok(results[MODELS[2].name].some((r) => r.wave === 3), 'strong model reaches wave 4 (gate 1,200)');
+  ok(results[MODELS[2].name].some((r) => r.wave === 3), 'strong model reaches มหาลัย (gate 1,200)');
   ok(results[MODELS[0].name].every((r) => r.tier <= 1), 'weak model never exceeds T2 (no fake achievement)');
+}
+
+/* ---------- 4b. rising time graph (issue #4 contract) ---------- */
+console.log('\n[4b] Time graph rises with difficulty (rewardSec strictly increasing across levels)');
+{
+  const rs = DATA.waves.map((w) => w.rewardSec);
+  ok(rs[0] < rs[1] && rs[1] < rs[2] && rs[2] < rs[3], `rewards rise ป.ถม→มหาลัย (${rs.join(' < ')})`);
+  ok(DATA.waveUpBonusSec > 0, `level-up grants +${DATA.waveUpBonusSec}s`);
 }
 
 /* ---------- 5. budgets (scope contract) ---------- */
@@ -124,8 +150,8 @@ console.log('\n[5] Budgets (docs/scope.md)');
   for (const t of DATA.tiers) tokens.push(...t.name.split(/\s+/));
   ok(tokens.length <= 60, `UI copy ≤ 60 words (${tokens.length})`);
   ok(DATA.beepCount <= 4, `beeps ≤ 4 (${DATA.beepCount})`);
-  ok(DATA.waves.length === 4, 'exactly 4 waves (scope)');
-  ok(Object.keys(DATA.waves[0].mix).length <= 6 && Object.keys(Core.GENERATORS).length === 6, '6 question types, no more');
+  ok(DATA.waves.length === 4, 'exactly 4 levels (scope)');
+  ok(Object.keys(Core.GENERATORS).length === 8, '8 question types (scope, issue #4)');
   ok(DATA.tiers.length === 5, '5 result tiers');
 }
 

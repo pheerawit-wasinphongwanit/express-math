@@ -22,6 +22,7 @@ function mulberry32(seed) {
   };
 }
 const randInt = (rng, lo, hi) => lo + Math.floor(rng() * (hi - lo + 1));
+const gcd = (a, b) => b ? gcd(b, a % b) : a;
 function pickWeighted(rng, mix) {
   const keys = Object.keys(mix);
   let total = 0; for (const k of keys) total += mix[k];
@@ -118,8 +119,35 @@ function genCmp(rng, w) {
   const choices = ['<', '=', '>'];
   return { type: 'cmp', prompt: `${A.text} ⬜ ${B.text}`, choices, correctIndex: choices.indexOf(answer), meta: { a: A.val, b: B.val, answer } };
 }
+function genPct(rng, w) {
+  // percent of n — always integer: p% of (k × 100/gcd(p,100)) = k×p×100/gcd /100…
+  // n = k × (100/g), answer = p × n / 100 (integer by construction). W4 adds p=75.
+  const p = w.pctP[randInt(rng, 0, w.pctP.length - 1)];
+  const k = randInt(rng, w.pctKLo, w.pctKHi);
+  const n = k * (100 / gcd(p, 100));
+  const c = (p * n) / 100;
+  const { choices, correctIndex } = buildChoices(rng, c, [c + 1, c - 1, c + 5, c - 5, c + k, c - k, c + 10]);
+  return { type: 'pct', prompt: `${p}% ของ ${n} = ?`, choices, correctIndex, meta: { p, n, k, answer: c } };
+}
+function genOoo(rng, w) {
+  // order of operations — W3: a + b × c (precedence trap (a+b)×c); W4: a × b − c × d (sign trap)
+  if (w.oooHard) {
+    let a, b, c, d, ans;
+    do {
+      a = randInt(rng, w.mulLo, w.mulHi); b = randInt(rng, w.mulLo, w.mulHi);
+      c = randInt(rng, w.mulLo, w.mulHi); d = randInt(rng, w.mulLo, w.mulHi);
+      ans = a * b - c * d;
+    } while (ans < 0);
+    const { choices, correctIndex } = buildChoices(rng, ans, [ans + 1, ans - 1, a * b + c * d, ans + b, ans - d, ans + 5]);
+    return { type: 'ooo', prompt: `${a} × ${b} − ${c} × ${d} = ?`, choices, correctIndex, meta: { a, b, c, d, answer: ans } };
+  }
+  const a = randInt(rng, 2, 20), b = randInt(rng, 2, 9), c = randInt(rng, 2, 9);
+  const ans = a + b * c;
+  const { choices, correctIndex } = buildChoices(rng, ans, [(a + b) * c, a * b + c, ans + 1, ans - 1, ans + b, ans + c]);
+  return { type: 'ooo', prompt: `${a} + ${b} × ${c} = ?`, choices, correctIndex, meta: { a, b, c, answer: ans } };
+}
 
-const GENERATORS = { add: genAdd, sub: genSub, mul: genMul, div: genDiv, seq: genSeq, cmp: genCmp };
+const GENERATORS = { add: genAdd, sub: genSub, mul: genMul, div: genDiv, seq: genSeq, cmp: genCmp, pct: genPct, ooo: genOoo };
 
 function makeQuestion(rng, waveCfg, forcedType) {
   const type = forcedType || pickWeighted(rng, waveCfg.mix);
@@ -171,7 +199,10 @@ function applyAnswer(s, D, correct) {
     events.push('wrong');
   }
   const nw = waveIndexFor(s.score, D.waves);
-  if (nw > s.wave) { s.wave = nw; events.push('waveup'); }
+  if (nw > s.wave) {
+    s.wave = nw; events.push('waveup');
+    s.bank = Math.min(D.maxBankSec, s.bank + (D.waveUpBonusSec || 0)); // เลื่อนชั้น = เติมเวลา (issue #4)
+  }
   if (s.bank <= 0) { s.bank = 0; s.over = true; events.push('over'); }
   return events;
 }
