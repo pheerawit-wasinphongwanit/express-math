@@ -155,6 +155,95 @@ console.log('\n[5] Budgets (docs/scope.md)');
   ok(DATA.tiers.length === 5, '5 result tiers');
 }
 
+/* ---------- 8. F-03 session contract (kindergarten core, ST-[8] a–e) ---------- */
+console.log('\n[8] F-03 session contract (kids core)');
+{
+  const KC = require('./kids/kids-core.js');
+  // Synthetic 2-step fixture generator + fixture data — proves the submit machinery
+  // generator-agnostically (DEV-PLAN T-004); deleted again before ST-[6] runs.
+  const fxData = { games: [{ id: 'fx' }], bands: [{ id: 'fxb', params: { fx: {} } }], pools: {} };
+  let fxN = 0;
+  KC.GEN.fx = function () {
+    fxN += 1;
+    return { gameId: 'fx', display: { kind: 'fx', n: fxN },
+             steps: [{ choices: ['a', 'b'], correctId: 'a' }, { choices: ['c', 'd'], correctId: 'c' }] };
+  };
+  const roundJson = (s) => JSON.stringify(s.round);
+
+  // (a) 50 consecutive wrong submits → always retry; round identical, placed unchanged; still usable
+  {
+    const s = KC.newSession('fx', 'fxb', 1, 101, fxData);
+    const before = roundJson(s);
+    let allRetry = true;
+    for (let i = 0; i < 50; i++) {
+      const r = KC.submit(s, 'b', fxData);
+      if (r.outcome !== 'retry' || r.roundChanged || r.turnAdvanced) allRetry = false;
+    }
+    ok(allRetry, '(a) 50 wrong submits → outcome always retry, no round/turn change');
+    ok(roundJson(s) === before && s.stepIndex === 0 && s.placed.length === 0, '(a) round JSON identical, stepIndex/placed untouched');
+    ok(KC.submit(s, 'a', fxData).outcome === 'step', '(a) session still usable after 50 wrong (unlimited retry)');
+  }
+
+  // (b) correct at final step → pass, roundChanged, new round ≠ old
+  {
+    const s = KC.newSession('fx', 'fxb', 1, 202, fxData);
+    const old = roundJson(s);
+    KC.submit(s, 'a', fxData);
+    const r = KC.submit(s, 'c', fxData);
+    ok(r.outcome === 'pass' && r.roundChanged && !r.turnAdvanced, '(b) final-step correct → pass + roundChanged, no turn flip solo');
+    ok(roundJson(s) !== old, '(b) new round differs from old');
+  }
+
+  // (c) multi-step: mid-step correct → step + placed grows; wrong mid-pick → retry KEEPING placed
+  {
+    const s = KC.newSession('fx', 'fxb', 1, 303, fxData);
+    const r1 = KC.submit(s, 'a', fxData);
+    ok(r1.outcome === 'step' && s.placed.join('') === 'a' && s.stepIndex === 1, '(c) mid-step correct → step, placed grows, no pass');
+    const r2 = KC.submit(s, 'd', fxData);
+    ok(r2.outcome === 'retry' && s.placed.join('') === 'a' && s.stepIndex === 1, '(c) wrong mid-pick → retry keeping placed (J-07)');
+    ok(KC.submit(s, 'c', fxData).outcome === 'pass', '(c) recovers from mid-retry to pass');
+  }
+
+  // (d) co-play: turn flips ONLY on pass
+  {
+    const s = KC.newSession('fx', 'fxb', 2, 404, fxData);
+    KC.submit(s, 'b', fxData); KC.submit(s, 'b', fxData);
+    ok(s.turn === 0, '(d) wrong submits never advance turn');
+    KC.submit(s, 'a', fxData);
+    const p2 = KC.submit(s, 'c', fxData);
+    ok(p2.outcome === 'pass' && p2.turnAdvanced && s.turn === 1, '(d) turn advances on pass (2-player)');
+    KC.submit(s, 'b', fxData);
+    ok(s.turn === 1, '(d) retry keeps the same player');
+    KC.submit(s, 'a', fxData);
+    const p4 = KC.submit(s, 'c', fxData);
+    ok(p4.turnAdvanced && s.turn === 0, '(d) turn alternates back');
+  }
+
+  // (e) state-shape allowlist — deep key scan; no accumulation keys, no function values
+  {
+    const s = KC.newSession('fx', 'fxb', 2, 505, fxData);
+    KC.submit(s, 'a', fxData); // mid-step state
+    const allowed = ['gameId', 'bandId', 'players', 'turn', 'round', 'stepIndex', 'placed'];
+    ok(Object.keys(s).every((k) => allowed.includes(k)), '(e) session keys ⊆ allowlist');
+    const FORBIDDEN = ['score', 'streak', 'timer', 'bank', 'time', 'lives', 'attempts', 'tries', 'best', 'total', 'stars', 'unlocked', 'phase', 'points', 'correct', 'wrong', 'delay', 'elapsed', 'counter'];
+    const seen = new Set();
+    (function walk(o) {
+      for (const [k, v] of Object.entries(o)) {
+        seen.add(k);
+        if (typeof v === 'function') seen.add('§fn');
+        else if (v && typeof v === 'object') walk(v);
+      }
+    })(s);
+    const hits = [...seen].filter((k) => FORBIDDEN.includes(k.toLowerCase()));
+    ok(hits.length === 0, '(e) no accumulation keys anywhere in session graph');
+    ok(!seen.has('§fn'), '(e) no function values (no tick/clock)');
+    ok(Object.keys(s.round).every((k) => ['gameId', 'seed', 'display', 'steps'].includes(k)), '(e) round keys ⊆ {gameId,seed,display,steps}');
+  }
+
+  delete KC.GEN.fx; // fixture never leaks into registry parity (ST-[6])
+  ok(!('fx' in KC.GEN), 'fixture generator cleaned up');
+}
+
 /* ---------- 9. budgets & hygiene (kindergarten mode) ---------- */
 console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
 {
@@ -166,6 +255,38 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   for (const t of DATA.tiers) tokens.push(...t.name.split(/\s+/));
   ok(tokens.length === 47, `root copy live counter = 47 (46 + menu.kids «อนุบาล»)`);
   ok(tokens.length <= 60, `root copy ≤ 60 words (${tokens.length})`);
+}
+
+/* ---------- 10. determinism (kids core + local shuffle, ST-[10]) ---------- */
+console.log('\n[10] Determinism (kids core)');
+{
+  const KC = require('./kids/kids-core.js');
+  // local shuffle: pure + deterministic
+  const src = [1, 2, 3, 4, 5, 6, 7, 8];
+  const s1 = KC.shuffle(Core.mulberry32(42), src);
+  ok(JSON.stringify(src) === '[1,2,3,4,5,6,7,8]', 'shuffle does not mutate its input');
+  const s2 = KC.shuffle(Core.mulberry32(42), [1, 2, 3, 4, 5, 6, 7, 8]);
+  ok(JSON.stringify(s1) === JSON.stringify(s2), 'shuffle: same seed → identical order');
+  ok(JSON.stringify(s1) !== JSON.stringify(src), 'shuffle: order actually changes (seed 42)');
+
+  // same seed → identical round sequence for every shipped game (incl. shuffled choices)
+  const { KIDS } = require('./kids/kids-data.js');
+  for (const g of KIDS.games) {
+    if (typeof KC.GEN[g.id] !== 'function') continue; // games not yet landed skip silently
+    for (const b of KIDS.bands) {
+      const run = (seed) => {
+        const s = KC.newSession(g.id, b.id, 1, seed);
+        const out = [JSON.stringify(s.round)];
+        for (let i = 0; i < 25; i++) {
+          const st = s.round.steps[s.stepIndex];
+          if (KC.submit(s, st.correctId).outcome === 'pass') out.push(JSON.stringify(s.round));
+        }
+        return out;
+      };
+      ok(JSON.stringify(run(7001)) === JSON.stringify(run(7001)), `${g.id}/${b.id}: same seed → identical round sequence`);
+      ok(JSON.stringify(run(7001)) !== JSON.stringify(run(7002)), `${g.id}/${b.id}: different seed → different sequence`);
+    }
+  }
 }
 
 /* ---------- summary ---------- */
