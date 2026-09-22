@@ -77,6 +77,7 @@ function renderRound() {
   else if (d.kind === 'compare-groups' || d.kind === 'compare-single') renderCompare(d);
   else if (d.kind === 'shape-match' || d.kind === 'pattern') renderShapes(d);
   else if (d.kind === 'order') renderOrder(d);
+  else if (d.kind === 'sort') renderSort(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -258,6 +259,54 @@ function renderOrder(d) {
     inner.style.fontSize = (30 + it.size * 14) + 'px';
     btn.appendChild(inner);
     btn.addEventListener('click', () => onChoice(id));
+    box.appendChild(btn);
+  }
+}
+
+/* S-09 «จัดเข้ากลุ่ม» — current item big + waiting items as REAL items (never counts);
+   bins are the two choice buttons and show sent items faded inside. Finish = pass
+   cartoon only — no tally DOM exists (J-08, NG3). */
+function renderSort(d) {
+  const prompt = $('prompt');
+  prompt.className = 'sortPrompt';
+  prompt.innerHTML = '';
+  const idx = session.stepIndex;
+  const cur = d.items[idx];
+  const curEl = document.createElement('span');
+  curEl.className = 'sCur';
+  curEl.textContent = cur.emoji;
+  prompt.appendChild(curEl);
+  const waiting = d.items.slice(idx + 1);
+  if (waiting.length) {
+    const row = document.createElement('span');
+    row.className = 'sWaiting';
+    for (const it of waiting) {
+      const s = document.createElement('span');
+      s.textContent = it.emoji;
+      row.appendChild(s);
+    }
+    prompt.appendChild(row);
+  }
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = 'sides';
+  box.innerHTML = '';
+  for (const bid of step.choices) {
+    const bin = d.bins.find((b) => b.id === bid);
+    const btn = document.createElement('button');
+    btn.className = 'choice binBtn';
+    const icon = document.createElement('span');
+    icon.className = 'binIcon';
+    icon.textContent = bin.icon;
+    btn.appendChild(icon);
+    const sent = d.items.slice(0, idx).filter((it) => it.bin === bid); // sent items settle into their bin
+    if (sent.length) {
+      const inner = document.createElement('span');
+      inner.className = 'binItems';
+      inner.textContent = sent.map((it) => it.emoji).join(' ');
+      btn.appendChild(inner);
+    }
+    btn.addEventListener('click', () => onChoice(bid));
     box.appendChild(btn);
   }
 }
