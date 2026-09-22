@@ -45,6 +45,21 @@ GEN.count = function (rng, P, pools) {
   };
 };
 
+/* F-06 «จับคู่เหมือนกัน» — numeral ⇄ dots matching. Direction is round data (alternates),
+   distractors are distinct values ≠ prompt value (ST-[7]). */
+GEN.match = function (rng, P) {
+  const value = randInt(rng, P.rangeLo, P.rangeHi);
+  const direction = rng() < 0.5 ? 'toDots' : 'toNum';
+  const others = [];
+  for (let v = P.rangeLo; v <= P.rangeHi; v++) if (v !== value) others.push(v);
+  const choices = shuffle(rng, [value, ...shuffle(rng, others).slice(0, P.cardCount - 1)]);
+  return {
+    gameId: 'match',
+    display: { kind: 'match', direction, value },
+    steps: [{ choices, correctId: value }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

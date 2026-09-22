@@ -9,6 +9,7 @@ const KIDS = {
   // coPlay:true flags the solo/together chooser (S-10); none in M1.
   games: [
     { id: 'count', icon: '🍊', caption: 'นับดูสิ', coPlay: false },
+    { id: 'match', icon: '🎴', caption: 'จับคู่เหมือนกัน', coPlay: false },
   ],
 
   // Age bands (F-11, UX S-02) — params-only difficulty: a band switch changes only the
@@ -17,10 +18,12 @@ const KIDS = {
     { id: 'littles', icon: '🐣', label: 'น้องเล็ก 3–4',
       params: {
         count: { rangeLo: 1, rangeHi: 3, choiceCount: 3 },   // UX P1: นับ 1–3
+        match: { rangeLo: 1, rangeHi: 3, cardCount: 3 },
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
         count: { rangeLo: 1, rangeHi: 10, choiceCount: 4 },
+        match: { rangeLo: 1, rangeHi: 10, cardCount: 4 },
       } },
   ],
 
