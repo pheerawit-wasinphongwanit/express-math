@@ -58,17 +58,62 @@ function renderRound() {
   const d = session.round.display;
   if (d.kind === 'count') renderCount(d);
   else if (d.kind === 'match') renderMatch(d);
+  else if (d.kind === 'compare-groups' || d.kind === 'compare-single') renderCompare(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
+}
+/* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
+   ⬆️+●●● = tap the side with MORE · ⬇️+● = FEWER · ⬆️+big ● = BIGGER · ⬇️+small ● = SMALLER. */
+function renderCompare(d) {
+  const prompt = $('prompt');
+  prompt.className = 'qbar';
+  prompt.innerHTML = '';
+  const arrow = document.createElement('span');
+  arrow.textContent = (d.q === 'more' || d.q === 'bigger') ? '⬆️' : '⬇️';
+  const mag = document.createElement('span');
+  if (d.q === 'more' || d.q === 'less') {
+    mag.className = 'qDots';
+    mag.textContent = d.q === 'more' ? '●●●' : '●';
+  } else {
+    mag.className = 'qDot ' + (d.q === 'bigger' ? 'big' : 'small');
+    mag.textContent = '●';
+  }
+  prompt.append(arrow, mag);
+
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = 'sides';
+  box.innerHTML = '';
+  for (const side of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice side';
+    if (d.kind === 'compare-groups') {
+      for (let i = 0; i < d[side].n; i++) {
+        const it = document.createElement('span');
+        it.className = 'sideItem';
+        it.textContent = d.item;
+        btn.appendChild(it);
+      }
+    } else {
+      const it = document.createElement('span');
+      it.className = 'sideItem one';
+      it.textContent = d.item;
+      it.style.fontSize = (44 + d[side].size * 14) + 'px';
+      btn.appendChild(it);
+    }
+    btn.addEventListener('click', () => onChoice(side));
+    box.appendChild(btn);
+  }
 }
 /* S-05 «จับคู่เหมือนกัน» — prompt card (numeral or dots) + choice cards of the other
    representation; direction comes from round data (alternates per round). */
 function renderMatch(d) {
   const prompt = $('prompt');
+  prompt.className = '';
   prompt.innerHTML = '';
   prompt.appendChild(d.direction === 'toDots' ? numeralCard(d.value) : dotsCard(d.value, 'big'));
   const step = session.round.steps[session.stepIndex];
   const box = $('choices');
-  box.innerHTML = '';
+  box.className = '';
   for (const c of step.choices) {
     const btn = document.createElement('button');
     btn.className = 'choice';
@@ -98,6 +143,7 @@ function dotsCard(v, size) {
 }
 function renderCount(d) {
   const prompt = $('prompt');
+  prompt.className = '';
   prompt.innerHTML = '';
   for (let i = 0; i < d.n; i++) {
     const s = document.createElement('span');
@@ -106,6 +152,7 @@ function renderCount(d) {
   }
   const step = session.round.steps[session.stepIndex];
   const box = $('choices');
+  box.className = '';
   box.innerHTML = '';
   for (const c of step.choices) {
     const btn = document.createElement('button');
