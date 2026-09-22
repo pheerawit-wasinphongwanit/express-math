@@ -115,7 +115,7 @@
   .chooseBtn .cIcon { font-size: 3.4rem; }
   .chooseBtn .cLabel { font-size: 1.05rem; font-weight: 700; }
   .art { width: min(64vw, 260px); }
-  .art svg { width: 100%; height: auto; display: block; }
+  .art img, .art svg { width: 100%; height: auto; display: block; border-radius: 28px; }
   .art.pop { animation: artpop .35s ease; }
   @keyframes artpop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .art.pop { animation: none; } }
@@ -143,6 +143,7 @@
     </div>
     <div id="overlay" hidden>
       <div class="art" id="art-pass">
+        <img id="art-img-pass" alt="การ์ตูนให้กำลังใจ">
         <svg viewBox="0 0 200 200" role="img" aria-hidden="true" focusable="false">
           <ellipse cx="100" cy="182" rx="40" ry="7" fill="#F3E1C8"/>
           <circle cx="58" cy="62" r="17" fill="#FFE9C7"/>
@@ -165,6 +166,7 @@
         </svg>
       </div>
       <div class="art" id="art-nudge" hidden>
+        <img id="art-img-nudge" alt="การ์ตูนให้กำลังใจ">
         <svg viewBox="0 0 200 200" role="img" aria-hidden="true" focusable="false">
           <ellipse cx="100" cy="182" rx="40" ry="7" fill="#F3E1C8"/>
           <circle cx="58" cy="62" r="17" fill="#FFE9C7"/>

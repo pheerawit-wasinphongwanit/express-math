@@ -1,0 +1,26 @@
+{
+  "project": "express-math kindergarten mode — encouraging cartoon pair (F-04)",
+  "canon": "[RF-0002] every asset owner-reviewed before entering a build; nudge pose must read encouraging, never disappointed/scolding (OQ4 ruling)",
+  "character": "round cream-colored baby cub, bear-like, warm pastel palette: body #FFE9C7, inner ears #FFCFA3, paws #FFD3A0, features #6B4F3A, blush #FFB59E",
+  "style": "children's picture-book flat vector, soft rounded shapes, thick friendly outlines, plain solid warm-cream background #FFF6EA, character centered with margin",
+  "hardConstraints": [
+    "NO text, NO letters, NO numbers, NO words anywhere in the image",
+    "single character only, full body visible",
+    "square 1:1, solid background (no scene, no props beyond sparkles/heart)"
+  ],
+  "poses": {
+    "pass": {
+      "file": "assets/pass.jpg",
+      "prompt": "A round cream-colored baby cub bear cheering with pure joy: both paws raised high in the air, big open happy smile, eyes closed as happy arcs, rosy blush cheeks, three small golden sparkles floating around its head. Children's picture-book flat vector style, soft rounded shapes, thick friendly outlines, plain solid warm cream background (#FFF6EA), character centered. No text, no letters, no numbers.",
+      "review": "cheering, celebratory, warm — matches inline-SVG pass pose"
+    },
+    "nudge": {
+      "file": "assets/nudge.jpg",
+      "prompt": "A round cream-colored baby cub bear warmly encouraging the viewer to try again: one paw raised in a friendly waving gesture, soft small smile, open gentle round eyes looking at the viewer, rosy blush cheeks, one small pink heart floating beside the raised paw. The expression is kind, patient and encouraging — NOT sad, NOT disappointed, NOT scolding. Children's picture-book flat vector style, soft rounded shapes, thick friendly outlines, plain solid warm cream background (#FFF6EA), character centered. No text, no letters, no numbers.",
+      "review": "encouraging wave + heart — matches inline-SVG nudge pose; must never read as scolding"
+    }
+  },
+  "fallback": "owner-reviewed inline-SVG pair ships in kids/index.html and shows automatically if an asset fails to load",
+  "reviewLog": "owner review via Telegram before merge — journaled in run JOURNAL (iso/spec-breakdown-express-math-kids-20260922-0708)",
+  "generator": "mcp-image (gemini-3-pro-image) 2026-09-22, 1K square"
+}

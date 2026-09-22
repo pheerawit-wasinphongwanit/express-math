@@ -324,9 +324,8 @@ function renderTurnBadge() {
 
 /* ---------- cartoon overlay (F-04) — submit()'s outcome is the only pose authority ---------- */
 function showOverlay(pose, turnAdvanced) {
-  const ref = pose === 'pass' ? D.cartoonRefs.pass : D.cartoonRefs.nudge;
-  for (const el of document.querySelectorAll('.art')) el.hidden = true;
-  const art = $(ref.slice('inline:'.length));
+  const art = $('art-' + pose); // asset ref backs the <img>; inline SVG auto-falls-back
+  for (const el of document.querySelectorAll('.art')) el.hidden = el !== art;
   if (art) {
     art.hidden = false;
     art.classList.remove('pop'); void art.offsetWidth; art.classList.add('pop');
@@ -359,5 +358,20 @@ $('soloBtn').addEventListener('click', () => beginSession(pendingGame, 1));
 $('togetherBtn').addEventListener('click', () => beginSession(pendingGame, 2));
 $('soloBtn').querySelector('.cLabel').textContent = D.copy.solo;
 $('togetherBtn').querySelector('.cLabel').textContent = D.copy.together;
+
+// Cartoon pair wiring (F-04): asset refs are primary; the reviewed inline-SVG pair is the
+// automatic fallback when an asset is missing (TECH-SPEC §6.4 — game never blocks).
+for (const pose of ['pass', 'nudge']) {
+  const el = $('art-' + pose);
+  const img = el.querySelector('img');
+  const svg = el.querySelector('svg');
+  const ref = pose === 'pass' ? D.cartoonRefs.pass : D.cartoonRefs.nudge;
+  if (ref.startsWith('asset:') && img && svg) {
+    svg.hidden = true;
+    img.addEventListener('error', () => { img.hidden = true; svg.hidden = false; }, { once: true });
+    img.src = ref.slice('asset:'.length);
+    if (img.complete && img.naturalWidth === 0) { img.hidden = true; svg.hidden = false; }
+  }
+}
 renderHub();
 })();

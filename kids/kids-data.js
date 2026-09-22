@@ -65,9 +65,9 @@ const KIDS = {
     handoff: 'ส่งไม้ต่อ',   // pass-and-play handoff banner (icon-led)
   },
 
-  // Cartoon pair (F-04) — M1 ships the owner-reviewed inline-SVG pair; refs point at the
-  // inline <svg> element ids in kids/index.html. Generated art (M3) swaps refs to assets/.
-  cartoonRefs: { pass: 'inline:art-pass', nudge: 'inline:art-nudge' },
+  // Cartoon pair (F-04) — generated pair (owner-reviewed via artbrief.json flow) is primary;
+  // the owner-reviewed inline-SVG pair stays as automatic fallback if an asset fails to load.
+  cartoonRefs: { pass: 'asset:assets/pass.jpg', nudge: 'asset:assets/nudge.jpg' },
 
   // Tunables (display cadence only — never gameplay).
   tunables: {
