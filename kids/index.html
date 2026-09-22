@@ -116,6 +116,7 @@
   .chooseBtn .cLabel { font-size: 1.05rem; font-weight: 700; }
   .art { width: min(64vw, 260px); }
   .art img, .art svg { width: 100%; height: auto; display: block; border-radius: 28px; }
+  .artCaption { font-size: 1.9rem; font-weight: 800; color: var(--ink); }
   .art.pop { animation: artpop .35s ease; }
   @keyframes artpop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .art.pop { animation: none; } }
@@ -191,6 +192,7 @@
           <polygon points="34.00,36.00 36.15,41.85 42.00,44.00 36.15,46.15 34.00,52.00 31.85,46.15 26.00,44.00 31.85,41.85" fill="#FFC64D"/>
         </svg>
       </div>
+      <div id="artCaption" class="artCaption" hidden></div>
       <div id="handoff" class="handoff" hidden></div>
     </div>
   </section>

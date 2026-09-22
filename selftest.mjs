@@ -446,6 +446,22 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   }
   ok(hits.length === 0, `kids/*.js free of storage/network/clock tokens ${hits.length ? '(' + hits.join(', ') + ')' : ''}`);
 
+  // every renderer that rebuilds #choices must clear it first (bug class: renderMatch
+  // forgot the clear and choices accumulated every round — owner report 2026-09-22)
+  const engSrc = fs.readFileSync(path.join(kidsDir, 'kids-engine.js'), 'utf8');
+  const noClear = [];
+  let fn = null, usesChoices = false, clearsBox = false;
+  for (const line of engSrc.split('\n').concat('function __end__() {')) {
+    const m = line.match(/^function (\w+)/);
+    if (m) {
+      if (fn && usesChoices && !clearsBox) noClear.push(fn);
+      fn = m[1]; usesChoices = false; clearsBox = false;
+    }
+    if (/\$\('choices'\)/.test(line)) usesChoices = true;
+    if (/box\.innerHTML = ''/.test(line)) clearsBox = true;
+  }
+  ok(noClear.length === 0, `renderers clear #choices before rebuild ${noClear.length ? '(' + noClear.join(', ') + ' missing)' : '(all clear)'}`);
+
   // docs/kids.md ↔ kids-data.js sync (docs-first editing rule, TECH-SPEC §2.2)
   const docs = fs.readFileSync(path.join(path.dirname(process.argv[1]), 'docs', 'kids.md'), 'utf8');
   const need = [];

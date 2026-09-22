@@ -63,6 +63,8 @@ const KIDS = {
     solo: 'คนเดียว',      // S-10 chooser labels (for parents; icons lead)
     together: 'สองคน',
     handoff: 'ส่งไม้ต่อ',   // pass-and-play handoff banner (icon-led)
+    pass: 'เก่งมาก!',       // F-04 overlay caption (owner bug report 2026-09-22)
+    nudge: 'ลองอีกครั้งนะ',  // encouraging, never scolding (OQ4)
   },
 
   // Cartoon pair (F-04) — generated pair (owner-reviewed via artbrief.json flow) is primary;

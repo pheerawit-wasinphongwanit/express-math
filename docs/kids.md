@@ -41,6 +41,7 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
 
 - Chooser (S-10): **คนเดียว** / **สองคน**
 - Handoff (F-12 pass-and-play): **ส่งไม้ต่อ**
+- Overlay captions (F-04, owner bug report 2026-09-22 — cartoon pair alone read as "no message"; images stay textless by artbrief): pass **เก่งมาก!** / nudge **ลองอีกครั้งนะ** (encouraging, never scolding — OQ4)
 
 ## Tunables (display cadence only — never gameplay)
 

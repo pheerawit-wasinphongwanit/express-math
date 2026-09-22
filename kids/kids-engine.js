@@ -133,6 +133,7 @@ function renderMatch(d) {
   const step = session.round.steps[session.stepIndex];
   const box = $('choices');
   box.className = '';
+  box.innerHTML = '';
   for (const c of step.choices) {
     const btn = document.createElement('button');
     btn.className = 'choice';
@@ -330,6 +331,9 @@ function showOverlay(pose, turnAdvanced) {
     art.hidden = false;
     art.classList.remove('pop'); void art.offsetWidth; art.classList.add('pop');
   }
+  const caption = $('artCaption'); // caption rides the same overlay + the same single timer
+  caption.textContent = D.copy[pose];
+  caption.hidden = false;
   const handoff = $('handoff'); // icon handoff rides the same overlay + the same single timer
   handoff.hidden = true;
   handoff.innerHTML = '';
