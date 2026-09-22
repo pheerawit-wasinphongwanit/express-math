@@ -96,6 +96,35 @@ GEN.compare = function (rng, P, pools) {
   };
 };
 
+/* F-08 «รูปทรงน่ารัก» — two round kinds in ONE generator (C6): shape-match (find the
+   identical shape) / pattern (fill the next element of a pure cycle). Band grows
+   pattern length + element kinds. */
+GEN.shapes = function (rng, P, pools) {
+  const all = pools.shapes.shapes;
+  if (rng() < 0.5) {
+    const sample = all[Math.floor(rng() * all.length)];
+    const others = all.filter((s) => s !== sample);
+    const choices = shuffle(rng, [sample, ...shuffle(rng, others).slice(0, P.choiceCount - 1)]);
+    return {
+      gameId: 'shapes',
+      display: { kind: 'shape-match', shape: sample },
+      steps: [{ choices, correctId: sample }],
+    };
+  }
+  const kinds = shuffle(rng, all.slice()).slice(0, P.kindsCount);
+  const len = randInt(rng, P.patternLenMin, P.patternLenMax);
+  const seq = [];
+  for (let i = 0; i < len; i++) seq.push(kinds[i % kinds.length]);
+  const next = kinds[len % kinds.length];
+  const others = all.filter((s) => s !== next);
+  const choices = shuffle(rng, [next, ...shuffle(rng, others).slice(0, P.choiceCount - 1)]);
+  return {
+    gameId: 'shapes',
+    display: { kind: 'pattern', seq },
+    steps: [{ choices, correctId: next }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

@@ -224,6 +224,24 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       }
       return 'kind';
     },
+    shapes(r, P) {
+      if (r.steps.length !== 1) return 'steps≠1';
+      const st = r.steps[0];
+      if (st.choices.length !== P.choiceCount) return 'choiceCount';
+      if (r.display.kind === 'shape-match') {
+        if (st.correctId !== r.display.shape) return 'correct≠sample';
+        return null;
+      }
+      if (r.display.kind === 'pattern') {
+        const seq = r.display.seq, k = P.kindsCount;
+        if (seq.length < P.patternLenMin || seq.length > P.patternLenMax) return 'len';
+        if (new Set(seq).size !== k) return 'distinct kinds';
+        for (let i = k; i < seq.length; i++) if (seq[i] !== seq[i - k]) return 'periodicity';
+        if (st.correctId !== seq[seq.length - k]) return 'next≠period';
+        return null;
+      }
+      return 'kind';
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -250,6 +268,7 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       ok(bad === 0, `${g.id}/${b.id}: 0 violations over ${N7} rounds ${why.size ? '(' + [...why].join('; ') + ')' : ''}`);
       if (g.id === 'match') ok(dirs.size === 2, `${g.id}/${b.id}: both directions occur over ${N7} rounds (J-04)`);
       if (g.id === 'compare') ok(seenKinds.size === 2, `${g.id}/${b.id}: both variants occur over ${N7} rounds (J-05)`);
+      if (g.id === 'shapes') ok(seenKinds.size === 2, `${g.id}/${b.id}: both round kinds occur over ${N7} rounds (J-06)`);
     }
   }
 }
