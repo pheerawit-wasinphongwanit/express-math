@@ -33,15 +33,16 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
 - **compare** groups: 🐟 🐥 🍓 🧸 · singles (two sizes): 🎈 🍩 🍊 ⭐
 - **shapes** elements: 🔺 🟢 ⬛ ⭐ 🟡 🔵 (patterns are pure cycles: element *i* = kinds[*i* mod *k*])
 - **order** characters (same character, distinct sizes): 🦆 🐢 🐝
-- **sort** category pairs (unambiguous 2-bin partition):
-  - 🧺 basket (fruits): 🍌 🍎 🍓 🍇 🍊 ↔ 🌾 meadow (animals): 🐥 🐰 🐟 🐸 🐝
-  - ☁️ sky: 🕊️ ✈️ 🎈 🪁 🌈 ↔ 🌊 sea: 🐠 🐙 🐋 🦀 ⛵
+- **sort** category pairs (unambiguous 2-bin partition; bin icon = category marker, never duplicates a member emoji — owner feedback 2026-09-22: 🧺/🌾 read as «basket vs rice» and confused both kids and parents):
+  - 🍉 fruits **ผลไม้**: 🍌 🍎 🍓 🍇 🍊 ↔ 🐾 animals **สัตว์**: 🐥 🐰 🐟 🐸 🐝
+  - ☁️ sky **ฟ้า**: 🕊️ ✈️ 🎈 🪁 🌈 ↔ 🌊 sea **ทะเล**: 🐠 🐙 🐋 🦀 ⛵ (place-based pair: things that go up vs things that live in water)
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 
 - Chooser (S-10): **คนเดียว** / **สองคน**
 - Handoff (F-12 pass-and-play): **ส่งไม้ต่อ**
 - Overlay captions (F-04, owner bug report 2026-09-22 — cartoon pair alone read as "no message"; images stay textless by artbrief): pass **เก่งมาก!** / nudge **ลองอีกครั้งนะ** (encouraging, never scolding — OQ4)
+- Sort bin labels (F-10, owner feedback 2026-09-22 — small label under each bin icon so parents can verbalize the rule): **ผลไม้** / **สัตว์** / **ฟ้า** / **ทะเล**
 
 ## Tunables (display cadence only — never gameplay)
 

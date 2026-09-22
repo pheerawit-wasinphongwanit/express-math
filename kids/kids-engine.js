@@ -300,6 +300,10 @@ function renderSort(d) {
     icon.className = 'binIcon';
     icon.textContent = bin.icon;
     btn.appendChild(icon);
+    const label = document.createElement('span'); // small label so parents can verbalize the rule
+    label.className = 'binLabel';
+    label.textContent = D.copy.binLabel[bid];
+    btn.appendChild(label);
     const sent = d.items.slice(0, idx).filter((it) => it.bin === bid); // sent items settle into their bin
     if (sent.length) {
       const inner = document.createElement('span');

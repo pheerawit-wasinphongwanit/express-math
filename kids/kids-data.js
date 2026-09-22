@@ -50,8 +50,8 @@ const KIDS = {
     order: { items: ['🦆', '🐢', '🐝'] },                     // same character, distinct sizes
     sort: {                                                   // category pairs — unambiguous 2-bin partitions
       pairs: [
-        { bins: [{ id: 'basket', icon: '🧺' }, { id: 'meadow', icon: '🌾' }],
-          members: { basket: ['🍌', '🍎', '🍓', '🍇', '🍊'], meadow: ['🐥', '🐰', '🐟', '🐸', '🐝'] } },
+        { bins: [{ id: 'fruits', icon: '🍉' }, { id: 'animals', icon: '🐾' }],
+          members: { fruits: ['🍌', '🍎', '🍓', '🍇', '🍊'], animals: ['🐥', '🐰', '🐟', '🐸', '🐝'] } },
         { bins: [{ id: 'sky', icon: '☁️' }, { id: 'sea', icon: '🌊' }],
           members: { sky: ['🕊️', '✈️', '🎈', '🪁', '🌈'], sea: ['🐠', '🐙', '🐋', '🦀', '⛵'] } },
       ],
@@ -65,6 +65,7 @@ const KIDS = {
     handoff: 'ส่งไม้ต่อ',   // pass-and-play handoff banner (icon-led)
     pass: 'เก่งมาก!',       // F-04 overlay caption (owner bug report 2026-09-22)
     nudge: 'ลองอีกครั้งนะ',  // encouraging, never scolding (OQ4)
+    binLabel: { fruits: 'ผลไม้', animals: 'สัตว์', sky: 'ฟ้า', sea: 'ทะเล' }, // F-10 sort bin labels (for parents; owner feedback 2026-09-22)
   },
 
   // Cartoon pair (F-04) — generated pair (owner-reviewed via artbrief.json flow) is primary;

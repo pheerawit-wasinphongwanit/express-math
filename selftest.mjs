@@ -178,6 +178,16 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
   const { KIDS } = require('./kids/kids-data.js');
   const KC = require('./kids/kids-core.js');
   const N7 = 2000;
+
+  // sort pair data invariants (owner feedback 2026-09-22 — bin icon must be a category
+  // marker a kid can decode: never duplicates a member emoji; pools partition cleanly)
+  for (const pair of KIDS.pools.sort.pairs) {
+    const [a, b] = pair.bins.map((x) => x.id);
+    const A = pair.members[a], B = pair.members[b];
+    ok(A.length > 0 && B.length > 0, `sort pair ${a}/${b}: both member pools non-empty`);
+    ok(A.filter((e) => B.includes(e)).length === 0, `sort pair ${a}/${b}: member pools disjoint`);
+    for (const bin of pair.bins) ok(!A.concat(B).includes(bin.icon), `sort bin ${bin.id}: icon ${bin.icon} is not a member emoji`);
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
