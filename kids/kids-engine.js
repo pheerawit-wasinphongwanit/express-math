@@ -76,6 +76,7 @@ function renderRound() {
   else if (d.kind === 'match') renderMatch(d);
   else if (d.kind === 'compare-groups' || d.kind === 'compare-single') renderCompare(d);
   else if (d.kind === 'shape-match' || d.kind === 'pattern') renderShapes(d);
+  else if (d.kind === 'order') renderOrder(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -220,6 +221,43 @@ function renderShapes(d) {
     inner.textContent = c;
     btn.appendChild(inner);
     btn.addEventListener('click', () => onChoice(c));
+    box.appendChild(btn);
+  }
+}
+
+/* S-08 «เรียงให้ถูก» — scattered pieces (choices) + target row of slots; settled pieces
+   render from session.placed so partial progress survives a wrong pick (J-07). */
+function renderOrder(d) {
+  const prompt = $('prompt');
+  prompt.className = 'orderRow';
+  prompt.innerHTML = '';
+  const sorted = d.items.slice().sort((a, b) => a.size - b.size);
+  for (let i = 0; i < sorted.length; i++) {
+    const slot = document.createElement('span');
+    slot.className = 'oSlot';
+    if (i < session.placed.length) {
+      slot.textContent = sorted[i].emoji;
+      slot.style.fontSize = (26 + sorted[i].size * 10) + 'px';
+      slot.classList.add('settled');
+    } else {
+      slot.textContent = i === session.placed.length ? '?' : '';
+    }
+    prompt.appendChild(slot);
+  }
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const id of step.choices) {
+    const it = d.items.find((x) => x.id === id);
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'oItem';
+    inner.textContent = it.emoji;
+    inner.style.fontSize = (30 + it.size * 14) + 'px';
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(id));
     box.appendChild(btn);
   }
 }
