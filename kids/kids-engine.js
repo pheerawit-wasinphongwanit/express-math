@@ -57,7 +57,44 @@ function renderRound() {
   if (!session) return;
   const d = session.round.display;
   if (d.kind === 'count') renderCount(d);
+  else if (d.kind === 'match') renderMatch(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
+}
+/* S-05 «จับคู่เหมือนกัน» — prompt card (numeral or dots) + choice cards of the other
+   representation; direction comes from round data (alternates per round). */
+function renderMatch(d) {
+  const prompt = $('prompt');
+  prompt.innerHTML = '';
+  prompt.appendChild(d.direction === 'toDots' ? numeralCard(d.value) : dotsCard(d.value, 'big'));
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = d.direction === 'toDots' ? dotsCard(c, 'small') : numeralCard(c);
+    inner.classList.add('cardFill');
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
+    box.appendChild(btn);
+  }
+}
+function numeralCard(v) {
+  const el = document.createElement('div');
+  el.className = 'numeral';
+  el.textContent = v;
+  return el;
+}
+function dotsCard(v, size) {
+  const el = document.createElement('div');
+  el.className = 'dots ' + size;
+  for (let i = 0; i < v; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    dot.textContent = '●';
+    el.appendChild(dot);
+  }
+  return el;
 }
 function renderCount(d) {
   const prompt = $('prompt');
