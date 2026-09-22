@@ -10,6 +10,7 @@ const KIDS = {
   games: [
     { id: 'count', icon: '🍊', caption: 'นับดูสิ', coPlay: false },
     { id: 'match', icon: '🎴', caption: 'จับคู่เหมือนกัน', coPlay: false },
+    { id: 'compare', icon: '🐟', caption: 'ข้างไหนมากกว่า', coPlay: false },
   ],
 
   // Age bands (F-11, UX S-02) — params-only difficulty: a band switch changes only the
@@ -19,17 +20,23 @@ const KIDS = {
       params: {
         count: { rangeLo: 1, rangeHi: 3, choiceCount: 3 },   // UX P1: นับ 1–3
         match: { rangeLo: 1, rangeHi: 3, cardCount: 3 },
+        compare: { groupMax: 6, minGap: 2, sizeRatio: 1.5 },   // no near-ties (F-07)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
         count: { rangeLo: 1, rangeHi: 10, choiceCount: 4 },
         match: { rangeLo: 1, rangeHi: 10, cardCount: 4 },
+        compare: { groupMax: 6, minGap: 1, sizeRatio: 1.25 },
       } },
   ],
 
   // Item pools — content only.
   pools: {
     count: { emojis: ['🍊', '🍎', '🍓', '🍌', '🍇', '🐥', '🐟', '🎈', '⭐', '🍪'] },
+    compare: {
+      groupItems: ['🐟', '🐥', '🍓', '🧸'],   // groups variant: n items per side
+      singleItems: ['🎈', '🍩', '🍊', '⭐'],   // single variant: one item, two sizes
+    },
   },
 
   // Co-play / hub copy lands here as it is added (kids copy budget ≤ 40 words, ST-[9]).

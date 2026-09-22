@@ -60,6 +60,42 @@ GEN.match = function (rng, P) {
   };
 };
 
+/* F-07 «ข้างไหนมากกว่า» — two variants in ONE generator (variant is display.kind data, C6):
+   groups (n items per side, |L−R| ≥ minGap) / single (one item at two sizes, ratio ≥ sizeRatio).
+   Question asked by icon+arrow in the view — the round only carries q. */
+GEN.compare = function (rng, P, pools) {
+  const isGroups = rng() < 0.5;
+  if (isGroups) {
+    const gi = pools.compare.groupItems;
+    const item = gi[Math.floor(rng() * gi.length)];
+    let a = randInt(rng, 1, P.groupMax), b = randInt(rng, 1, P.groupMax), tries = 0;
+    while (Math.abs(a - b) < P.minGap && tries < 64) { a = randInt(rng, 1, P.groupMax); b = randInt(rng, 1, P.groupMax); tries++; }
+    if (Math.abs(a - b) < P.minGap) { a = P.groupMax; b = 1; } // deterministic fallback (minGap ≤ groupMax−1)
+    const swap = rng() < 0.5;
+    const L = swap ? b : a, R = swap ? a : b;
+    const more = rng() < 0.5;
+    const correctId = more === (L > R) ? 'left' : 'right';
+    return {
+      gameId: 'compare',
+      display: { kind: 'compare-groups', q: more ? 'more' : 'less', item, left: { n: L }, right: { n: R } },
+      steps: [{ choices: ['left', 'right'], correctId }],
+    };
+  }
+  const si = pools.compare.singleItems;
+  const item = si[Math.floor(rng() * si.length)];
+  const small = randInt(rng, 2, 6);
+  const big = Math.max(small + 1, Math.ceil(small * P.sizeRatio)); // ceil keeps ratio ≥ sizeRatio (ST-[7])
+  const swap = rng() < 0.5;
+  const L = swap ? small : big, R = swap ? big : small;
+  const bigger = rng() < 0.5;
+  const correctId = bigger === (L > R) ? 'left' : 'right';
+  return {
+    gameId: 'compare',
+    display: { kind: 'compare-single', q: bigger ? 'bigger' : 'smaller', item, left: { size: L }, right: { size: R } },
+    steps: [{ choices: ['left', 'right'], correctId }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

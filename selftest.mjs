@@ -202,6 +202,28 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (!st.choices.every((c) => Number.isInteger(c) && c >= P.rangeLo && c <= P.rangeHi)) return 'out-of-band choice';
       return null;
     },
+    compare(r, P) {
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      if (JSON.stringify(st.choices) !== JSON.stringify(['left', 'right'])) return 'choices';
+      if (d.kind === 'compare-groups') {
+        if (!['more', 'less'].includes(d.q)) return 'q';
+        if (d.left.n < 1 || d.left.n > P.groupMax || d.right.n < 1 || d.right.n > P.groupMax) return 'n range';
+        if (Math.abs(d.left.n - d.right.n) < P.minGap) return 'minGap';
+        const expect = d.q === 'more' ? (d.left.n > d.right.n ? 'left' : 'right') : (d.left.n < d.right.n ? 'left' : 'right');
+        if (st.correctId !== expect) return 'correct side';
+        return null;
+      }
+      if (d.kind === 'compare-single') {
+        if (!['bigger', 'smaller'].includes(d.q)) return 'q';
+        const hi = Math.max(d.left.size, d.right.size), lo = Math.min(d.left.size, d.right.size);
+        if (hi / lo < P.sizeRatio) return 'size ratio';
+        const expect = d.q === 'bigger' ? (d.left.size > d.right.size ? 'left' : 'right') : (d.left.size < d.right.size ? 'left' : 'right');
+        if (st.correctId !== expect) return 'correct side';
+        return null;
+      }
+      return 'kind';
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -210,10 +232,11 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
     for (const b of KIDS.bands) {
       const P = KC.bandParams(KIDS, g.id, b.id);
       const rng = Core.mulberry32(Core.hashSeed(`kids:${g.id}:${b.id}`));
-      let bad = 0; const why = new Set(); const dirs = new Set();
+      let bad = 0; const why = new Set(); const dirs = new Set(); const seenKinds = new Set();
       for (let i = 0; i < N7; i++) {
         const r = gen(rng, P, KIDS.pools);
         if (r.display && r.display.direction) dirs.add(r.display.direction);
+        if (r.display && typeof r.display.kind === 'string') seenKinds.add(r.display.kind);
         if (r.steps.length < 1) { bad++; why.add('no steps'); }
         for (const st of r.steps) {
           if (new Set(st.choices).size !== st.choices.length) { bad++; why.add('dup choice'); }
@@ -226,6 +249,7 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       }
       ok(bad === 0, `${g.id}/${b.id}: 0 violations over ${N7} rounds ${why.size ? '(' + [...why].join('; ') + ')' : ''}`);
       if (g.id === 'match') ok(dirs.size === 2, `${g.id}/${b.id}: both directions occur over ${N7} rounds (J-04)`);
+      if (g.id === 'compare') ok(seenKinds.size === 2, `${g.id}/${b.id}: both variants occur over ${N7} rounds (J-05)`);
     }
   }
 }
