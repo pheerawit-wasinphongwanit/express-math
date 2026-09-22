@@ -10,7 +10,7 @@ const KIDS = {
   games: [
     { id: 'count', icon: '🍊', caption: 'นับดูสิ', coPlay: false },
     { id: 'match', icon: '🎴', caption: 'จับคู่เหมือนกัน', coPlay: false },
-    { id: 'compare', icon: '🐟', caption: 'ข้างไหนมากกว่า', coPlay: false },
+    { id: 'compare', icon: '🐟', caption: 'ข้างไหนมากกว่า', coPlay: true },   // round-1 co-play game (OQ-B)
   ],
 
   // Age bands (F-11, UX S-02) — params-only difficulty: a band switch changes only the
@@ -40,14 +40,22 @@ const KIDS = {
   },
 
   // Co-play / hub copy lands here as it is added (kids copy budget ≤ 40 words, ST-[9]).
-  copy: {},
+  copy: {
+    solo: 'คนเดียว',      // S-10 chooser labels (for parents; icons lead)
+    together: 'สองคน',
+    handoff: 'ส่งไม้ต่อ',   // pass-and-play handoff banner (icon-led)
+  },
 
   // Cartoon pair (F-04) — M1 ships the owner-reviewed inline-SVG pair; refs point at the
   // inline <svg> element ids in kids/index.html. Generated art (M3) swaps refs to assets/.
   cartoonRefs: { pass: 'inline:art-pass', nudge: 'inline:art-nudge' },
 
   // Tunables (display cadence only — never gameplay).
-  tunables: { overlayMs: 1600 },
+  tunables: {
+    overlayMs: 1600,
+    handoffExtraMs: 1000,                          // co-play pass cartoon lingers longer (same single timer)
+    playerIcons: ['🧒', '🧑'],                      // turn indicator icons — parity, not identities
+  },
 };
 
 global.EXPRESS_KIDS_DATA = KIDS;

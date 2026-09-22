@@ -10,6 +10,7 @@ const K = window.EXPRESS_KIDS_CORE;
 let bandId = D.bands[0].id;   // OQ-E: band resets on every mode entry (fresh page load)
 let session = null;           // null = at hub; 🏠 discards (nothing persists by design)
 let overlayTimer = 0;         // the one setTimeout handle
+let pendingGame = null;       // game awaiting the solo/together choice (S-10)
 
 function $(id) { return document.getElementById(id); }
 
@@ -40,8 +41,20 @@ function renderHub() {
 
 /* ---------- play frame (S-03) ---------- */
 function startGame(gameId) {
+  const game = D.games.find((g) => g.id === gameId);
+  if (game && game.coPlay) {          // S-10 chooser only for flagged games (OQ-G: chosen at game start)
+    pendingGame = gameId;
+    $('hub').hidden = true;
+    $('chooser').hidden = false;
+    return;
+  }
+  beginSession(gameId, 1);            // solo is the default full experience (F-12)
+}
+function beginSession(gameId, players) {
+  pendingGame = null;
   const seed = (((Date.now() ^ Math.floor(Math.random() * 0xFFFFFFFF)) >>> 0) || 1);
-  session = K.newSession(gameId, bandId, 1, seed);
+  session = K.newSession(gameId, bandId, players, seed); // band = mode owner's (OQ-F)
+  $('chooser').hidden = true;
   $('hub').hidden = true;
   $('play').hidden = false;
   renderRound();
@@ -49,12 +62,15 @@ function startGame(gameId) {
 function goHome() {
   clearTimeout(overlayTimer);
   session = null;
+  pendingGame = null;
   $('overlay').hidden = true;
+  $('chooser').hidden = true;
   $('play').hidden = true;
   $('hub').hidden = false;
 }
 function renderRound() {
   if (!session) return;
+  renderTurnBadge();
   const d = session.round.display;
   if (d.kind === 'count') renderCount(d);
   else if (d.kind === 'match') renderMatch(d);
@@ -166,11 +182,22 @@ function onChoice(choiceId) {
   if (!session || !$('overlay').hidden) return; // overlay open → taps are skips only
   const r = K.submit(session, choiceId);
   if (r.outcome === 'step') { renderRound(); return; } // settle-in-place (multi-step games)
-  showOverlay(r.outcome === 'pass' ? 'pass' : 'nudge');
+  showOverlay(r.outcome === 'pass' ? 'pass' : 'nudge', r.turnAdvanced);
+}
+
+/* ---------- co-play (F-12) — turn indicator + icon handoff; no per-player anything ---------- */
+function renderTurnBadge() {
+  const badge = $('turnBadge');
+  if (session && session.players === 2) {
+    badge.hidden = false;
+    badge.textContent = D.tunables.playerIcons[session.turn]; // current turn icon (parity, not identity)
+  } else {
+    badge.hidden = true;
+  }
 }
 
 /* ---------- cartoon overlay (F-04) — submit()'s outcome is the only pose authority ---------- */
-function showOverlay(pose) {
+function showOverlay(pose, turnAdvanced) {
   const ref = pose === 'pass' ? D.cartoonRefs.pass : D.cartoonRefs.nudge;
   for (const el of document.querySelectorAll('.art')) el.hidden = true;
   const art = $(ref.slice('inline:'.length));
@@ -178,9 +205,18 @@ function showOverlay(pose) {
     art.hidden = false;
     art.classList.remove('pop'); void art.offsetWidth; art.classList.add('pop');
   }
+  const handoff = $('handoff'); // icon handoff rides the same overlay + the same single timer
+  handoff.hidden = true;
+  handoff.innerHTML = '';
+  if (pose === 'pass' && turnAdvanced) {
+    handoff.hidden = false;
+    handoff.innerHTML = '<span>🔁</span><span>' + D.tunables.playerIcons[session.turn] + '</span>' +
+                        '<span class="hLabel">' + D.copy.handoff + '</span>';
+  }
   $('overlay').hidden = false;
   clearTimeout(overlayTimer);
-  overlayTimer = setTimeout(dismissOverlay, D.tunables.overlayMs); // the single permitted timer
+  overlayTimer = setTimeout(dismissOverlay,
+    D.tunables.overlayMs + (pose === 'pass' && turnAdvanced ? D.tunables.handoffExtraMs : 0));
 }
 function dismissOverlay() {
   clearTimeout(overlayTimer);
@@ -192,5 +228,10 @@ function dismissOverlay() {
 $('backBtn').addEventListener('click', () => history.back()); // S-02 → S-01, no gate (OQ-C)
 $('homeBtn').addEventListener('click', goHome);                // exit always available (OQ-D)
 $('overlay').addEventListener('click', dismissOverlay);        // tap-to-skip
+$('chooserBackBtn').addEventListener('click', () => { pendingGame = null; $('chooser').hidden = true; $('hub').hidden = false; });
+$('soloBtn').addEventListener('click', () => beginSession(pendingGame, 1));
+$('togetherBtn').addEventListener('click', () => beginSession(pendingGame, 2));
+$('soloBtn').querySelector('.cLabel').textContent = D.copy.solo;
+$('togetherBtn').querySelector('.cLabel').textContent = D.copy.together;
 renderHub();
 })();
