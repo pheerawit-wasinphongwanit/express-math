@@ -29,6 +29,22 @@ function nextSeed(seed) {
 /* ---------- round generators (F-05…F-10 land as GEN entries — content, never machinery) ---------- */
 const GEN = {};
 
+/* F-05 «นับดูสิ» — N objects of one emoji + 2–4 numeral choices, exactly one correct.
+   Distractors are distinct in-band values ≠ n (ST-[7]); choices order is shuffled (ST-[10]). */
+GEN.count = function (rng, P, pools) {
+  const n = randInt(rng, P.rangeLo, P.rangeHi);
+  const emojis = pools.count.emojis;
+  const emoji = emojis[Math.floor(rng() * emojis.length)];
+  const others = [];
+  for (let v = P.rangeLo; v <= P.rangeHi; v++) if (v !== n) others.push(v);
+  const choices = shuffle(rng, [n, ...shuffle(rng, others).slice(0, P.choiceCount - 1)]);
+  return {
+    gameId: 'count',
+    display: { kind: 'count', emoji, n },
+    steps: [{ choices, correctId: n }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

@@ -155,6 +155,67 @@ console.log('\n[5] Budgets (docs/scope.md)');
   ok(DATA.tiers.length === 5, '5 result tiers');
 }
 
+/* ---------- 6. registry completeness (kids ST-[6]) ---------- */
+console.log('\n[6] Registry completeness (kids)');
+{
+  const { KIDS } = require('./kids/kids-data.js');
+  const KC = require('./kids/kids-core.js');
+  ok(KIDS.bands.length >= 2, '≥ 2 bands ship (F-11)');
+  const genKeys = new Set(Object.keys(KC.GEN));
+  for (const g of KIDS.games) {
+    ok(genKeys.has(g.id), `registry «${g.id}» ↔ GEN key`);
+    genKeys.delete(g.id);
+    for (const b of KIDS.bands) {
+      ok(!!b.params[g.id] && typeof b.params[g.id] === 'object', `«${g.id}» has params row in band «${b.id}»`);
+    }
+  }
+  ok(genKeys.size === 0, `no orphan GEN keys (${[...genKeys].join(', ') || 'none'})`);
+}
+
+/* ---------- 7. generator invariants — 2,000 rounds per game per band (kids ST-[7]) ---------- */
+console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
+{
+  const { KIDS } = require('./kids/kids-data.js');
+  const KC = require('./kids/kids-core.js');
+  const N7 = 2000;
+  // per-game invariant predicates (return a reason string on violation, null when clean)
+  const INVARIANTS = {
+    count(r, P) {
+      if (r.display.kind !== 'count') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      if (r.display.n < P.rangeLo || r.display.n > P.rangeHi) return 'n out of band';
+      const st = r.steps[0];
+      if (st.correctId !== r.display.n) return 'correctId≠n';
+      if (st.choices.length !== P.choiceCount) return 'choiceCount';
+      if (!st.choices.every((c) => Number.isInteger(c) && c >= P.rangeLo && c <= P.rangeHi)) return 'out-of-band choice';
+      return null;
+    },
+  };
+  for (const g of KIDS.games) {
+    const gen = KC.GEN[g.id];
+    ok(typeof gen === 'function', `${g.id}: generator exists`);
+    if (typeof gen !== 'function') continue;
+    for (const b of KIDS.bands) {
+      const P = KC.bandParams(KIDS, g.id, b.id);
+      const rng = Core.mulberry32(Core.hashSeed(`kids:${g.id}:${b.id}`));
+      let bad = 0; const why = new Set();
+      for (let i = 0; i < N7; i++) {
+        const r = gen(rng, P, KIDS.pools);
+        if (r.steps.length < 1) { bad++; why.add('no steps'); }
+        for (const st of r.steps) {
+          if (new Set(st.choices).size !== st.choices.length) { bad++; why.add('dup choice'); }
+          if (st.choices.filter((c) => c === st.correctId).length !== 1) { bad++; why.add('correct≠1'); }
+        }
+        const j = JSON.stringify(r.display);
+        if (j.includes('undefined') || j.includes('NaN')) { bad++; why.add('NaN/undefined display'); }
+        const reason = INVARIANTS[g.id] && INVARIANTS[g.id](r, P);
+        if (reason) { bad++; why.add(reason); }
+      }
+      ok(bad === 0, `${g.id}/${b.id}: 0 violations over ${N7} rounds ${why.size ? '(' + [...why].join('; ') + ')' : ''}`);
+    }
+  }
+}
+
 /* ---------- 8. F-03 session contract (kindergarten core, ST-[8] a–e) ---------- */
 console.log('\n[8] F-03 session contract (kids core)');
 {
