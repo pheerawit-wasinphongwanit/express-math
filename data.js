@@ -42,7 +42,8 @@ const DATA = {
   copy: {
     menu:   { title: 'ด่วนคณิต', sub: 'EXPRESS MATH', play: 'เริ่มเล่น', daily: 'ด่วนประจำวัน',
               dailyHint: 'โจทย์ชุดเดียวกันทั้งวัน เทียบคะแนนกับเพื่อนได้',
-              best: 'สถิติสูงสุด', today: 'วันนี้', hint: 'ตอบถูกได้เวลา ตอบผิดเสียเวลา', feedback: '📣 ฟีดแบ็ก', study: '📚 ทบทวน' },
+              best: 'สถิติสูงสุด', today: 'วันนี้', hint: 'ตอบถูกได้เวลา ตอบผิดเสียเวลา', feedback: '📣 ฟีดแบ็ก', study: '📚 ทบทวน',
+              kids: 'อนุบาล' },
     play:   { count3: '3', count2: '2', count1: '1', go: 'ไป!', levelUp: 'เลื่อนชั้น!', levelBonusSec: '+8 วิ',
               secBonus: '+8 วิ', secPenalty: '−5 วิ',
               paused: 'หยุดชั่วคราว', tapToResume: 'แตะเพื่อเล่นต่อ' },

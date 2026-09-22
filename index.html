@@ -49,6 +49,12 @@
   .statline { display: flex; gap: 16px; color: var(--dim); font-size: .95rem; }
   .statline b { color: var(--text); font-variant-numeric: tabular-nums; }
   #muteBtn { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; padding: 0; font-size: 1.2rem; border-radius: 12px; }
+  .btn.kids { /* kindergarten entry — warm zone, visually distinct from arcade cards (kids F-01/G1) */
+    background: linear-gradient(135deg, #FFE9C7, #FFD3A0); color: #6B4F3A;
+    border: 3px solid #FFCFA3; font-size: 1.25rem; text-decoration: none; display: block;
+  }
+  .btn.kids:active { transform: scale(.97); }
+  .btn.kids .kidsIcon { font-size: 1.9rem; margin-right: 8px; }
 
   /* ---------- play ---------- */
   #play { padding: max(12px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); }
@@ -123,6 +129,7 @@
     <button id="playBtn" class="btn primary big"></button>
     <button id="dailyBtn" class="btn big"></button>
     <div class="subnote" id="dailyHint"></div>
+    <a id="kidsLink" class="btn kids" href="kids/index.html"><span class="kidsIcon">🧸</span>อนุบาล</a>
     <a id="studyLink" class="btn" target="_blank" rel="noopener"></a>
     <a id="feedbackLink" class="btn" target="_blank" rel="noopener"></a>
     <div class="hint" id="t_hint"></div>

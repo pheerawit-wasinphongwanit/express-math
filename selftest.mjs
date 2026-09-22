@@ -155,6 +155,19 @@ console.log('\n[5] Budgets (docs/scope.md)');
   ok(DATA.tiers.length === 5, '5 result tiers');
 }
 
+/* ---------- 9. budgets & hygiene (kindergarten mode) ---------- */
+console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
+{
+  // root arcade copy — live counter: 46 @ e8961ff + menu.kids «อนุบาล» = 47 ≤ 60 (C3 [PS-0005])
+  const tokens = [];
+  const collect = (o) => { for (const v of Object.values(o)) typeof v === 'string' ? tokens.push(...v.split(/\s+/).filter(Boolean)) : collect(v); };
+  collect(DATA.copy);
+  for (const w of DATA.waves) tokens.push(...w.name.split(/\s+/));
+  for (const t of DATA.tiers) tokens.push(...t.name.split(/\s+/));
+  ok(tokens.length === 47, `root copy live counter = 47 (46 + menu.kids «อนุบาล»)`);
+  ok(tokens.length <= 60, `root copy ≤ 60 words (${tokens.length})`);
+}
+
 /* ---------- summary ---------- */
 console.log(`\n===== SELF-TEST: ${pass} passed, ${fail} failed, ${warn} warn =====`);
 process.exit(fail === 0 ? 0 : 1);
