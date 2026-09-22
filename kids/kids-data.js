@@ -13,6 +13,7 @@ const KIDS = {
     { id: 'compare', icon: '🐟', caption: 'ข้างไหนมากกว่า', coPlay: true },   // round-1 co-play game (OQ-B)
     { id: 'shapes', icon: '🔺', caption: 'รูปทรงน่ารัก', coPlay: false },
     { id: 'order', icon: '🦆', caption: 'เรียงให้ถูก', coPlay: false },
+    { id: 'sort', icon: '🧺', caption: 'จัดเข้ากลุ่ม', coPlay: false },
   ],
 
   // Age bands (F-11, UX S-02) — params-only difficulty: a band switch changes only the
@@ -25,6 +26,7 @@ const KIDS = {
         compare: { groupMax: 6, minGap: 2, sizeRatio: 1.5 },   // no near-ties (F-07)
         shapes: { patternLenMin: 3, patternLenMax: 3, kindsCount: 2, choiceCount: 3 },
         order: { itemCountMin: 2, itemCountMax: 3 },
+        sort: { itemCountMin: 3, itemCountMax: 3 },
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -33,6 +35,7 @@ const KIDS = {
         compare: { groupMax: 6, minGap: 1, sizeRatio: 1.25 },
         shapes: { patternLenMin: 4, patternLenMax: 5, kindsCount: 3, choiceCount: 4 },
         order: { itemCountMin: 3, itemCountMax: 4 },
+        sort: { itemCountMin: 4, itemCountMax: 6 },
       } },
   ],
 
@@ -45,6 +48,14 @@ const KIDS = {
     },
     shapes: { shapes: ['🔺', '🟢', '⬛', '⭐', '🟡', '🔵'] },   // shape element pool
     order: { items: ['🦆', '🐢', '🐝'] },                     // same character, distinct sizes
+    sort: {                                                   // category pairs — unambiguous 2-bin partitions
+      pairs: [
+        { bins: [{ id: 'basket', icon: '🧺' }, { id: 'meadow', icon: '🌾' }],
+          members: { basket: ['🍌', '🍎', '🍓', '🍇', '🍊'], meadow: ['🐥', '🐰', '🐟', '🐸', '🐝'] } },
+        { bins: [{ id: 'sky', icon: '☁️' }, { id: 'sea', icon: '🌊' }],
+          members: { sky: ['🕊️', '✈️', '🎈', '🪁', '🌈'], sea: ['🐠', '🐙', '🐋', '🦀', '⛵'] } },
+      ],
+    },
   },
 
   // Co-play / hub copy lands here as it is added (kids copy budget ≤ 40 words, ST-[9]).

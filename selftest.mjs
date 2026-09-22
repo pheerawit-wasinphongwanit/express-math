@@ -257,6 +257,26 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       }
       return null;
     },
+    sort(r, P) {
+      const d = r.display;
+      if (d.kind !== 'sort') return 'kind';
+      const binIds = d.bins.map((b) => b.id).sort();
+      if (binIds.length !== 2 || new Set(binIds).size !== 2) return 'bins';
+      if (d.items.length < P.itemCountMin || d.items.length > P.itemCountMax) return 'count';
+      if (new Set(d.items.map((it) => it.emoji)).size !== d.items.length) return 'dup items';
+      const perBin = {};
+      for (const it of d.items) {
+        if (!binIds.includes(it.bin)) return 'item bin invalid (partition)';
+        perBin[it.bin] = (perBin[it.bin] || 0) + 1;
+      }
+      if (Object.keys(perBin).length !== 2) return 'empty bin';
+      if (r.steps.length !== d.items.length) return 'steps≠items';
+      for (let i = 0; i < r.steps.length; i++) {
+        if (JSON.stringify(r.steps[i].choices.slice().sort()) !== JSON.stringify(binIds)) return 'step choices';
+        if (r.steps[i].correctId !== d.items[i].bin) return 'step correct';
+      }
+      return null;
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];

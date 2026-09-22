@@ -146,6 +146,29 @@ GEN.order = function (rng, P, pools) {
   };
 };
 
+/* F-10 «จัดเข้ากลุ่ม» — multi-step: one step per item, choices = the 2 bins; every item
+   belongs to exactly one bin by pool construction (unambiguous partition). Finish = pass
+   cartoon only — no tally anywhere. */
+GEN.sort = function (rng, P, pools) {
+  const pair = pools.sort.pairs[Math.floor(rng() * pools.sort.pairs.length)];
+  const n = randInt(rng, P.itemCountMin, P.itemCountMax);
+  const binA = pair.bins[0], binB = pair.bins[1];
+  const aPool = shuffle(rng, pair.members[binA.id].slice());
+  const bPool = shuffle(rng, pair.members[binB.id].slice());
+  const aTake = Math.min(aPool.length, randInt(rng, 1, n - 1)); // ≥1 item per bin
+  const bTake = Math.min(bPool.length, n - aTake);
+  const items = [];
+  aPool.slice(0, aTake).forEach((emoji, i) => items.push({ id: 'a' + i, emoji, bin: binA.id }));
+  bPool.slice(0, bTake).forEach((emoji, i) => items.push({ id: 'b' + i, emoji, bin: binB.id }));
+  const chosen = shuffle(rng, items); // send order
+  const steps = chosen.map((it) => ({ choices: [binA.id, binB.id], correctId: it.bin }));
+  return {
+    gameId: 'sort',
+    display: { kind: 'sort', bins: [{ id: binA.id, icon: binA.icon }, { id: binB.id, icon: binB.icon }], items: chosen },
+    steps,
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
