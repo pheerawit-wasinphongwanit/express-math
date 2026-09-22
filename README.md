@@ -24,4 +24,5 @@ player simulations, multiplier math, and the UI copy budget.
 - `docs/decisions.md` — concept grill (stage 1)
 - `docs/scope.md` — scope contract: budgets, systems, non-goals, cut list
 - `docs/story.md` — design data: waves, generator recipes, result tiers, feedback loop
+- `docs/kids.md` — kindergarten mode (โหมดอนุบาล) content source of truth: game registry, bands, pools, copy
 - `docs/build.md` — build log & deviations

@@ -445,6 +445,17 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
     for (const tok of FORBIDDEN) if (src.includes(tok)) hits.push(f + ':' + tok);
   }
   ok(hits.length === 0, `kids/*.js free of storage/network/clock tokens ${hits.length ? '(' + hits.join(', ') + ')' : ''}`);
+
+  // docs/kids.md ↔ kids-data.js sync (docs-first editing rule, TECH-SPEC §2.2)
+  const docs = fs.readFileSync(path.join(path.dirname(process.argv[1]), 'docs', 'kids.md'), 'utf8');
+  const need = [];
+  for (const g of KIDS.games) need.push(g.id, g.caption);
+  for (const b of KIDS.bands) need.push(b.id, b.label);
+  (function collect(o) { for (const v of Object.values(o)) typeof v === 'string' ? need.push(v) : collect(v); })(KIDS.copy);
+  const missDocs = [...new Set(need.filter((s) => !docs.includes(s)))];
+  ok(missDocs.length === 0, `docs/kids.md ↔ kids-data.js in sync ${missDocs.length ? '(missing: ' + missDocs.join(', ') + ')' : ''}`);
+  const readme = fs.readFileSync(path.join(path.dirname(process.argv[1]), 'README.md'), 'utf8');
+  ok(readme.includes('docs/kids.md'), 'README.md points at docs/kids.md');
 }
 
 /* ---------- 10. determinism (kids core + local shuffle, ST-[10]) ---------- */
