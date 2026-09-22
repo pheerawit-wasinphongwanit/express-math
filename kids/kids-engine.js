@@ -75,6 +75,7 @@ function renderRound() {
   if (d.kind === 'count') renderCount(d);
   else if (d.kind === 'match') renderMatch(d);
   else if (d.kind === 'compare-groups' || d.kind === 'compare-single') renderCompare(d);
+  else if (d.kind === 'shape-match' || d.kind === 'pattern') renderShapes(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -183,6 +184,44 @@ function onChoice(choiceId) {
   const r = K.submit(session, choiceId);
   if (r.outcome === 'step') { renderRound(); return; } // settle-in-place (multi-step games)
   showOverlay(r.outcome === 'pass' ? 'pass' : 'nudge', r.turnAdvanced);
+}
+
+/* S-07 «รูปทรงน่ารัก» — shape-match (sample + choices) or pattern row with a trailing ?.
+   Both render from display.kind — one view, two data shapes (C6). */
+function renderShapes(d) {
+  const prompt = $('prompt');
+  prompt.className = '';
+  prompt.innerHTML = '';
+  if (d.kind === 'shape-match') {
+    prompt.className = 'sampleShape';
+    prompt.textContent = d.shape;
+  } else {
+    prompt.className = 'patternRow';
+    for (const s of d.seq) {
+      const el = document.createElement('span');
+      el.className = 'pItem';
+      el.textContent = s;
+      prompt.appendChild(el);
+    }
+    const q = document.createElement('span');
+    q.className = 'pItem qmark';
+    q.textContent = '?';
+    prompt.appendChild(q);
+  }
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'gShape';
+    inner.textContent = c;
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
+    box.appendChild(btn);
+  }
 }
 
 /* ---------- co-play (F-12) — turn indicator + icon handoff; no per-player anything ---------- */
