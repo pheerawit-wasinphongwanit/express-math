@@ -242,6 +242,21 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       }
       return 'kind';
     },
+    order(r, P) {
+      const d = r.display;
+      if (d.kind !== 'order') return 'kind';
+      if (d.items.length < P.itemCountMin || d.items.length > P.itemCountMax) return 'count';
+      if (new Set(d.items.map((it) => it.size)).size !== d.items.length) return 'size ties (one valid ordering)';
+      if (r.steps.length !== d.items.length) return 'steps≠items';
+      const sorted = d.items.slice().sort((a, b) => a.size - b.size);
+      for (let i = 0; i < r.steps.length; i++) {
+        const st = r.steps[i];
+        const remaining = sorted.slice(i).map((it) => it.id).sort();
+        if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(remaining)) return 'step choices';
+        if (st.correctId !== sorted[i].id) return 'step correct';
+      }
+      return null;
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -356,6 +371,23 @@ console.log('\n[8] F-03 session contract (kids core)');
     ok(hits.length === 0, '(e) no accumulation keys anywhere in session graph');
     ok(!seen.has('§fn'), '(e) no function values (no tick/clock)');
     ok(Object.keys(s.round).every((k) => ['gameId', 'seed', 'display', 'steps'].includes(k)), '(e) round keys ⊆ {gameId,seed,display,steps}');
+  }
+
+  // (c-real) multi-step on a REAL generator (order): placed never wiped on wrong mid-pick (J-07)
+  {
+    const s = KC.newSession('order', 'littles', 1, 606);
+    const st1 = s.round.steps[0];
+    const r1 = KC.submit(s, st1.correctId);
+    ok(r1.outcome === 'step' && s.placed.length === 1, '(c-real) order: correct pick → step + placed grows');
+    const cur = s.round.steps[s.stepIndex];
+    const wrong = cur.choices.find((c) => c !== cur.correctId);
+    const r2 = KC.submit(s, wrong);
+    ok(r2.outcome === 'retry' && s.placed.length === 1 && s.stepIndex === 1, '(c-real) order: wrong mid-pick → retry KEEPING placed (J-07)');
+    let passed = false, guard = 0;
+    while (!passed && guard++ < 20) {
+      if (KC.submit(s, s.round.steps[s.stepIndex].correctId).outcome === 'pass') passed = true;
+    }
+    ok(passed && s.stepIndex === 0 && s.placed.length === 0, '(c-real) order: completes to pass; fresh round resets placed');
   }
 
   delete KC.GEN.fx; // fixture never leaks into registry parity (ST-[6])

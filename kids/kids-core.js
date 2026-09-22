@@ -125,6 +125,27 @@ GEN.shapes = function (rng, P, pools) {
   };
 };
 
+/* F-09 «เรียงให้ถูก» — multi-step: one step per position, pairwise-distinct sizes ⇒
+   exactly one valid ordering (small→big). Correct pick settles the piece (placed grows,
+   renderOrder settles from session.placed); wrong pick retries WITHOUT wiping placed (J-07). */
+GEN.order = function (rng, P, pools) {
+  const n = randInt(rng, P.itemCountMin, P.itemCountMax);
+  const emoji = pools.order.items[Math.floor(rng() * pools.order.items.length)];
+  const items = [];
+  for (let i = 0; i < n; i++) items.push({ id: 'it' + i, emoji, size: i + 1 });
+  const sorted = items; // ascending by size by construction
+  const steps = [];
+  for (let i = 0; i < n; i++) {
+    const remaining = sorted.slice(i).map((it) => it.id);
+    steps.push({ choices: shuffle(rng, remaining), correctId: sorted[i].id });
+  }
+  return {
+    gameId: 'order',
+    display: { kind: 'order', items: shuffle(rng, items.slice()) }, // scattered presentation copy
+    steps,
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
