@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF6EA">
+<title>อนุบาล · ด่วนคณิต</title>
+<style>
+  :root {
+    --bg: #FFF6EA; --card: #FFFDF7; --ink: #6B4F3A; --dim: #B08D6E;
+    --accent: #FF9F43; --accent-soft: #FFD3A0; --line: #FFE3C2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Thai", "Sarabun", sans-serif;
+    user-select: none; -webkit-user-select: none; touch-action: manipulation; overflow: hidden;
+  }
+  #app { max-width: 420px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column; position: relative; }
+  section[hidden] { display: none !important; }
+  section { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  button { font-family: inherit; cursor: pointer; appearance: none; border: 0; color: inherit; }
+
+  /* ---------- hub (S-02): band strip + icon-led game grid ---------- */
+  #hub { padding: max(14px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom)); gap: 18px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; }
+  .iconbtn {
+    min-width: 64px; min-height: 64px; border-radius: 20px; background: var(--card);
+    border: 3px solid var(--line); font-size: 1.8rem;
+    transition: transform .08s ease;
+  }
+  .iconbtn:active { transform: scale(.95); }
+  #bandStrip { display: flex; gap: 10px; }
+  .bandBtn {
+    flex: 1; min-height: 64px; border-radius: 20px; background: var(--card);
+    border: 3px solid var(--line);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    transition: transform .08s ease, border-color .15s ease, background .15s ease;
+  }
+  .bandBtn:active { transform: scale(.96); }
+  .bandBtn .bIcon { font-size: 1.6rem; line-height: 1; }
+  .bandBtn .bLabel { font-size: .82rem; color: var(--dim); }
+  .bandBtn.active { border-color: var(--accent); background: #FFF1DC; }
+  .bandBtn.active .bLabel { color: var(--ink); }
+  #gameGrid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; align-content: center; }
+  #gameGrid:has(.gameCard:only-child) { grid-template-columns: 1fr; max-width: 260px; margin: 0 auto; width: 100%; }
+  .gameCard {
+    min-height: 132px; border-radius: 28px; background: var(--card); border: 3px solid var(--line);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    transition: transform .08s ease;
+  }
+  .gameCard:active { transform: scale(.96); }
+  .gameCard .gIcon { font-size: 3.4rem; line-height: 1; }
+  .gameCard .gCaption { font-size: 1.05rem; font-weight: 700; }
+
+  /* ---------- play frame (S-03): content + cartoon overlay ---------- */
+  #play { padding: max(14px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom)); }
+  #content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 0; gap: 22px; }
+  #prompt { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; font-size: 2.6rem; line-height: 1.25; max-width: 100%; }
+  #choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; width: 100%; }
+  .choice {
+    min-height: 84px; border-radius: 24px; background: var(--card); border: 3px solid var(--line);
+    font-size: 2.2rem; font-weight: 800; font-variant-numeric: tabular-nums;
+    transition: transform .08s ease;
+  }
+  .choice:active { transform: scale(.95); }
+  .choice:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+  #overlay {
+    position: absolute; inset: 0; background: rgba(255, 246, 234, .96);
+    display: flex; align-items: center; justify-content: center; z-index: 10;
+  }
+  #overlay[hidden] { display: none; }
+  .art { width: min(64vw, 260px); }
+  .art svg { width: 100%; height: auto; display: block; }
+  .art.pop { animation: artpop .35s ease; }
+  @keyframes artpop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .art.pop { animation: none; } }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <section id="hub">
+    <div class="topbar">
+      <button id="backBtn" class="iconbtn" aria-label="กลับ">⬅</button>
+    </div>
+    <div id="bandStrip"></div>
+    <div id="gameGrid"></div>
+  </section>
+
+  <section id="play" hidden>
+    <div class="topbar">
+      <button id="homeBtn" class="iconbtn" aria-label="หน้าแรก">🏠</button>
+    </div>
+    <div id="content">
+      <div id="prompt"></div>
+      <div id="choices"></div>
+    </div>
+    <div id="overlay" hidden>
+      <div class="art" id="art-pass">
+        <svg viewBox="0 0 200 200" role="img" aria-hidden="true" focusable="false">
+          <ellipse cx="100" cy="182" rx="40" ry="7" fill="#F3E1C8"/>
+          <circle cx="58" cy="62" r="17" fill="#FFE9C7"/>
+          <circle cx="142" cy="62" r="17" fill="#FFE9C7"/>
+          <circle cx="58" cy="64" r="8" fill="#FFCFA3"/>
+          <circle cx="142" cy="64" r="8" fill="#FFCFA3"/>
+          <circle cx="100" cy="115" r="62" fill="#FFE9C7"/>
+          <line x1="44" y1="132" x2="22" y2="84" stroke="#FFD3A0" stroke-width="14" stroke-linecap="round"/>
+          <circle cx="22" cy="84" r="11" fill="#FFD3A0"/>
+          <line x1="156" y1="132" x2="178" y2="84" stroke="#FFD3A0" stroke-width="14" stroke-linecap="round"/>
+          <circle cx="178" cy="84" r="11" fill="#FFD3A0"/>
+          <path d="M 67.00 102.00 A 9 7 0 0 1 85.00 102.00" fill="none" stroke="#6B4F3A" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M 115.00 102.00 A 9 7 0 0 1 133.00 102.00" fill="none" stroke="#6B4F3A" stroke-width="4.5" stroke-linecap="round"/>
+          <circle cx="62" cy="120" r="8" fill="#FFB59E"/>
+          <circle cx="138" cy="120" r="8" fill="#FFB59E"/>
+          <path d="M 113.16 127.42 A 14 10 0 0 1 86.84 127.42" fill="none" stroke="#6B4F3A" stroke-width="4.5" stroke-linecap="round"/>
+          <polygon points="36.00,30.00 38.69,37.31 46.00,40.00 38.69,42.69 36.00,50.00 33.31,42.69 26.00,40.00 33.31,37.31" fill="#FFC64D"/>
+          <polygon points="164.00,26.00 166.15,31.85 172.00,34.00 166.15,36.15 164.00,42.00 161.85,36.15 156.00,34.00 161.85,31.85" fill="#FFC64D"/>
+          <polygon points="100.00,19.00 101.88,24.12 107.00,26.00 101.88,27.88 100.00,33.00 98.12,27.88 93.00,26.00 98.12,24.12" fill="#FFC64D"/>
+        </svg>
+      </div>
+      <div class="art" id="art-nudge" hidden>
+        <svg viewBox="0 0 200 200" role="img" aria-hidden="true" focusable="false">
+          <ellipse cx="100" cy="182" rx="40" ry="7" fill="#F3E1C8"/>
+          <circle cx="58" cy="62" r="17" fill="#FFE9C7"/>
+          <circle cx="142" cy="62" r="17" fill="#FFE9C7"/>
+          <circle cx="58" cy="64" r="8" fill="#FFCFA3"/>
+          <circle cx="142" cy="64" r="8" fill="#FFCFA3"/>
+          <circle cx="100" cy="115" r="62" fill="#FFE9C7"/>
+          <line x1="44" y1="138" x2="30" y2="164" stroke="#FFD3A0" stroke-width="14" stroke-linecap="round"/>
+          <circle cx="30" cy="164" r="11" fill="#FFD3A0"/>
+          <line x1="156" y1="128" x2="180" y2="86" stroke="#FFD3A0" stroke-width="14" stroke-linecap="round"/>
+          <circle cx="180" cy="86" r="11" fill="#FFD3A0"/>
+          <circle cx="76" cy="104" r="7" fill="#6B4F3A"/>
+          <circle cx="78.5" cy="101.5" r="2.2" fill="#FFFFFF"/>
+          <circle cx="124" cy="104" r="7" fill="#6B4F3A"/>
+          <circle cx="126.5" cy="101.5" r="2.2" fill="#FFFFFF"/>
+          <circle cx="62" cy="122" r="8" fill="#FFB59E"/>
+          <circle cx="138" cy="122" r="8" fill="#FFB59E"/>
+          <path d="M 109.06 128.96 A 10 7 0 0 1 90.94 128.96" fill="none" stroke="#6B4F3A" stroke-width="4.5" stroke-linecap="round"/>
+          <circle cx="164" cy="35" r="6.5" fill="#FF8FA3"/>
+          <circle cx="176" cy="35" r="6.5" fill="#FF8FA3"/>
+          <polygon points="158.4,38.5 181.6,38.5 170,54" fill="#FF8FA3"/>
+          <polygon points="34.00,36.00 36.15,41.85 42.00,44.00 36.15,46.15 34.00,52.00 31.85,46.15 26.00,44.00 31.85,41.85" fill="#FFC64D"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="../core.js"></script>
+<script src="kids-data.js"></script>
+<script src="kids-core.js"></script>
+<script src="kids-engine.js"></script>
+</body>
+</html>

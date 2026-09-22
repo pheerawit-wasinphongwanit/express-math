@@ -316,6 +316,26 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   for (const t of DATA.tiers) tokens.push(...t.name.split(/\s+/));
   ok(tokens.length === 47, `root copy live counter = 47 (46 + menu.kids «อนุบาล»)`);
   ok(tokens.length <= 60, `root copy ≤ 60 words (${tokens.length})`);
+
+  // kids copy ≤ 40 words (C4-derived guard): game captions + band labels + KIDS.copy
+  const { KIDS } = require('./kids/kids-data.js');
+  const kidsTokens = [];
+  for (const g of KIDS.games) kidsTokens.push(...g.caption.split(/\s+/).filter(Boolean));
+  for (const b of KIDS.bands) kidsTokens.push(...b.label.split(/\s+/).filter(Boolean));
+  (function collect(o) { for (const v of Object.values(o)) typeof v === 'string' ? kidsTokens.push(...v.split(/\s+/).filter(Boolean)) : collect(v); })(KIDS.copy);
+  ok(kidsTokens.length <= 40, `kids copy ≤ 40 words (${kidsTokens.length})`);
+
+  // kids/*.js hygiene: no storage, no network, no clock (NG2/NG3 + timer split — setInterval banned forever)
+  const fs = require('node:fs'); const path = require('node:path');
+  const kidsDir = path.join(path.dirname(process.argv[1]), 'kids');
+  const FORBIDDEN = ['localStorage', 'indexedDB', 'fetch(', 'XMLHttpRequest', 'setInterval'];
+  const hits = [];
+  for (const f of fs.readdirSync(kidsDir)) {
+    if (!f.endsWith('.js')) continue;
+    const src = fs.readFileSync(path.join(kidsDir, f), 'utf8');
+    for (const tok of FORBIDDEN) if (src.includes(tok)) hits.push(f + ':' + tok);
+  }
+  ok(hits.length === 0, `kids/*.js free of storage/network/clock tokens ${hits.length ? '(' + hits.join(', ') + ')' : ''}`);
 }
 
 /* ---------- 10. determinism (kids core + local shuffle, ST-[10]) ---------- */
