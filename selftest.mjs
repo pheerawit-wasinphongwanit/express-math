@@ -362,6 +362,21 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (st.correctId !== d.items.find((it) => it.rel === d.q).e) return 'correct ≠ queried-relation member';
       return null;
     },
+    length(r, P) {
+      if (r.display.kind !== 'length') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      if (!['longer', 'shorter'].includes(d.q)) return 'q';
+      if (d.items.length !== P.items) return 'item count';
+      const lens = d.items.map((it) => it.len);
+      if (!lens.every((l) => Number.isInteger(l) && l > 0)) return 'len domain';
+      const asc = lens.slice().sort((a, b) => a - b);
+      for (let i = 1; i < asc.length; i++) if (asc[i] / asc[i - 1] < P.ratio) return 'pairwise ratio < band min (near-tie)';
+      const target = d.q === 'longer' ? Math.max(...lens) : Math.min(...lens);
+      if (st.correctId !== d.items.find((it) => it.len === target).id) return 'correct ≠ ' + d.q + ' item';
+      if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.items.map((it) => it.id).sort())) return 'choices≠items';
+      return null;
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -698,7 +713,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['length'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

@@ -16,13 +16,14 @@
 | samediff | 🪞 | เหมือนกันเลย | – | เหมือน–ต่าง (F-13) | visual |
 | shadow | 🌑 | เงาใครเอ่ย | – | จับคู่เงา (F-14) | visual |
 | positions | 📍 | บน–ล่าง–ใน–นอก | – | ตำแหน่งเชิงพื้นที่ (F-15) | visual |
+| length | 📏 | ยาว–สั้น | – | ความยาว (F-16) | compare |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
 | zone id | marker | label (for parents) | games (✓ = registered; others = wave-2 plan) |
 |---|---|---|---|
 | number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups · deal · neighbors |
-| compare | 🆚 | เปรียบเทียบ | compare ✓ · length · weight · pairoff |
+| compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt |
 | visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole |
 | arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort · trace · routine |
@@ -42,6 +43,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | samediff — find choices · odd members · varying attrs | 3 · 3 · 1 | 5 · 4 · 2 |
 | shadow — เงา choices · หมวดตัวลวง | 2 · ต่างหมวด (cross) | 4 · หมวดเดียวกันได้ (profile ยังต่าง) |
 | positions — ความสัมพันธ์ในฉาก (= จำนวนตัวเลือก) | 2 | 4 |
+| length — ชิ้น · อัตราส่วนคู่ขั้นต่ำ | 2 · ≥1.5× (no near-ties) | 3 · ≥1.25× |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -68,6 +70,7 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
   - 🧸 on · 🐶 under · 👕 in · 🪁 out
   - 🍎 on · 🐰 under · 🎁 in · 🚗 out
   - รอบหยิบ subset ตามจำนวนความสัมพันธ์ของ band (2→4) แล้วสุ่มถาม 1 ความสัมพันธ์ — แตะ *ตัวของ* ที่อยู่ในความสัมพันธ์นั้น
+- **length** ยาว–สั้น (F-16 — ไม่มี pool: ความยาวสังเคราะห์เป็นจำนวนเต็มบวก ให้ pairwise ratio ≥ ขั้นต่ำของ band เสมอ ไม่มีคู่เฉียด; เรนเดอร์ = แท่ง data-scaled วางขนานบนแนวฐานร่วม)
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

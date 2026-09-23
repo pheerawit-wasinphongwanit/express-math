@@ -17,6 +17,7 @@ const KIDS = {
     { id: 'samediff', icon: '🪞', caption: 'เหมือนกันเลย', family: 'visual', coPlay: false },
     { id: 'shadow', icon: '🌑', caption: 'เงาใครเอ่ย', family: 'visual', coPlay: false },
     { id: 'positions', icon: '📍', caption: 'บน–ล่าง–ใน–นอก', family: 'visual', coPlay: false },
+    { id: 'length', icon: '📏', caption: 'ยาว–สั้น', family: 'compare', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -43,6 +44,7 @@ const KIDS = {
         samediff: { choiceCount: 3, oddMembers: 3, attrs: 1 },
         shadow: { choiceCount: 2, sameCategory: false },   // littles: cross-category distractors only
         positions: { relations: 2 },
+        length: { items: 2, ratio: 1.5 },                   // no near-ties (F-16, mirrors F-07 discipline)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -55,6 +57,7 @@ const KIDS = {
         samediff: { choiceCount: 5, oddMembers: 4, attrs: 2 },
         shadow: { choiceCount: 4, sameCategory: true },    // bigs: same-category allowed, profiles stay distinct
         positions: { relations: 4 },
+        length: { items: 3, ratio: 1.25 },
       } },
   ],
 

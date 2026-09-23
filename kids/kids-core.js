@@ -314,6 +314,29 @@ GEN.positions = function (rng, P, pools) {
   };
 };
 
+/* F-16 «ยาว–สั้น» — length comparison on a common baseline. Lengths are synthesized positive
+   integers with pairwise ratio ≥ band minimum (littles ≥ 1.5× — no near-ties; mirrors F-07):
+   each next length ≥ max(prev+1, ceil(prev×ratio)) so sorted-neighbor ratios imply all pairs.
+   Exactly one longest and one shortest by distinctness; the question icon asks longer/shorter. */
+GEN.length = function (rng, P) {
+  const lens = [];
+  let cur = randInt(rng, 2, 5);
+  lens.push(cur);
+  while (lens.length < P.items) {
+    cur = Math.max(cur + 1, Math.ceil(cur * P.ratio)) + randInt(rng, 0, 2);
+    lens.push(cur);
+  }
+  const items = shuffle(rng, lens.map((len, i) => ({ id: 'l' + i, len })));
+  const q = rng() < 0.5 ? 'longer' : 'shorter';
+  const target = q === 'longer' ? Math.max(...lens) : Math.min(...lens);
+  const correctId = items.find((it) => it.len === target).id;
+  return {
+    gameId: 'length',
+    display: { kind: 'length', q, items },
+    steps: [{ choices: items.map((it) => it.id), correctId }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
