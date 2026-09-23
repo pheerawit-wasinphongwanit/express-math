@@ -14,7 +14,7 @@ let pendingGame = null;       // game awaiting the solo/together choice (S-10)
 
 function $(id) { return document.getElementById(id); }
 
-/* ---------- hub (S-02) ---------- */
+/* ---------- hub (S-02) — FEATURES-OQ-D default: one scrolling board, 5 skill-family zones ---------- */
 function renderBandStrip() {
   const strip = $('bandStrip');
   strip.innerHTML = '';
@@ -28,14 +28,28 @@ function renderBandStrip() {
 }
 function renderHub() {
   renderBandStrip();
-  const grid = $('gameGrid');
-  grid.innerHTML = '';
-  for (const g of D.games) {
-    const card = document.createElement('button');
-    card.className = 'gameCard';
-    card.innerHTML = '<span class="gIcon">' + g.icon + '</span><span class="gCaption">' + g.caption + '</span>';
-    card.addEventListener('click', () => startGame(g.id)); // touch + mouse share click (OQ3)
-    grid.appendChild(card);
+  const board = $('gameGrid');
+  board.innerHTML = '';
+  for (const fam of D.families) {
+    const games = D.games.filter((g) => g.family === fam.id);
+    if (!games.length) continue; // a zone renders only when it has registered games (never near-empty)
+    const zone = document.createElement('section');
+    zone.className = 'zone';
+    const head = document.createElement('div');
+    head.className = 'zoneHead';
+    head.innerHTML = '<span class="zIcon">' + fam.icon + '</span><span class="zLabel">' + fam.label + '</span>';
+    zone.appendChild(head);
+    const grid = document.createElement('div');
+    grid.className = 'zoneGrid';
+    for (const g of games) {
+      const card = document.createElement('button');
+      card.className = 'gameCard';
+      card.innerHTML = '<span class="gIcon">' + g.icon + '</span><span class="gCaption">' + g.caption + '</span>';
+      card.addEventListener('click', () => startGame(g.id)); // touch + mouse share click (OQ3)
+      grid.appendChild(card);
+    }
+    zone.appendChild(grid);
+    board.appendChild(zone);
   }
 }
 

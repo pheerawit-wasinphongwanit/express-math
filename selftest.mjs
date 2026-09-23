@@ -617,6 +617,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   const kidsTokens = [];
   for (const g of KIDS.games) kidsTokens.push(...g.caption.split(/\s+/).filter(Boolean));
   for (const b of KIDS.bands) kidsTokens.push(...b.label.split(/\s+/).filter(Boolean));
+  for (const f of KIDS.families) kidsTokens.push(...f.label.split(/\s+/).filter(Boolean)); // zone labels count (ST-[11])
   (function collect(o) { for (const v of Object.values(o)) typeof v === 'string' ? kidsTokens.push(...v.split(/\s+/).filter(Boolean)) : collect(v); })(KIDS.copy);
   ok(kidsTokens.length <= 40, `kids copy ≤ 40 words (${kidsTokens.length})`);
 
@@ -653,6 +654,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   const need = [];
   for (const g of KIDS.games) need.push(g.id, g.caption);
   for (const b of KIDS.bands) need.push(b.id, b.label);
+  for (const f of KIDS.families) need.push(f.id, f.label); // families sync (ST-[9] v2 clause)
   (function collect(o) { for (const v of Object.values(o)) typeof v === 'string' ? need.push(v) : collect(v); })(KIDS.copy);
   const missDocs = [...new Set(need.filter((s) => !docs.includes(s)))];
   ok(missDocs.length === 0, `docs/kids.md ↔ kids-data.js in sync ${missDocs.length ? '(missing: ' + missDocs.join(', ') + ')' : ''}`);
@@ -689,6 +691,29 @@ console.log('\n[10] Determinism (kids core)');
       ok(JSON.stringify(run(7001)) === JSON.stringify(run(7001)), `${g.id}/${b.id}: same seed → identical round sequence`);
       ok(JSON.stringify(run(7001)) !== JSON.stringify(run(7002)), `${g.id}/${b.id}: different seed → different sequence`);
     }
+  }
+}
+
+/* ---------- 11. hub & zones (kids ST-[11] — FEATURES-OQ-D default board) ---------- */
+console.log('\n[11] Hub & zones (kids ST-[11])');
+{
+  const { KIDS } = require('./kids/kids-data.js');
+  ok(Array.isArray(KIDS.families) && KIDS.families.length === 5, `exactly 5 families (${KIDS.families.length})`);
+  const famIds = new Set(KIDS.families.map((f) => f.id));
+  ok(new Set([...famIds]).size === 5, 'family ids distinct');
+  const members = Object.fromEntries(KIDS.families.map((f) => [f.id, []]));
+  let orphans = 0;
+  for (const g of KIDS.games) {
+    if (!members[g.family]) { orphans++; continue; }
+    members[g.family].push(g);
+  }
+  ok(orphans === 0, `every game's family resolves (${orphans} orphan)`);
+  const total = KIDS.families.reduce((a, f) => a + members[f.id].length, 0);
+  ok(total === KIDS.games.length, `Σ zone membership = registry size (${total} = ${KIDS.games.length}, each game exactly one zone)`);
+  for (const f of KIDS.families) {
+    ok(members[f.id].length >= 1, `zone «${f.id}»: ≥ 1 game (${members[f.id].length})`);
+    ok(!members[f.id].some((g) => g.icon === f.icon), `zone «${f.id}»: marker ${f.icon} ∉ member game icons (marker∉members)`);
+    ok(typeof f.label === 'string' && f.label.length > 0, `zone «${f.id}»: Thai label present`);
   }
 }
 

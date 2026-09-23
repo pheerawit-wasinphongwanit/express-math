@@ -5,16 +5,26 @@
 'use strict';
 
 const KIDS = {
-  // GameSpec registry — every id must have a GEN in kids-core.js and params in every band (ST-[6]).
-  // coPlay:true flags the solo/together chooser (S-10); none in M1.
+  // GameSpec registry — every id must have a GEN in kids-core.js and params in every band (ST-[6]),
+  // and a family that exists in families (ST-[11]). coPlay:true flags the solo/together chooser (S-10).
   games: [
-    { id: 'count', icon: '🍊', caption: 'นับดูสิ', coPlay: false },
-    { id: 'match', icon: '🎴', caption: 'จับคู่เหมือนกัน', coPlay: false },
-    { id: 'compare', icon: '🐟', caption: 'ข้างไหนมากกว่า', coPlay: true },   // round-1 co-play game (OQ-B)
-    { id: 'shapes', icon: '🔺', caption: 'รูปทรงน่ารัก', coPlay: false },
-    { id: 'order', icon: '🦆', caption: 'เรียงให้ถูก', coPlay: false },
-    { id: 'sort', icon: '🧺', caption: 'จัดเข้ากลุ่ม', coPlay: false },
-    { id: 'samediff', icon: '🪞', caption: 'เหมือนกันเลย', coPlay: false },
+    { id: 'count', icon: '🍊', caption: 'นับดูสิ', family: 'number', coPlay: false },
+    { id: 'match', icon: '🎴', caption: 'จับคู่เหมือนกัน', family: 'number', coPlay: false },
+    { id: 'compare', icon: '🐟', caption: 'ข้างไหนมากกว่า', family: 'compare', coPlay: true },   // round-1 co-play game (OQ-B)
+    { id: 'shapes', icon: '🔺', caption: 'รูปทรงน่ารัก', family: 'shape', coPlay: false },
+    { id: 'order', icon: '🦆', caption: 'เรียงให้ถูก', family: 'arrange', coPlay: false },
+    { id: 'sort', icon: '🧺', caption: 'จัดเข้ากลุ่ม', family: 'arrange', coPlay: false },
+    { id: 'samediff', icon: '🪞', caption: 'เหมือนกันเลย', family: 'visual', coPlay: false },
+  ],
+
+  // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
+  // Marker icon is the family's own — never a member game's icon (ST-[11]).
+  families: [
+    { id: 'number', icon: '🔢', label: 'เลขและปริมาณ' },
+    { id: 'compare', icon: '🆚', label: 'เปรียบเทียบ' },
+    { id: 'shape', icon: '🔷', label: 'รูปทรงและแบบรูป' },
+    { id: 'visual', icon: '👀', label: 'มองภาพ' },
+    { id: 'arrange', icon: '🧩', label: 'จัดและเรียง' },
   ],
 
   // Age bands (F-11, UX S-02) — params-only difficulty: a band switch changes only the

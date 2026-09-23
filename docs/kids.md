@@ -5,15 +5,27 @@
 
 ## Game registry (F-02)
 
-| id | icon | caption (for parents) | co-play (S-10) | skill |
-|---|---|---|---|---|
-| count | 🍊 | นับดูสิ | – | นับจำนวน (F-05) |
-| match | 🎴 | จับคู่เหมือนกัน | – | จำนวน↔สัญลักษณ์ (F-06) |
-| compare | 🐟 | ข้างไหนมากกว่า | ✔ (round-1 co-play game, OQ-B) | มาก–น้อย / ใหญ่–เล็ก (F-07) |
-| shapes | 🔺 | รูปทรงน่ารัก | – | รูปทรง + แบบรูป (F-08) |
-| order | 🦆 | เรียงให้ถูก | – | การเรียงลำดับ (F-09, multi-step) |
-| sort | 🧺 | จัดเข้ากลุ่ม | – | จัดหมวดหมู่ (F-10, multi-step) |
-| samediff | 🪞 | เหมือนกันเลย | – | เหมือน–ต่าง (F-13) |
+| id | icon | caption (for parents) | co-play (S-10) | skill | family (zone) |
+|---|---|---|---|---|---|
+| count | 🍊 | นับดูสิ | – | นับจำนวน (F-05) | number |
+| match | 🎴 | จับคู่เหมือนกัน | – | จำนวน↔สัญลักษณ์ (F-06) | number |
+| compare | 🐟 | ข้างไหนมากกว่า | ✔ (round-1 co-play game, OQ-B) | มาก–น้อย / ใหญ่–เล็ก (F-07) | compare |
+| shapes | 🔺 | รูปทรงน่ารัก | – | รูปทรง + แบบรูป (F-08) | shape |
+| order | 🦆 | เรียงให้ถูก | – | การเรียงลำดับ (F-09, multi-step) | arrange |
+| sort | 🧺 | จัดเข้ากลุ่ม | – | จัดหมวดหมู่ (F-10, multi-step) | arrange |
+| samediff | 🪞 | เหมือนกันเลย | – | เหมือน–ต่าง (F-13) | visual |
+
+## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
+
+| zone id | marker | label (for parents) | games (✓ = registered; others = wave-2 plan) |
+|---|---|---|---|
+| number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups · deal · neighbors |
+| compare | 🆚 | เปรียบเทียบ | compare ✓ · length · weight · pairoff |
+| shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt |
+| visual | 👀 | มองภาพ | samediff ✓ · shadow · positions · partwhole |
+| arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort · trace · routine |
+
+Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
 
 ## Age bands (F-11) — params-only difficulty (a band switch changes only generator params)
 
