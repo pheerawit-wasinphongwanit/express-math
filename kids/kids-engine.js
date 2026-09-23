@@ -650,7 +650,7 @@ function renderTrace(d) {
   traceDots = [];
 
   const prompt = $('prompt');
-  prompt.className = '';
+  prompt.className = 'tracePrompt';               // stretch the canvas — all children are absolute
   prompt.innerHTML = '';
   const wrap = document.createElement('div');
   wrap.className = 'traceWrap';
@@ -698,15 +698,20 @@ function tracePt(i) {
   const geo = traceGeo;
   const w = session.round.display.waypoints;
   return {
-    x: ((w[i].x + geo.g) / (geo.maxX + 2 * geo.g)) * rc.width,
-    y: ((w[i].y + geo.gy) / (4 + 2 * geo.gy)) * rc.height,
+    x: rc.left + ((w[i].x + geo.g) / (geo.maxX + 2 * geo.g)) * rc.width,   // viewport coords —
+    y: rc.top + ((w[i].y + geo.gy) / (4 + 2 * geo.gy)) * rc.height,        // comparable with clientX/Y
   };
+}
+function traceRel(x, y) {                            // viewport → wrap-relative (style writes)
+  const rc = traceWrapEl.getBoundingClientRect();
+  return { x: x - rc.left, y: y - rc.top };
 }
 function layoutTraceMarkers(w) {
   const place = (el, i) => {
     const p = tracePt(i);
-    el.style.left = p.x + 'px';
-    el.style.top = p.y + 'px';
+    const r = traceRel(p.x, p.y);
+    el.style.left = r.x + 'px';
+    el.style.top = r.y + 'px';
   };
   for (const dot of traceDots) place(dot.el, dot.i);
   place(traceEndEl, w.length - 1);
@@ -745,8 +750,9 @@ function traceFollow(ev) {
     if (!best || dist < best.dist) best = { dist, px, py };
   }
   if (best.dist > CORRIDOR) return;                 // drift → glide pauses (nothing resets, J-24)
-  traceDuckEl.style.left = best.px + 'px';
-  traceDuckEl.style.top = best.py + 'px';
+  const dp = traceRel(best.px, best.py);
+  traceDuckEl.style.left = dp.x + 'px';
+  traceDuckEl.style.top = dp.y + 'px';
   let appended = false, guard = 0;
   while (traceLog.length < w.length && guard++ < 8) {
     const wp = tracePt(traceLog.length);            // next waypoint in order — jumping ahead is impossible
