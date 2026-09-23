@@ -102,6 +102,7 @@ function renderRound() {
   else if (d.kind === 'color-sort') renderColorSort(d);
   else if (d.kind === 'number-track') renderNeighbors(d);
   else if (d.kind === 'shape-hunt') renderShapeHunt(d);
+  else if (d.kind === 'routine') renderRoutine(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -454,6 +455,42 @@ function renderShapeHunt(d) {
     inner.textContent = c;
     btn.appendChild(inner);
     btn.addEventListener('click', () => onChoice(c));
+    box.appendChild(btn);
+  }
+}
+
+/* S-23 «วันของหนู» — scattered routine cards + target lane; settled cards render from
+   session.placed so partial progress survives a wrong placement (mirrors S-08 — J-25).
+   Emoji cards now; art set 5 = T-055 upgrade (game never blocks on an asset). */
+function renderRoutine(d) {
+  const prompt = $('prompt');
+  prompt.className = 'orderRow';
+  prompt.innerHTML = '';
+  const sorted = d.items.slice().sort((a, b) => a.rank - b.rank);
+  for (let i = 0; i < sorted.length; i++) {
+    const slot = document.createElement('span');
+    slot.className = 'oSlot';
+    if (i < session.placed.length) {
+      slot.textContent = sorted[i].emoji;
+      slot.classList.add('settled');
+    } else {
+      slot.textContent = i === session.placed.length ? '?' : '';
+    }
+    prompt.appendChild(slot);
+  }
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const id of step.choices) {
+    const it = d.items.find((x) => x.id === id);
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'oItem';
+    inner.textContent = it.emoji;
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(id));
     box.appendChild(btn);
   }
 }
