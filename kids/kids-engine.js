@@ -11,6 +11,8 @@ let bandId = D.bands[0].id;   // OQ-E: band resets on every mode entry (fresh pa
 let session = null;           // null = at hub; 🏠 discards (nothing persists by design)
 let overlayTimer = 0;         // the one setTimeout handle
 let pendingGame = null;       // game awaiting the solo/together choice (S-10)
+let dealSel = null;           // S-19 tap-mode selection (item id) — ephemeral view state, cleared on every render
+let dealSelEl = null;         // its chip element (selection highlight bookkeeping)
 
 function $(id) { return document.getElementById(id); }
 
@@ -77,6 +79,7 @@ function goHome() {
   clearTimeout(overlayTimer);
   session = null;
   pendingGame = null;
+  dealSel = null; dealSelEl = null;
   $('overlay').hidden = true;
   $('chooser').hidden = true;
   $('play').hidden = true;
@@ -103,6 +106,7 @@ function renderRound() {
   else if (d.kind === 'number-track') renderNeighbors(d);
   else if (d.kind === 'shape-hunt') renderShapeHunt(d);
   else if (d.kind === 'routine') renderRoutine(d);
+  else if (d.kind === 'deal') renderDeal(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -493,6 +497,129 @@ function renderRoutine(d) {
     btn.addEventListener('click', () => onChoice(id));
     box.appendChild(btn);
   }
+}
+
+/* S-19 «แจกให้ครบ» — goal-state deal view (F-21): recipients as generous drop targets in
+   #prompt, unheld items in #choices. inputDrag (below) gives BOTH input modes on one round —
+   drag-to-place or tap-item-then-tap-recipient (Pointer Events unify touch/mouse, C4/OQ3).
+   Holdings render from session.placed (latest snapshot); moving an already-placed item is
+   always allowed; incomplete structures are silent in-view — no cartoon mid-course (J-21). */
+function renderDeal(d) {
+  dealSel = null; dealSelEl = null; // fresh render = no pending selection
+  const held = new Map((session.placed[0] || []).map((p) => [p.item, p.recipient]));
+  const prompt = $('prompt');
+  prompt.className = 'dealWrap';
+  prompt.innerHTML = '';
+  const recRow = document.createElement('div');
+  recRow.className = 'dealRecips';
+  const recips = [];                                   // {el, id} drop-target registry
+  for (const recip of d.recipients) {
+    const chip = document.createElement('div');
+    chip.className = 'dealRecip';
+    const face = document.createElement('span');
+    face.className = 'dealFace';
+    face.textContent = recip.e;
+    chip.appendChild(face);
+    const heldHere = d.items.filter((it) => held.get(it.id) === recip.id);
+    if (heldHere.length) {
+      const inner = document.createElement('span');
+      inner.className = 'dealHeld';
+      chip.appendChild(inner);
+      for (const it of heldHere) {                     // held items stay movable (J-21: ย้ายได้ตลอด)
+        const h = document.createElement('span');
+        h.className = 'dealHeldChip';
+        h.textContent = it.e;
+        inner.appendChild(h);
+        dealDraggable(h, it, recips);
+      }
+    }
+    recRow.appendChild(chip);
+    recips.push({ el: chip, id: recip.id });
+    chip.addEventListener('click', () => {            // genuine tap on the recipient (a drop never lands here)
+      if (dealSel) dealPlace(dealSel, recip.id);
+    });
+  }
+  prompt.appendChild(recRow);
+
+  const box = $('choices');
+  box.className = 'dealItems';
+  box.innerHTML = '';
+  for (const it of d.items) {
+    if (held.has(it.id)) continue;                     // settled items render inside their recipient
+    const chip = document.createElement('div');
+    chip.className = 'dealItem';
+    chip.textContent = it.e;
+    box.appendChild(chip);
+    dealDraggable(chip, it, recips);
+  }
+}
+
+/* inputDrag (S-19) — the drag half of the deal input: pointer down on an item, follow the
+   finger/mouse, drop on a recipient (generous hit rect). A release that never moved = tap
+   (selection handled there). Pointer Events only; no timers; setPointerCapture keeps the
+   events flowing to the item even outside its bounds. */
+function dealDraggable(el, item, recips) {
+  let active = false, sx = 0, sy = 0, moved = false;
+  const reset = () => {
+    active = false; moved = false;
+    el.classList.remove('dragging', 'dragGhost');
+    el.style.left = ''; el.style.top = '';
+  };
+  el.addEventListener('pointerdown', (ev) => {
+    if (!session || !$('overlay').hidden) return;
+    active = true; moved = false; sx = ev.clientX; sy = ev.clientY;
+    if (el.setPointerCapture) el.setPointerCapture(ev.pointerId);
+    el.classList.add('dragging');
+  });
+  el.addEventListener('pointermove', (ev) => {
+    if (!active) return;
+    if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 10) return;
+    moved = true;
+    el.classList.add('dragGhost');
+    el.style.left = ev.clientX + 'px';
+    el.style.top = ev.clientY + 'px';
+  });
+  el.addEventListener('pointerup', (ev) => {
+    if (!active) return reset();
+    const wasMoved = moved;
+    reset();
+    if (wasMoved) {
+      const rid = hitRecipient(recips, ev.clientX, ev.clientY);
+      if (rid) dealPlace(item.id, rid);
+      return;
+    }
+    dealSelect(el, item.id);                           // no movement → tap half of the input
+  });
+  el.addEventListener('pointercancel', reset);
+}
+function hitRecipient(recips, x, y) {
+  const PAD = 24;                                      // generous drop zone (no precision pressure)
+  for (const r of recips) {
+    const rc = r.el.getBoundingClientRect();
+    if (x >= rc.left - PAD && x <= rc.right + PAD && y >= rc.top - PAD && y <= rc.bottom + PAD) {
+      return r.id;
+    }
+  }
+  return null;
+}
+function dealSelect(el, itemId) {
+  if (dealSel === itemId) { dealSel = null; dealSelEl = null; el.classList.remove('sel'); return; } // tap again to unselect
+  if (dealSelEl) dealSelEl.classList.remove('sel');
+  dealSel = itemId; dealSelEl = el;
+  el.classList.add('sel');
+}
+/* Structure submit for goal views: placements REPLACE the item's old spot (kids keep
+   adjusting, J-21); the core judges the goal state — pass → cartoon, anything else stays
+   silent in-view (re-render holdings from the fresh snapshot; per-action turn flips ride
+   renderTurnBadge inside renderRound). */
+function dealPlace(itemId, recipId) {
+  if (!session || !$('overlay').hidden) return;
+  const snap = (session.placed[0] || []).filter((p) => p.item !== itemId);
+  snap.push({ item: itemId, recipient: recipId });
+  dealSel = null;
+  const r = K.submit(session, snap);
+  if (r.outcome === 'pass') { showOverlay('pass', r.turnAdvanced); return; }
+  renderRound();
 }
 
 /* S-11 «เหมือนกันเลย» — find-same: big sample + choice cards (tap the same kind);
