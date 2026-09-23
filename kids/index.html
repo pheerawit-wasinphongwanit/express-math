@@ -106,6 +106,21 @@
   /* S-12 «เงาใครเอ่ย» — silhouette cards (CSS-filter fallback; art set 1 = T-051 upgrade) */
   .sil { font-size: 3rem; line-height: 1; filter: brightness(0); opacity: .8; }
 
+  /* S-13 «บน–ล่าง–ใน–นอก» — scene stacks + wordless relation pictogram */
+  .posWrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .posScene { display: flex; align-items: center; justify-content: center; gap: 36px; }
+  .posStack { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .posRow { display: flex; gap: 10px; align-items: center; justify-content: center; min-height: 42px; font-size: 2rem; line-height: 1; }
+  .posAnchor { font-size: 3.6rem; line-height: 1.1; }
+  .posBoxWrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+  .posIn { position: absolute; font-size: 1.7rem; line-height: 1; }
+  .posQ { gap: 12px; padding: 8px 20px; font-size: 1.7rem; }
+  .pqDot { width: 15px; height: 15px; border-radius: 50%; background: #E8862E; display: inline-block; }
+  .pqStack { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .pqBoxWrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+  .pqIn { position: absolute; }
+  .pqRow { display: flex; align-items: center; gap: 8px; }
+
   #overlay {
     position: absolute; inset: 0; background: rgba(255, 246, 234, .96);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; z-index: 10;

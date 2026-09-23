@@ -94,6 +94,7 @@ function renderRound() {
   else if (d.kind === 'sort') renderSort(d);
   else if (d.kind === 'samediff-find' || d.kind === 'samediff-odd') renderSamediff(d);
   else if (d.kind === 'shadow-match') renderShadow(d);
+  else if (d.kind === 'positions') renderPositions(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -375,6 +376,101 @@ function renderShadow(d) {
     btn.addEventListener('click', () => onChoice(c));
     box.appendChild(btn);
   }
+}
+
+/* S-13 «บน–ล่าง–ใน–นอก» — the scene renders anchors (🪑 table + 📦 box) with each object placed
+   by its relation; the question is a wordless pictogram (anchor glyph + orange dot in the queried
+   position — C4); choices are the objects themselves (tap the one in that relation). */
+function renderPositions(d) {
+  const prompt = $('prompt');
+  prompt.className = 'posWrap';
+  prompt.innerHTML = '';
+  prompt.appendChild(posQuestion(d.q, d.anchors));
+  const scene = document.createElement('div');
+  scene.className = 'posScene';
+  const table = document.createElement('div');
+  table.className = 'posStack';
+  table.appendChild(posRow(d.items, 'on'));
+  const a0 = document.createElement('span');
+  a0.className = 'posAnchor';
+  a0.textContent = d.anchors[0];
+  table.appendChild(a0);
+  table.appendChild(posRow(d.items, 'under'));
+  scene.appendChild(table);
+  const boxStack = document.createElement('div');
+  boxStack.className = 'posStack';
+  const wrap = document.createElement('span');
+  wrap.className = 'posBoxWrap';
+  const a1 = document.createElement('span');
+  a1.className = 'posAnchor';
+  a1.textContent = d.anchors[1];
+  wrap.appendChild(a1);
+  for (const it of d.items.filter((x) => x.rel === 'in')) {
+    const s = document.createElement('span');
+    s.className = 'posIn';
+    s.textContent = it.e;
+    wrap.appendChild(s);
+  }
+  boxStack.appendChild(wrap);
+  boxStack.appendChild(posRow(d.items, 'out'));
+  scene.appendChild(boxStack);
+  prompt.appendChild(scene);
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'gShape';
+    inner.textContent = c;
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
+    box.appendChild(btn);
+  }
+}
+function posRow(items, rel) {
+  const row = document.createElement('div');
+  row.className = 'posRow';
+  for (const it of items.filter((x) => x.rel === rel)) {
+    const s = document.createElement('span');
+    s.textContent = it.e;
+    row.appendChild(s);
+  }
+  return row;
+}
+function posQuestion(rel, anchors) {
+  const q = document.createElement('div');
+  q.className = 'qbar posQ';
+  const dot = (extra) => {
+    const d = document.createElement('span');
+    d.className = 'pqDot' + (extra ? ' ' + extra : '');
+    return d;
+  };
+  const glyph = (t) => {
+    const g = document.createElement('span');
+    g.textContent = t;
+    return g;
+  };
+  if (rel === 'on' || rel === 'under') {
+    const st = document.createElement('div');
+    st.className = 'pqStack';
+    if (rel === 'on') st.append(dot(), glyph(anchors[0]));
+    else st.append(glyph(anchors[0]), dot());
+    q.appendChild(st);
+  } else if (rel === 'in') {
+    const w = document.createElement('span');
+    w.className = 'pqBoxWrap';
+    w.append(glyph(anchors[1]), dot('pqIn'));
+    q.appendChild(w);
+  } else {
+    const row = document.createElement('div');
+    row.className = 'pqRow';
+    row.append(glyph(anchors[1]), dot());
+    q.appendChild(row);
+  }
+  return q;
 }
 
 /* ---------- co-play (F-12) — turn indicator + icon handoff; no per-player anything ---------- */
