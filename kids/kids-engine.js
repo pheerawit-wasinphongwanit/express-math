@@ -96,6 +96,7 @@ function renderRound() {
   else if (d.kind === 'shadow-match') renderShadow(d);
   else if (d.kind === 'positions') renderPositions(d);
   else if (d.kind === 'length') renderLength(d);
+  else if (d.kind === 'weight') renderWeight(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -497,6 +498,35 @@ function renderLength(d) {
     bar.className = 'lenBar';
     bar.style.width = (30 + it.len * 12) + 'px'; // data-scaled (S-14)
     btn.appendChild(bar);
+    btn.addEventListener('click', () => onChoice(id));
+    box.appendChild(btn);
+  }
+}
+
+/* S-15 «หนัก–เบา» — curated pair/triple as big emoji cards; the question reuses the S-06/S-14
+   pictogram family: arrow + big/small dot (⬇️+● heavier · ⬆️+● lighter — no words, C4). */
+function renderWeight(d) {
+  const prompt = $('prompt');
+  prompt.className = 'qbar';
+  prompt.innerHTML = '';
+  const arrow = document.createElement('span');
+  arrow.textContent = d.q === 'heavier' ? '⬇️' : '⬆️';
+  const mag = document.createElement('span');
+  mag.className = 'qDot ' + (d.q === 'heavier' ? 'big' : 'small');
+  mag.textContent = '●';
+  prompt.append(arrow, mag);
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const id of step.choices) {
+    const it = d.items.find((x) => x.id === id);
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'gShape';
+    inner.textContent = it.e;
+    btn.appendChild(inner);
     btn.addEventListener('click', () => onChoice(id));
     box.appendChild(btn);
   }
