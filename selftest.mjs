@@ -790,6 +790,17 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
     if (at >= 0) ok(htmlSrc.slice(at, htmlSrc.indexOf('</div>', at)).includes('<svg'), `art-${stem}: inline <svg> fallback inside the block`);
   }
 
+  // owner-report regression guards 2026-09-23 (hub overlap / tap targets / ⬅):
+  // (i) scroll-container children must never shrink — the 5-zone board bug: #gameGrid is a
+  //     flex column with overflow-y:auto, so zones without flex:0 0 auto compress and their
+  //     cards overlap the next zone → wrong tap targets ("การ์ดซ้อนกัน กดยาก");
+  // (ii) the play frame centers via auto margins and scrolls instead of clipping the top;
+  // (iii) the hub ⬅ works even without in-app history (referrer-based fallback → root menu).
+  ok(/\.zone\s*{[^}]*flex:\s*0 0 auto/.test(htmlSrc), 'hub CSS: .zone flex:0 0 auto (scroll-board children never shrink)');
+  ok(/#content\s*{[^}]*overflow-y:\s*auto/.test(htmlSrc), 'play CSS: #content scrolls instead of clipping (overflow-y auto)');
+  ok(/#prompt\s*{[^}]*margin-top:\s*auto[^}]*flex-shrink:\s*0/.test(htmlSrc) && /#choices\s*{[^}]*margin-bottom:\s*auto[^}]*flex-shrink:\s*0/.test(htmlSrc), 'play CSS: auto-margin centering + no-shrink on prompt/choices');
+  ok(engSrc.includes("location.assign('../index.html')"), '⬅ back fallback to the root menu present (works without in-app history)');
+
   // docs/kids.md ↔ kids-data.js sync (docs-first editing rule, TECH-SPEC §2.2)
   const docs = fs.readFileSync(path.join(path.dirname(process.argv[1]), 'docs', 'kids.md'), 'utf8');
   const need = [];

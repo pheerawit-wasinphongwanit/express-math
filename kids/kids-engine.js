@@ -602,7 +602,11 @@ function dismissOverlay() {
 }
 
 /* ---------- wiring ---------- */
-$('backBtn').addEventListener('click', () => history.back()); // S-02 → S-01, no gate (OQ-C)
+$('backBtn').addEventListener('click', () => {          // S-02 → S-01, no gate (OQ-C)
+  const cameFromRoot = document.referrer && !document.referrer.includes('/kids/');
+  if (cameFromRoot && history.length > 1) history.back(); // real in-app history from the root menu
+  else location.assign('../index.html');                  // direct entry / reload / in-app browser quirk → root menu explicitly (owner report 2026-09-23)
+});
 $('homeBtn').addEventListener('click', goHome);                // exit always available (OQ-D)
 $('overlay').addEventListener('click', dismissOverlay);        // tap-to-skip
 $('chooserBackBtn').addEventListener('click', () => { pendingGame = null; $('chooser').hidden = true; $('hub').hidden = false; });
