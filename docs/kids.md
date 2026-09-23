@@ -23,6 +23,7 @@
 | colorsort | 🎨 | จัดตามสี | – | จัดหมวดตามสี (F-20, multi-step) | arrange |
 | neighbors | 🧮 | เพื่อนตัวเลข | – | เพื่อนบ้านของเลข (F-22) | number |
 | shapehunt | 🔍 | ของจริงรูปทรงอะไร | – | ของจริง→รูปทรง (F-23) | shape |
+| routine | 🐭 | วันของหนู | – | เรียงลำดับกิจวัตร (F-25, multi-step) | arrange |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
@@ -33,6 +34,8 @@
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt ✓ |
 | visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole ✓ |
 | arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort ✓ · trace · routine ✓ |
+
+*(M7 เหลือ deal · trace · pairoff — registry ครบ 20)*
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
 
@@ -56,6 +59,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | colorsort — ถ้วยสี · ชิ้นต่อรอบ | 2 · 4 | 3 · 5–6 |
 | neighbors — ความยาวราง · ตำแหน่งช่องหาย · ตัวเลือก | ≤5 · ปลายราง · 3 | ≤10 · กลางราง · 4 |
 | shapehunt — ตัวเลือก · ชนิดรูปทรง | 2 · 3 | 4 · 5 |
+| routine — การ์ดกิจวัตร | 3 | 5 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -101,6 +105,8 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
   - 🟪 สี่เหลี่ยม: 🎁 🖼️ 📖 🖥️
   - ⭐ ดาว: ✨ 🌟 💫 🎇
   - ❤️ หัวใจ: 💝 💗 💖 💌
+- **routine** ห่วงโซ่กิจวัตร strictly ordered (F-25 — กลไก order เดิม เปลี่ยนเนื้อหาจากขนาดเป็นเหตุการณ์ของวัน (C6); ไม่มีคู่กำกวมแบบ กิน–เล่น ตามสเปก subset ใด sort ได้ทางเดียว — rank ต่างกันหมด acyclic โดยโครงสร้าง; การ์ดไร้คำ = emoji ตอนนี้ อัปเกรด art ชุด 5 = T-055; รอ owner spot-review [R15]):
+  - ⏰ ตื่น → 🪥 แปรงฟัน → 🥣 กินข้าวเช้า → 🏫 โรงเรียน → 🛁 อาบน้ำ → 😴 นอน (6 ขั้น rank 1–6)
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

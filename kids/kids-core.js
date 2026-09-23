@@ -466,6 +466,26 @@ GEN.shapehunt = function (rng, P, pools) {
   };
 };
 
+/* F-25 «วันของหนู» — order machinery, routine content (C6): a strictly ordered curated chain;
+   any dealt subset inherits a unique order (distinct ranks — acyclic by construction, no
+   ambiguous pairs like eat-vs-play). One step per position; wrong pick retries WITHOUT wiping
+   placed (J-25 mirrors J-07). */
+GEN.routine = function (rng, P, pools) {
+  const chain = pools.routine.chain;
+  const picked = shuffle(rng, chain.map((_, i) => i)).slice(0, P.cardCount).sort((a, b) => a - b);
+  const items = picked.map((ri) => ({ id: 'r' + ri, emoji: chain[ri].e, rank: ri + 1 }));
+  const steps = [];
+  for (let i = 0; i < items.length; i++) {
+    const remaining = items.slice(i).map((it) => it.id);
+    steps.push({ choices: shuffle(rng, remaining), correctId: items[i].id });
+  }
+  return {
+    gameId: 'routine',
+    display: { kind: 'routine', items: shuffle(rng, items.slice()) }, // scattered presentation copy
+    steps,
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

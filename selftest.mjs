@@ -292,6 +292,17 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
          `shapehunt params «${b.id}»: choices ≤ kinds ≤ pool shapes`);
     }
   }
+  // routine pool data invariants (F-25 — the chain is strictly ordered: step emojis distinct,
+  // ranks = positions, so any dealt subset sorts uniquely; chain long enough for both bands)
+  {
+    const chain = KIDS.pools.routine.chain;
+    ok(new Set(chain.map((c) => c.e)).size === chain.length, 'routine pool: step emojis distinct');
+    ok(chain.length >= 3, `routine pool: chain has ≥ 3 steps (${chain.length})`);
+    for (const b of KIDS.bands) {
+      ok(chain.length >= b.params.routine.cardCount,
+         `routine pool: feasible for band «${b.id}» (chain ${chain.length} ≥ ${b.params.routine.cardCount} cards)`);
+    }
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -567,6 +578,24 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (st.correctId !== obj.s) return 'correct ≠ mapped shape (function mapping)';
       return null;
     },
+    routine(r, P) {
+      const d = r.display;
+      if (d.kind !== 'routine') return 'kind';
+      if (d.items.length !== P.cardCount) return 'card count';
+      if (new Set(d.items.map((it) => it.rank)).size !== d.items.length) return 'rank ties (unique subset sort)';
+      if (new Set(d.items.map((it) => it.emoji)).size !== d.items.length) return 'dup cards';
+      const chainEmojis = KIDS.pools.routine.chain.map((c) => c.e);
+      if (d.items.some((it) => !chainEmojis.includes(it.emoji))) return 'card not in chain';
+      if (r.steps.length !== d.items.length) return 'steps≠items';
+      const sorted = d.items.slice().sort((a, b) => a.rank - b.rank);
+      for (let i = 0; i < r.steps.length; i++) {
+        const st = r.steps[i];
+        const remaining = sorted.slice(i).map((it) => it.id).sort();
+        if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(remaining)) return 'step choices';
+        if (st.correctId !== sorted[i].id) return 'step correct';
+      }
+      return null;
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -706,6 +735,23 @@ console.log('\n[8] F-03 session contract (kids core)');
       if (KC.submit(s, s.round.steps[s.stepIndex].correctId).outcome === 'pass') passed = true;
     }
     ok(passed && s.stepIndex === 0 && s.placed.length === 0, '(c-real) order: completes to pass; fresh round resets placed');
+  }
+
+  // (c-routine) routine inherits order's partial-progress semantics on real content (J-25 mirrors J-07)
+  {
+    const s = KC.newSession('routine', 'bigs', 1, 907);
+    const st1 = s.round.steps[0];
+    const r1 = KC.submit(s, st1.correctId);
+    ok(r1.outcome === 'step' && s.placed.length === 1, '(c-routine) routine: correct placement → step + placed grows');
+    const cur = s.round.steps[s.stepIndex];
+    const wrong = cur.choices.find((c) => c !== cur.correctId);
+    const r2 = KC.submit(s, wrong);
+    ok(r2.outcome === 'retry' && s.placed.length === 1 && s.stepIndex === 1, '(c-routine) routine: wrong mid-placement → retry KEEPING placed (J-25)');
+    let passed = false, guard = 0;
+    while (!passed && guard++ < 20) {
+      if (KC.submit(s, s.round.steps[s.stepIndex].correctId).outcome === 'pass') passed = true;
+    }
+    ok(passed && s.placed.length === 0, '(c-routine) routine: completes to pass; fresh round resets placed');
   }
 
   // (f) goal-step contract — synthetic goal fixtures (T-021 discipline; real goal gens land in M7)
@@ -903,7 +949,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['routine'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {
