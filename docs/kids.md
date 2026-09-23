@@ -13,6 +13,7 @@
 | shapes | 🔺 | รูปทรงน่ารัก | – | รูปทรง + แบบรูป (F-08) |
 | order | 🦆 | เรียงให้ถูก | – | การเรียงลำดับ (F-09, multi-step) |
 | sort | 🧺 | จัดเข้ากลุ่ม | – | จัดหมวดหมู่ (F-10, multi-step) |
+| samediff | 🪞 | เหมือนกันเลย | – | เหมือน–ต่าง (F-13) |
 
 ## Age bands (F-11) — params-only difficulty (a band switch changes only generator params)
 
@@ -24,6 +25,7 @@
 | shapes — pattern length · kinds · choices | 3 · 2 · 3 | 4–5 · 3 · 4 |
 | order — items | 2–3 | 3–4 |
 | sort — items per round | 3 | 4–6 |
+| samediff — find choices · odd members · varying attrs | 3 · 3 · 1 | 5 · 4 · 2 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -36,6 +38,9 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
 - **sort** category pairs (unambiguous 2-bin partition; bin icon = category marker, never duplicates a member emoji — owner feedback 2026-09-22: 🧺/🌾 read as «basket vs rice» and confused both kids and parents):
   - 🍉 fruits **ผลไม้**: 🍌 🍎 🍓 🍇 🍊 ↔ 🐾 animals **สัตว์**: 🐥 🐰 🐟 🐸 🐝
   - ☁️ sky **ฟ้า**: 🕊️ ✈️ 🎈 🪁 🌈 ↔ 🌊 sea **ทะเล**: 🐠 🐙 🐋 🦀 ⛵ (place-based pair: things that go up vs things that live in water)
+- **samediff** attribute groups (F-13 — the round's rule is «same kind»; each group is a crisp, unambiguous kind for 3–6 y.o.):
+  - fruits: 🍓 🍎 🍇 🍒 🍍 · animals: 🐰 🐷 🐔 🐭 🐸 · vehicles: 🚗 🚌 🚲 🚂 🛴 · toys: 🧸 🎲 🥁 🪀 🎈
+  - *find-same*: sample + choices; exactly one choice is the sample's kind, distractors differ — `varying attrs` = how many OTHER kinds the distractors come from (1 → 2 in bigs, so bigs choices span 3 kinds). *odd-one-out*: ≥3 conforming friends of one kind + exactly one deviant (members 3 → 4 in bigs).
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

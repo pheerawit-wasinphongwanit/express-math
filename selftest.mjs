@@ -287,6 +287,35 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       }
       return null;
     },
+    samediff(r, P) {
+      const d = r.display, st = r.steps[0];
+      const groups = KIDS.pools.samediff.groups;
+      const groupOf = {};
+      groups.forEach((g) => g.members.forEach((m) => { groupOf[m] = g.id; }));
+      if (r.steps.length !== 1) return 'steps≠1';
+      if (d.kind === 'samediff-find') {
+        if (st.choices.length !== P.choiceCount) return 'choiceCount';
+        const sampleG = groupOf[d.sample];
+        if (!sampleG) return 'sample not in pool';
+        if (st.choices.includes(d.sample)) return 'sample among choices';
+        const inG = st.choices.filter((c) => groupOf[c] === sampleG);
+        if (inG.length !== 1 || inG[0] !== st.correctId) return 'same-kind uniqueness';
+        const distGroups = new Set(st.choices.filter((c) => groupOf[c] !== sampleG).map((c) => groupOf[c]));
+        if (distGroups.size !== P.attrs) return 'varying attrs';
+        if ([...distGroups].some((g) => g === sampleG || g === undefined)) return 'distractor group invalid';
+        return null;
+      }
+      if (d.kind === 'samediff-odd') {
+        if (d.items.length !== P.oddMembers + 1) return 'members count';
+        if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.items.slice().sort())) return 'choices≠items';
+        const devG = groupOf[st.correctId];
+        const conf = d.items.filter((m) => m !== st.correctId);
+        if (conf.length < 3) return 'conforming < 3';
+        if (!conf.every((m) => groupOf[m] === groupOf[conf[0]]) || groupOf[conf[0]] === devG) return 'deviant classification';
+        return null;
+      }
+      return 'kind';
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -302,8 +331,15 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
         if (r.display && typeof r.display.kind === 'string') seenKinds.add(r.display.kind);
         if (r.steps.length < 1) { bad++; why.add('no steps'); }
         for (const st of r.steps) {
-          if (new Set(st.choices).size !== st.choices.length) { bad++; why.add('dup choice'); }
-          if (st.choices.filter((c) => c === st.correctId).length !== 1) { bad++; why.add('correct≠1'); }
+          if (st.goal !== undefined) {
+            // goal steps (dormant until F-21/F-24/F-26 register — TECH-SPEC §2.2 note)
+            if (!KC.GOALS[st.goal]) { bad++; why.add('unknown goal ' + st.goal); }
+            const need = { 'one-each': ['items', 'recipients'], 'trace': ['waypoints'], 'all-paired': ['left', 'right'] }[st.goal] || [];
+            for (const k of need) if (!Array.isArray(r.display[k])) { bad++; why.add('goal display missing ' + k); }
+          } else {
+            if (new Set(st.choices).size !== st.choices.length) { bad++; why.add('dup choice'); }
+            if (st.choices.filter((c) => c === st.correctId).length !== 1) { bad++; why.add('correct≠1'); }
+          }
         }
         const j = JSON.stringify(r.display);
         if (j.includes('undefined') || j.includes('NaN')) { bad++; why.add('NaN/undefined display'); }
@@ -314,6 +350,7 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (g.id === 'match') ok(dirs.size === 2, `${g.id}/${b.id}: both directions occur over ${N7} rounds (J-04)`);
       if (g.id === 'compare') ok(seenKinds.size === 2, `${g.id}/${b.id}: both variants occur over ${N7} rounds (J-05)`);
       if (g.id === 'shapes') ok(seenKinds.size === 2, `${g.id}/${b.id}: both round kinds occur over ${N7} rounds (J-06)`);
+      if (g.id === 'samediff') ok(seenKinds.size === 2, `${g.id}/${b.id}: both variants occur over ${N7} rounds (J-13)`);
     }
   }
 }

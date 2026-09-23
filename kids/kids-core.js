@@ -237,6 +237,43 @@ GOALS['all-paired'] = {
   },
 };
 
+/* F-13 «เหมือนกันเลย» — same & different, two variants in ONE generator (variant = display.kind
+   data, C6): find-same (sample + choices; exactly one choice is the sample's kind — P.attrs = how
+   many OTHER kinds the distractors span) / odd-one-out (P.oddMembers conforming friends of one
+   kind + exactly one deviant). Rule unambiguous by pool construction (ST-[7]). */
+GEN.samediff = function (rng, P, pools) {
+  const groups = pools.samediff.groups;
+  const groupOf = {}; groups.forEach((g) => g.members.forEach((m) => { groupOf[m] = g.id; }));
+  if (rng() < 0.5) {
+    // find-same: target group + P.attrs distinct other groups; correct = another member of target
+    const target = groups[Math.floor(rng() * groups.length)];
+    const others = shuffle(rng, groups.filter((g) => g.id !== target.id));
+    const usedGroups = others.slice(0, P.attrs); // attrs ≤ groups−1 by data construction
+    const sample = target.members[Math.floor(rng() * target.members.length)];
+    const sameKind = shuffle(rng, target.members.filter((m) => m !== sample))[0];
+    const distractPool = [];
+    usedGroups.forEach((g) => distractPool.push(...shuffle(rng, g.members.slice()).slice(0, Math.ceil((P.choiceCount - 1) / P.attrs))));
+    const distractors = shuffle(rng, distractPool).slice(0, P.choiceCount - 1);
+    const choices = shuffle(rng, [sameKind, ...distractors]);
+    return {
+      gameId: 'samediff',
+      display: { kind: 'samediff-find', sample },
+      steps: [{ choices, correctId: sameKind }],
+    };
+  }
+  // odd-one-out: P.oddMembers conforming members of one kind + one deviant from another kind
+  const target = groups[Math.floor(rng() * groups.length)];
+  const other = shuffle(rng, groups.filter((g) => g.id !== target.id))[0];
+  const conforming = shuffle(rng, target.members.slice()).slice(0, P.oddMembers);
+  const deviant = other.members[Math.floor(rng() * other.members.length)];
+  const items = shuffle(rng, [...conforming, deviant]);
+  return {
+    gameId: 'samediff',
+    display: { kind: 'samediff-odd', items },
+    steps: [{ choices: items, correctId: deviant }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

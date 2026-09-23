@@ -14,6 +14,7 @@ const KIDS = {
     { id: 'shapes', icon: '🔺', caption: 'รูปทรงน่ารัก', coPlay: false },
     { id: 'order', icon: '🦆', caption: 'เรียงให้ถูก', coPlay: false },
     { id: 'sort', icon: '🧺', caption: 'จัดเข้ากลุ่ม', coPlay: false },
+    { id: 'samediff', icon: '🪞', caption: 'เหมือนกันเลย', coPlay: false },
   ],
 
   // Age bands (F-11, UX S-02) — params-only difficulty: a band switch changes only the
@@ -27,6 +28,7 @@ const KIDS = {
         shapes: { patternLenMin: 3, patternLenMax: 3, kindsCount: 2, choiceCount: 3 },
         order: { itemCountMin: 2, itemCountMax: 3 },
         sort: { itemCountMin: 3, itemCountMax: 3 },
+        samediff: { choiceCount: 3, oddMembers: 3, attrs: 1 },
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -36,6 +38,7 @@ const KIDS = {
         shapes: { patternLenMin: 4, patternLenMax: 5, kindsCount: 3, choiceCount: 4 },
         order: { itemCountMin: 3, itemCountMax: 4 },
         sort: { itemCountMin: 4, itemCountMax: 6 },
+        samediff: { choiceCount: 5, oddMembers: 4, attrs: 2 },
       } },
   ],
 
@@ -54,6 +57,14 @@ const KIDS = {
           members: { fruits: ['🍌', '🍎', '🍓', '🍇', '🍊'], animals: ['🐥', '🐰', '🐟', '🐸', '🐝'] } },
         { bins: [{ id: 'sky', icon: '☁️' }, { id: 'sea', icon: '🌊' }],
           members: { sky: ['🕊️', '✈️', '🎈', '🪁', '🌈'], sea: ['🐠', '🐙', '🐋', '🦀', '⛵'] } },
+      ],
+    },
+    samediff: {                                                // attribute groups — round rule «same kind» (F-13)
+      groups: [
+        { id: 'fruits', members: ['🍓', '🍎', '🍇', '🍒', '🍍'] },
+        { id: 'animals', members: ['🐰', '🐷', '🐔', '🐭', '🐸'] },
+        { id: 'vehicles', members: ['🚗', '🚌', '🚲', '🚂', '🛴'] },
+        { id: 'toys', members: ['🧸', '🎲', '🥁', '🪀', '🎈'] },
       ],
     },
   },
