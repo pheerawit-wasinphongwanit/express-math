@@ -98,6 +98,7 @@ function renderRound() {
   else if (d.kind === 'length') renderLength(d);
   else if (d.kind === 'weight') renderWeight(d);
   else if (d.kind === 'part-whole') renderPartWhole(d);
+  else if (d.kind === 'equal-groups') renderEqualGroups(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -558,6 +559,41 @@ function renderPartWhole(d) {
     btn.addEventListener('click', () => onChoice(c));
     box.appendChild(btn);
   }
+}
+
+/* S-16 «เท่ากันไหม» — sample plate + «=» + choice plates: the equals sign carries the question
+   wordlessly (C4 — it is also the concept being taught); every plate is one kind so the child
+   compares counts, never appearance (J-18). */
+function renderEqualGroups(d) {
+  const prompt = $('prompt');
+  prompt.className = 'eqWrap';
+  prompt.innerHTML = '';
+  prompt.appendChild(plateEl(d.sample.emoji, d.sample.n, 'eqSample'));
+  const eq = document.createElement('span');
+  eq.className = 'eqSign';
+  eq.textContent = '=';
+  prompt.appendChild(eq);
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const id of step.choices) {
+    const g = d.groups.find((x) => x.id === id);
+    const btn = plateEl(g.emoji, g.n, 'choice');
+    btn.addEventListener('click', () => onChoice(id));
+    box.appendChild(btn);
+  }
+}
+function plateEl(emoji, n, cls) {
+  const el = cls === 'choice' ? document.createElement('button') : document.createElement('div');
+  el.className = 'plate' + (cls === 'choice' ? ' choice' : ' eqSample');
+  for (let i = 0; i < n; i++) {
+    const it = document.createElement('span');
+    it.className = 'plateItem';
+    it.textContent = emoji;
+    el.appendChild(it);
+  }
+  return el;
 }
 
 /* ---------- co-play (F-12) — turn indicator + icon handoff; no per-player anything ---------- */
