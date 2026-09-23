@@ -99,6 +99,7 @@ function renderRound() {
   else if (d.kind === 'weight') renderWeight(d);
   else if (d.kind === 'part-whole') renderPartWhole(d);
   else if (d.kind === 'equal-groups') renderEqualGroups(d);
+  else if (d.kind === 'color-sort') renderColorSort(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -326,6 +327,59 @@ function renderSort(d) {
     label.textContent = D.copy.binLabel[bid];
     btn.appendChild(label);
     const sent = d.items.slice(0, idx).filter((it) => it.bin === bid); // sent items settle into their bin
+    if (sent.length) {
+      const inner = document.createElement('span');
+      inner.className = 'binItems';
+      inner.textContent = sent.map((it) => it.emoji).join(' ');
+      btn.appendChild(inner);
+    }
+    btn.addEventListener('click', () => onChoice(bid));
+    box.appendChild(btn);
+  }
+}
+
+/* S-18 «จัดตามสี» — same mechanic as S-09 with a color criterion (C6): bins are the choice
+   buttons and lead with a color swatch + exemplar marker (marker ∉ members — never a member
+   emoji); sent items settle faded into their bin; finish = pass cartoon only — no tally DOM
+   exists (J-20, NG3). */
+function renderColorSort(d) {
+  const prompt = $('prompt');
+  prompt.className = 'sortPrompt';
+  prompt.innerHTML = '';
+  const idx = session.stepIndex;
+  const cur = d.items[idx];
+  const curEl = document.createElement('span');
+  curEl.className = 'sCur';
+  curEl.textContent = cur.emoji;
+  prompt.appendChild(curEl);
+  const waiting = d.items.slice(idx + 1);
+  if (waiting.length) {
+    const row = document.createElement('span');
+    row.className = 'sWaiting';
+    for (const it of waiting) {
+      const s = document.createElement('span');
+      s.textContent = it.emoji;
+      row.appendChild(s);
+    }
+    prompt.appendChild(row);
+  }
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = 'sides';
+  box.innerHTML = '';
+  for (const bid of step.choices) {
+    const bin = d.bins.find((b) => b.id === bid);
+    const btn = document.createElement('button');
+    btn.className = 'choice binBtn colorBin';
+    const sw = document.createElement('span');          // color bar leads the bowl (no words needed)
+    sw.className = 'swatch';
+    sw.style.background = bin.swatch;
+    btn.appendChild(sw);
+    const icon = document.createElement('span');         // exemplar marker — never a member emoji
+    icon.className = 'binIcon';
+    icon.textContent = bin.marker;
+    btn.appendChild(icon);
+    const sent = d.items.slice(0, idx).filter((it) => it.bin === bid); // sent items settle into their bowl
     if (sent.length) {
       const inner = document.createElement('span');
       inner.className = 'binItems';
