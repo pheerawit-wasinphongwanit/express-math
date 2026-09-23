@@ -296,6 +296,24 @@ GEN.shadow = function (rng, P, pools) {
   };
 };
 
+/* F-15 «บน–ล่าง–ใน–นอก» — spatial positions. Every scene is a bijection onto the four relations
+   (each object holds exactly one relation, each relation exactly one member); the round activates
+   a P.relations-sized subset and asks one relation — tap THE object in it (choices = scene objects).
+   Distractors sit in the other ACTIVE relations by construction (ST-[7]). */
+GEN.positions = function (rng, P, pools) {
+  const set = pools.positions.itemSets[Math.floor(rng() * pools.positions.itemSets.length)];
+  const rels = shuffle(rng, ['on', 'under', 'in', 'out']).slice(0, P.relations);
+  const items = set.filter((it) => rels.includes(it.rel));
+  const q = rels[Math.floor(rng() * rels.length)];
+  const correct = items.find((it) => it.rel === q);
+  const choices = shuffle(rng, items.map((it) => it.e));
+  return {
+    gameId: 'positions',
+    display: { kind: 'positions', anchors: pools.positions.anchors, items, q },
+    steps: [{ choices, correctId: correct.e }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

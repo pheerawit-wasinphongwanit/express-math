@@ -197,6 +197,13 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
     const minGroup = Math.min(...KIDS.pools.shadow.groups.map((g) => g.members.length));
     ok(all.length - minGroup >= 4, `shadow pool: cross-category distractors suffice for choiceCount 4 (${all.length - minGroup} available)`);
   }
+  // positions scene data invariants (F-15 — every scene a bijection onto on/under/in/out;
+  // object emojis distinct within a scene so taps are unambiguous)
+  ok(KIDS.pools.positions.anchors.length === 2, 'positions pool: table + box anchors present');
+  for (const [si, set] of KIDS.pools.positions.itemSets.entries()) {
+    ok(set.length === 4 && new Set(set.map((it) => it.rel)).size === 4, `positions scene ${si + 1}: covers on/under/in/out exactly once (bijection)`);
+    ok(new Set(set.map((it) => it.e)).size === set.length, `positions scene ${si + 1}: object emojis distinct`);
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -339,6 +346,20 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (profs.some((p) => !p)) return 'choice not in pool';
       if (new Set(profs).size !== profs.length) return 'silhouette profile clash in round';
       if (!P.sameCategory && st.choices.some((e) => e !== d.object && catOf[e] === catOf[d.object])) return 'littles: same-category distractor';
+      return null;
+    },
+    positions(r, P) {
+      if (r.display.kind !== 'positions') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      if (!['on', 'under', 'in', 'out'].includes(d.q)) return 'q';
+      if (d.items.length !== P.relations) return 'relation set size';
+      const rels = d.items.map((it) => it.rel);
+      if (new Set(rels).size !== rels.length) return 'relation not exactly-one-member';
+      if (!rels.includes(d.q)) return 'queried relation absent from scene';
+      if (new Set(d.items.map((it) => it.e)).size !== d.items.length) return 'dup object emoji';
+      if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.items.map((it) => it.e).sort())) return 'choices≠scene objects';
+      if (st.correctId !== d.items.find((it) => it.rel === d.q).e) return 'correct ≠ queried-relation member';
       return null;
     },
   };
@@ -677,7 +698,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['positions'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

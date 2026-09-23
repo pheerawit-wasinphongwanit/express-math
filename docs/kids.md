@@ -15,6 +15,7 @@
 | sort | 🧺 | จัดเข้ากลุ่ม | – | จัดหมวดหมู่ (F-10, multi-step) | arrange |
 | samediff | 🪞 | เหมือนกันเลย | – | เหมือน–ต่าง (F-13) | visual |
 | shadow | 🌑 | เงาใครเอ่ย | – | จับคู่เงา (F-14) | visual |
+| positions | 📍 | บน–ล่าง–ใน–นอก | – | ตำแหน่งเชิงพื้นที่ (F-15) | visual |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
@@ -23,7 +24,7 @@
 | number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups · deal · neighbors |
 | compare | 🆚 | เปรียบเทียบ | compare ✓ · length · weight · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt |
-| visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions · partwhole |
+| visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole |
 | arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort · trace · routine |
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
@@ -40,6 +41,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | sort — items per round | 3 | 4–6 |
 | samediff — find choices · odd members · varying attrs | 3 · 3 · 1 | 5 · 4 · 2 |
 | shadow — เงา choices · หมวดตัวลวง | 2 · ต่างหมวด (cross) | 4 · หมวดเดียวกันได้ (profile ยังต่าง) |
+| positions — ความสัมพันธ์ในฉาก (= จำนวนตัวเลือก) | 2 | 4 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -61,6 +63,11 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
   - fruits: 🍌 `banana` · 🍍 `pineapple` · 🍇 `grapes` · 🍈 `melon`
   - toys: 🧸 `bear` · 🎈 `balloon` · 🪁 `kite` · 🎲 `dice`
   - อีโมจิและ profile ต้องไม่ซ้ำทั้ง pool (16 ชิ้น 16 profile — ST-[7]) · littles ตัวลวงมาจากหมวดอื่นเสมอ (cross) · bigs อนุญาตหมวดเดียวกันแต่ profile ยังต่าง
+- **positions** ฉากบน–ล่าง–ใน–นอก (F-15 — anchors = 🪑 โต๊ะ + 📦 กล่อง; ทุกฉากเป็น bijection ลง on/under/in/out ครบ 4 ความสัมพันธ์ ชิ้นละหนึ่ง — ST-[7]):
+  - 🐱 on · 🐭 under · ⚽ in · 🦆 out
+  - 🧸 on · 🐶 under · 👕 in · 🪁 out
+  - 🍎 on · 🐰 under · 🎁 in · 🚗 out
+  - รอบหยิบ subset ตามจำนวนความสัมพันธ์ของ band (2→4) แล้วสุ่มถาม 1 ความสัมพันธ์ — แตะ *ตัวของ* ที่อยู่ในความสัมพันธ์นั้น
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

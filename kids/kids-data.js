@@ -16,6 +16,7 @@ const KIDS = {
     { id: 'sort', icon: '🧺', caption: 'จัดเข้ากลุ่ม', family: 'arrange', coPlay: false },
     { id: 'samediff', icon: '🪞', caption: 'เหมือนกันเลย', family: 'visual', coPlay: false },
     { id: 'shadow', icon: '🌑', caption: 'เงาใครเอ่ย', family: 'visual', coPlay: false },
+    { id: 'positions', icon: '📍', caption: 'บน–ล่าง–ใน–นอก', family: 'visual', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -41,6 +42,7 @@ const KIDS = {
         sort: { itemCountMin: 3, itemCountMax: 3 },
         samediff: { choiceCount: 3, oddMembers: 3, attrs: 1 },
         shadow: { choiceCount: 2, sameCategory: false },   // littles: cross-category distractors only
+        positions: { relations: 2 },
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -52,6 +54,7 @@ const KIDS = {
         sort: { itemCountMin: 4, itemCountMax: 6 },
         samediff: { choiceCount: 5, oddMembers: 4, attrs: 2 },
         shadow: { choiceCount: 4, sameCategory: true },    // bigs: same-category allowed, profiles stay distinct
+        positions: { relations: 4 },
       } },
   ],
 
@@ -94,6 +97,14 @@ const KIDS = {
         { id: 'toys', members: [
           { e: '🧸', p: 'bear' }, { e: '🎈', p: 'balloon' },
           { e: '🪁', p: 'kite' }, { e: '🎲', p: 'dice' } ] },
+      ],
+    },
+    positions: {                                               // scene pools (F-15) — every scene a bijection onto
+      anchors: ['🪑', '📦'],                                    // on/under/in/out (one object per relation)
+      itemSets: [
+        [{ e: '🐱', rel: 'on' }, { e: '🐭', rel: 'under' }, { e: '⚽', rel: 'in' }, { e: '🦆', rel: 'out' }],
+        [{ e: '🧸', rel: 'on' }, { e: '🐶', rel: 'under' }, { e: '👕', rel: 'in' }, { e: '🪁', rel: 'out' }],
+        [{ e: '🍎', rel: 'on' }, { e: '🐰', rel: 'under' }, { e: '🎁', rel: 'in' }, { e: '🚗', rel: 'out' }],
       ],
     },
   },
