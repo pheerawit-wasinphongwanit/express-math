@@ -380,6 +380,25 @@ GEN.partwhole = function (rng, P, pools) {
   };
 };
 
+/* F-18 «เท่ากันไหม» — equal-groups matching. The sample is one group of n items; choices are
+   groups of other kinds (distinct emojis within the round, none equal to the sample's) so the
+   child compares cardinality, not appearance. Exactly one choice holds n; every distractor
+   differs by ≥ band gap (littles ≥2 — no near-ties, mirrors F-07/F-16 discipline). */
+GEN.equalgroups = function (rng, P, pools) {
+  const items = shuffle(rng, pools.equalgroups.items);
+  const n = randInt(rng, P.rangeLo, P.rangeHi);
+  const others = [];
+  for (let v = P.rangeLo; v <= P.rangeHi; v++) if (Math.abs(v - n) >= P.minGap) others.push(v);
+  const values = shuffle(rng, others).slice(0, P.choiceCount - 1);
+  const groups = [n, ...values].map((count, i) => ({ id: 'g' + i, emoji: items[i + 1], n: count }));
+  const correctId = groups[0].id;                                  // groups[0] is the equal one by construction
+  return {
+    gameId: 'equalgroups',
+    display: { kind: 'equal-groups', sample: { emoji: items[0], n }, groups },
+    steps: [{ choices: shuffle(rng, groups.map((g) => g.id)), correctId }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

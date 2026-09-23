@@ -19,12 +19,13 @@
 | length | 📏 | ยาว–สั้น | – | ความยาว (F-16) | compare |
 | weight | ⚖️ | หนัก–เบา | – | น้ำหนัก (F-17) | compare |
 | partwhole | 🌓 | ครึ่ง–เต็ม | – | ส่วน–ทั้งหมด (F-19) | visual |
+| equalgroups | 🍒 | เท่ากันไหม | – | ความเท่ากันของกลุ่ม (F-18) | number |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
 | zone id | marker | label (for parents) | games (✓ = registered; others = wave-2 plan) |
 |---|---|---|---|
-| number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups · deal · neighbors |
+| number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups ✓ · deal · neighbors ✓ |
 | compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight ✓ · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt |
 | visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole ✓ |
@@ -48,6 +49,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | length — ชิ้น · อัตราส่วนคู่ขั้นต่ำ | 2 · ≥1.5× (no near-ties) | 3 · ≥1.25× |
 | weight — ชิ้น · ช่องห่าง class ขั้นต่ำ | 2 · ≥2 | 3 · ≥1 |
 | partwhole — การ์ด · ทิศทางผ่า | 2 · ตั้ง (v) | 4 · ตั้ง/นอน/เฉียง (v/h/d) |
+| equalgroups — ช่วงนับ · ส่วนต่างตัวลวง | 1–5 · ≥2 (no near-ties) | 1–10 · ≥1 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -81,6 +83,7 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
 - **partwhole** ครึ่ง↔เต็ม (F-19 — wholes 6 ชิ้น คู่ครึ่ง↔เต็มเป็น bijection โดยโครงสร้าง clip-path: ครึ่ง = ตัวของเต็มถูกผ่าตามทิศ; อัปเกรด art ชุด 3 ที่ T-053 — รอ owner review [R15]):
   - 🍕 · 🍉 · 🍪 · 🌭 · 🥕 · 🥨
   - โจทย์ = ครึ่ง (ผ่าตาม `cut` ของรอบ) · ตัวเลือก = ของเต็ม · ทิศผ่าเป็น band param: littles ตั้ง (v) เท่านั้น → bigs เพิ่ม นอน (h) / เฉียง (d)
+- **equalgroups** กลุ่มเท่ากัน (F-18 — กลุ่มละชนิดเดียว และทุกกลุ่มในรอบต่างชนิดกัน + ต่างจากกลุ่มตัวอย่าง เพื่อบังคับเทียบ «จำนวน» ไม่ใช่หน้าตา; กลุ่มที่เท่ามีเดียว ตัวลวงห่าง ≥ ขั้นต่ำของ band): 🍒 🍓 🍊 🍇 🫐 🍪 🧁 🐟
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

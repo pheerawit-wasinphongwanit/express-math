@@ -223,6 +223,24 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
     const cuts = new Set(KIDS.bands.flatMap((b) => b.params.partwhole.cuts));
     ok([...cuts].every((c) => ['v', 'h', 'd'].includes(c)), 'partwhole cuts: v/h/d vocabulary only');
   }
+  // equalgroups pool data invariants (F-18 — item emojis distinct; pool deep enough for
+  // sample + choiceCount groups; every band leaves ≥ choiceCount−1 gap-qualified distractor values)
+  {
+    const items = KIDS.pools.equalgroups.items;
+    ok(new Set(items).size === items.length, 'equalgroups pool: item emojis distinct');
+    const maxCC = Math.max(...KIDS.bands.map((b) => b.params.equalgroups.choiceCount));
+    ok(items.length >= 1 + maxCC, `equalgroups pool: ≥ 1+choiceCount items (${items.length} ≥ ${1 + maxCC})`);
+    for (const b of KIDS.bands) {
+      const P = b.params.equalgroups;
+      let minCand = Infinity;
+      for (let n = P.rangeLo; n <= P.rangeHi; n++) {
+        let c = 0;
+        for (let v = P.rangeLo; v <= P.rangeHi; v++) if (Math.abs(v - n) >= P.minGap) c++;
+        minCand = Math.min(minCand, c);
+      }
+      ok(minCand >= P.choiceCount - 1, `equalgroups pool: feasible for band «${b.id}» (min ${minCand} distractor values ≥ ${P.choiceCount - 1} needed)`);
+    }
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -424,6 +442,23 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (!P.cuts.includes(d.cut)) return 'cut not in band set';
       if (st.correctId !== d.whole) return 'correct≠matching whole';
       if (!st.choices.every((c) => KIDS.pools.partwhole.wholes.includes(c))) return 'choice not curated';
+      return null;
+    },
+    equalgroups(r, P) {
+      if (r.display.kind !== 'equal-groups') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      if (d.sample.n < P.rangeLo || d.sample.n > P.rangeHi) return 'sample out of band';
+      if (st.choices.length !== P.choiceCount) return 'choiceCount';
+      const equal = d.groups.filter((g) => g.n === d.sample.n);
+      if (equal.length !== 1 || equal[0].id !== st.correctId) return 'equal-group uniqueness';
+      for (const g of d.groups) {
+        if (g.n < P.rangeLo || g.n > P.rangeHi) return 'group out of band';
+        if (g.n !== d.sample.n && Math.abs(g.n - d.sample.n) < P.minGap) return 'distractor gap < band min';
+      }
+      const emojis = d.groups.map((g) => g.emoji);
+      if (new Set(emojis).size !== emojis.length || emojis.includes(d.sample.emoji)) return 'kind clash (appearance matching)';
+      if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.groups.map((g) => g.id).sort())) return 'choices≠groups';
       return null;
     },
   };
@@ -762,7 +797,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['equalgroups'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {
