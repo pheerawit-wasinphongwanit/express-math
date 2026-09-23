@@ -207,6 +207,19 @@
     position: fixed; transform: translate(-50%, -50%) scale(1.15); z-index: 60;
     pointer-events: none; border-color: var(--accent); box-shadow: 0 8px 20px rgba(107, 79, 58, .25);
   }
+
+  /* ---------- S-22 trace (F-24) — goal-state round: dashed corridor + glide input ---------- */
+  .traceWrap { position: relative; width: 100%; min-height: min(56vh, 340px); touch-action: none; cursor: pointer; }
+  .traceSvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .traceCorridor { fill: none; stroke: var(--accent-soft); stroke-width: .95; stroke-linecap: round; stroke-linejoin: round; opacity: .5; }
+  .traceLine { fill: none; stroke: var(--accent); stroke-width: .075; stroke-dasharray: .24 .17; stroke-linecap: round; stroke-linejoin: round; }
+  .traceDot {
+    position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--card);
+    border: 3px solid var(--accent); transform: translate(-50%, -50%);
+  }
+  .traceDot.reached { background: var(--accent); }
+  .traceEnd { position: absolute; font-size: 2.8rem; line-height: 1; transform: translate(-50%, -50%); }
+  .traceDuck { position: absolute; font-size: 2.6rem; line-height: 1; transform: translate(-50%, -50%); z-index: 5; }
 </style>
 </head>
 <body>

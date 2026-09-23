@@ -13,6 +13,11 @@ let overlayTimer = 0;         // the one setTimeout handle
 let pendingGame = null;       // game awaiting the solo/together choice (S-10)
 let dealSel = null;           // S-19 tap-mode selection (item id) — ephemeral view state, cleared on every render
 let dealSelEl = null;         // its chip element (selection highlight bookkeeping)
+let traceWrapEl = null;       // S-22 corridor canvas (geometry anchor)
+let traceDuckEl = null, traceEndEl = null, traceDots = [];
+let traceLog = [];            // S-22 traversal log — mirrors session.placed[0] (progress is never reset)
+let traceActive = false;      // pointer down = gliding
+let traceGeo = null;          // {maxX, g, gy} — grid→pixel mapping shared by SVG viewBox and hit geometry
 
 function $(id) { return document.getElementById(id); }
 
@@ -80,6 +85,8 @@ function goHome() {
   session = null;
   pendingGame = null;
   dealSel = null; dealSelEl = null;
+  traceWrapEl = null; traceDuckEl = null; traceEndEl = null; traceDots = [];
+  traceLog = []; traceActive = false; traceGeo = null;
   $('overlay').hidden = true;
   $('chooser').hidden = true;
   $('play').hidden = true;
@@ -107,6 +114,7 @@ function renderRound() {
   else if (d.kind === 'shape-hunt') renderShapeHunt(d);
   else if (d.kind === 'routine') renderRoutine(d);
   else if (d.kind === 'deal') renderDeal(d);
+  else if (d.kind === 'trace') renderTrace(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -620,6 +628,133 @@ function dealPlace(itemId, recipId) {
   const r = K.submit(session, snap);
   if (r.outcome === 'pass') { showOverlay('pass', r.turnAdvanced); return; }
   renderRound();
+}
+
+/* S-22 «เดินตามเส้น» — goal-state trace view (F-24): a dashed corridor from the duck to the
+   pond fills the content area; inputTrace (below) glides along it following the pointer.
+   Drift = the glide pauses (duck holds, progress kept — never reset, J-24); waypoint
+   reaches append to the traversal log and submit it — silent until the pond; the pond
+   completes the goal → pass. Geometry is ONE mapping: the SVG viewBox and the pixel hit
+   math share traceGeo, so the drawn corridor is exactly the hittable corridor. */
+function renderTrace(d) {
+  const w = d.waypoints;
+  const maxX = w[w.length - 1].x;
+  const g = maxX * 0.12, gy = 0.5;                 // grid-space padding (≈10% visual margin)
+  traceGeo = { maxX, g, gy };
+  traceLog = (session.placed[0] || []).slice();
+  traceActive = false;
+  traceDots = [];
+
+  const prompt = $('prompt');
+  prompt.className = '';
+  prompt.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'traceWrap';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'traceSvg');
+  svg.setAttribute('viewBox', (-g) + ' ' + (-gy) + ' ' + (maxX + 2 * g) + ' ' + (4 + 2 * gy));
+  svg.setAttribute('preserveAspectRatio', 'none');
+  const corridor = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  corridor.setAttribute('class', 'traceCorridor');
+  corridor.setAttribute('points', w.map((p) => p.x + ',' + p.y).join(' '));
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  line.setAttribute('class', 'traceLine');
+  line.setAttribute('points', w.map((p) => p.x + ',' + p.y).join(' '));
+  svg.append(corridor, line);
+  wrap.appendChild(svg);
+
+  for (let i = 1; i < w.length - 1; i++) {        // mid waypoint dots light up as reached
+    const dot = document.createElement('span');
+    dot.className = 'traceDot' + (i < traceLog.length ? ' reached' : '');
+    wrap.appendChild(dot);
+    traceDots.push({ i, el: dot });
+  }
+  const end = document.createElement('span');
+  end.className = 'traceEnd';
+  end.textContent = d.end;
+  wrap.appendChild(end);
+  traceEndEl = end;
+  const duck = document.createElement('span');
+  duck.className = 'traceDuck';
+  duck.textContent = d.start;
+  wrap.appendChild(duck);
+  traceDuckEl = duck;
+  traceWrapEl = wrap;
+
+  traceInput(wrap);
+  prompt.appendChild(wrap);
+  layoutTraceMarkers(w);
+
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';                               // no choice cards — the corridor is the input
+}
+function tracePt(i) {
+  const rc = traceWrapEl.getBoundingClientRect();
+  const geo = traceGeo;
+  const w = session.round.display.waypoints;
+  return {
+    x: ((w[i].x + geo.g) / (geo.maxX + 2 * geo.g)) * rc.width,
+    y: ((w[i].y + geo.gy) / (4 + 2 * geo.gy)) * rc.height,
+  };
+}
+function layoutTraceMarkers(w) {
+  const place = (el, i) => {
+    const p = tracePt(i);
+    el.style.left = p.x + 'px';
+    el.style.top = p.y + 'px';
+  };
+  for (const dot of traceDots) place(dot.el, dot.i);
+  place(traceEndEl, w.length - 1);
+  place(traceDuckEl, Math.max(0, traceLog.length - 1)); // duck waits at the furthest reached point
+}
+
+/* inputTrace (S-22) — the glide input: pointer down anywhere starts a glide; the duck follows
+   the nearest point ON the path while the pointer stays inside the corridor; leaving the
+   corridor = pause (duck freezes, progress kept). Reaching the next waypoint(s) in order
+   appends them to the log and submits it once per event. Pointer Events only; no timers —
+   drift detection is pure geometry (§6.5 timer split untouched). */
+function traceInput(wrap) {
+  wrap.addEventListener('pointerdown', (ev) => {
+    if (!session || !$('overlay').hidden) return;
+    traceActive = true;
+    if (wrap.setPointerCapture) wrap.setPointerCapture(ev.pointerId);
+    traceFollow(ev);
+  });
+  wrap.addEventListener('pointermove', (ev) => { if (traceActive) traceFollow(ev); });
+  wrap.addEventListener('pointerup', () => { traceActive = false; });
+  wrap.addEventListener('pointercancel', () => { traceActive = false; });
+}
+function traceFollow(ev) {
+  if (!session || !$('overlay').hidden) return;
+  const w = session.round.display.waypoints;
+  const CORRIDOR = 56;                              // generous — no precision pressure beyond the task
+  let best = null;                                  // nearest point on the whole polyline
+  for (let i = 0; i + 1 < w.length; i++) {
+    const a = tracePt(i), b = tracePt(i + 1);
+    const vx = b.x - a.x, vy = b.y - a.y;
+    const len2 = vx * vx + vy * vy || 1;
+    let t = ((ev.clientX - a.x) * vx + (ev.clientY - a.y) * vy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    const px = a.x + t * vx, py = a.y + t * vy;
+    const dist = Math.hypot(ev.clientX - px, ev.clientY - py);
+    if (!best || dist < best.dist) best = { dist, px, py };
+  }
+  if (best.dist > CORRIDOR) return;                 // drift → glide pauses (nothing resets, J-24)
+  traceDuckEl.style.left = best.px + 'px';
+  traceDuckEl.style.top = best.py + 'px';
+  let appended = false, guard = 0;
+  while (traceLog.length < w.length && guard++ < 8) {
+    const wp = tracePt(traceLog.length);            // next waypoint in order — jumping ahead is impossible
+    if (Math.hypot(ev.clientX - wp.x, ev.clientY - wp.y) > CORRIDOR) break;
+    traceLog.push(w[traceLog.length].id);
+    for (const dot of traceDots) if (dot.i === traceLog.length - 1) dot.el.classList.add('reached');
+    appended = true;
+  }
+  if (!appended) return;
+  const r = K.submit(session, traceLog.slice());
+  if (r.outcome === 'pass') showOverlay('pass', r.turnAdvanced); // the pond → pass cartoon
+  // anything else stays silent — the glide simply continues (J-24)
 }
 
 /* S-11 «เหมือนกันเลย» — find-same: big sample + choice cards (tap the same kind);
