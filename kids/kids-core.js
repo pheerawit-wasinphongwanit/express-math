@@ -448,6 +448,24 @@ GEN.neighbors = function (rng, P) {
   };
 };
 
+/* F-23 «ของจริงรูปทรงอะไร» — real-object → basic-shape. The pool's object→shape mapping is a
+   function (one shape per object — pool data); exactly one correct shape among choices,
+   distractor shapes distinct (ST-[7]). Emoji stand in now — art set 4 = recognizability
+   upgrade (T-054, owner spot-review rides it); the game never blocks on an asset. */
+GEN.shapehunt = function (rng, P, pools) {
+  const kinds = shuffle(rng, pools.shapehunt.shapes.slice()).slice(0, P.kindsCount);
+  const correct = kinds[Math.floor(rng() * kinds.length)];
+  const ofKind = pools.shapehunt.objects.filter((o) => o.s === correct);
+  const object = ofKind[Math.floor(rng() * ofKind.length)];
+  const distractors = shuffle(rng, kinds.filter((s) => s !== correct)).slice(0, P.choiceCount - 1);
+  const choices = shuffle(rng, [correct, ...distractors]);
+  return {
+    gameId: 'shapehunt',
+    display: { kind: 'shape-hunt', object: object.e },
+    steps: [{ choices, correctId: correct }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

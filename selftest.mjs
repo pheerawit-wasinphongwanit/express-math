@@ -275,6 +275,23 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (P.interior) ok(P.trackMin >= 3, `neighbors params «${b.id}»: interior gap needs track ≥ 3`);
     }
   }
+  // shapehunt pool data invariants (F-23 — object→shape mapping is a function: object emojis
+  // distinct so each object maps exactly one shape; every shape real; ≥2 objects per kind;
+  // choices fit the kinds each band activates)
+  {
+    const sh = KIDS.pools.shapehunt;
+    ok(new Set(sh.shapes).size === sh.shapes.length, 'shapehunt pool: shape kinds distinct');
+    ok(new Set(sh.objects.map((o) => o.e)).size === sh.objects.length, 'shapehunt pool: object emojis distinct (mapping is a function)');
+    ok(sh.objects.every((o) => sh.shapes.includes(o.s)), 'shapehunt pool: every object maps to a real kind');
+    const perKind = {};
+    sh.objects.forEach((o) => { perKind[o.s] = (perKind[o.s] || 0) + 1; });
+    ok(Object.values(perKind).every((c) => c >= 2), 'shapehunt pool: ≥ 2 objects per kind (variety)');
+    for (const b of KIDS.bands) {
+      const P = b.params.shapehunt;
+      ok(P.choiceCount <= P.kindsCount && P.kindsCount <= sh.shapes.length,
+         `shapehunt params «${b.id}»: choices ≤ kinds ≤ pool shapes`);
+    }
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -536,6 +553,18 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (st.choices.length !== P.choiceCount) return 'choiceCount';
       if (st.correctId !== d.n) return 'correct≠n';
       if (!st.choices.every((c) => Number.isInteger(c) && c >= 1 && c <= P.trackMax)) return 'out-of-band choice';
+      return null;
+    },
+    shapehunt(r, P) {
+      if (r.display.kind !== 'shape-hunt') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      const sh = KIDS.pools.shapehunt;
+      const obj = sh.objects.find((o) => o.e === d.object);
+      if (!obj) return 'object not in pool';
+      if (st.choices.length !== P.choiceCount) return 'choiceCount';
+      if (!st.choices.every((c) => sh.shapes.includes(c))) return 'choice not a real kind';
+      if (st.correctId !== obj.s) return 'correct ≠ mapped shape (function mapping)';
       return null;
     },
   };
@@ -874,7 +903,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['shapehunt'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

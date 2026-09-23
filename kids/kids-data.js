@@ -23,6 +23,7 @@ const KIDS = {
     { id: 'equalgroups', icon: '🍒', caption: 'เท่ากันไหม', family: 'number', coPlay: false },
     { id: 'colorsort', icon: '🎨', caption: 'จัดตามสี', family: 'arrange', coPlay: false },
     { id: 'neighbors', icon: '🧮', caption: 'เพื่อนตัวเลข', family: 'number', coPlay: false },
+    { id: 'shapehunt', icon: '🔍', caption: 'ของจริงรูปทรงอะไร', family: 'shape', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -55,6 +56,7 @@ const KIDS = {
         equalgroups: { rangeLo: 1, rangeHi: 5, choiceCount: 3, minGap: 2 }, // no near-ties (F-18)
         colorsort: { binCount: 2, itemCountMin: 4, itemCountMax: 4 },        // 2 color bowls (F-20)
         neighbors: { trackMin: 3, trackMax: 5, choiceCount: 3, interior: false }, // littles: gap at the end (F-22)
+        shapehunt: { choiceCount: 2, kindsCount: 3 },                // 2 shape cards, 3 kinds (F-23)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -73,6 +75,7 @@ const KIDS = {
         equalgroups: { rangeLo: 1, rangeHi: 10, choiceCount: 3, minGap: 1 },
         colorsort: { binCount: 3, itemCountMin: 5, itemCountMax: 6 },        // 3 bowls, more items (F-20)
         neighbors: { trackMin: 6, trackMax: 10, choiceCount: 4, interior: true }, // bigs: interior gap (F-22)
+        shapehunt: { choiceCount: 4, kindsCount: 5 },                // 4 shape cards, all 5 kinds (F-23)
       } },
   ],
 
@@ -143,6 +146,16 @@ const KIDS = {
         { id: 'yellow', swatch: '#F2B33D', marker: '⭐', members: ['🍌', '🌻', '🧀', '🌽', '🍋'] },
         { id: 'green', swatch: '#30A46C', marker: '🌲', members: ['🥑', '🥦', '🐢', '🥒', '🍏'] },
       ],                                                        // (marker ∉ members — mirrors sort bin rule)
+    },
+    shapehunt: {                                                // real-object → basic-shape (F-23) — a FUNCTION in
+      shapes: ['🔵', '🔺', '🟪', '⭐', '❤️'],                      // pool data: one shape per object; emoji stand in
+      objects: [                                                // now, art set 4 = T-054 (owner spot-review rides it)
+        { e: '⚽', s: '🔵' }, { e: '🌞', s: '🔵' }, { e: '🪙', s: '🔵' }, { e: '🍪', s: '🔵' },
+        { e: '🍕', s: '🔺' }, { e: '⛰️', s: '🔺' }, { e: '🥪', s: '🔺' }, { e: '🎪', s: '🔺' },
+        { e: '🎁', s: '🟪' }, { e: '🖼️', s: '🟪' }, { e: '📖', s: '🟪' }, { e: '🖥️', s: '🟪' },
+        { e: '✨', s: '⭐' }, { e: '🌟', s: '⭐' }, { e: '💫', s: '⭐' }, { e: '🎇', s: '⭐' },
+        { e: '💝', s: '❤️' }, { e: '💗', s: '❤️' }, { e: '💖', s: '❤️' }, { e: '💌', s: '❤️' },
+      ],
     },
   },
 
