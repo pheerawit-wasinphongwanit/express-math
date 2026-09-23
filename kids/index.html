@@ -121,6 +121,14 @@
   .pqIn { position: absolute; }
   .pqRow { display: flex; align-items: center; gap: 8px; }
 
+  /* S-14 «ยาว–สั้น» — common-baseline bars, widths data-scaled */
+  .lenGlyph { display: inline-block; height: 14px; border-radius: 999px; background: #E8862E; }
+  .lenGlyph.long { width: 88px; }
+  .lenGlyph.short { width: 26px; }
+  #choices.lenRows { display: flex; flex-direction: column; gap: 12px; }
+  .choice.lenRow { min-height: 64px; display: flex; align-items: center; justify-content: flex-start; padding: 6px 22px; }
+  .lenBar { display: inline-block; height: 30px; border-radius: 999px; background: linear-gradient(180deg, #FFC98A, #FF9F43); }
+
   #overlay {
     position: absolute; inset: 0; background: rgba(255, 246, 234, .96);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; z-index: 10;

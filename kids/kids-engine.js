@@ -95,6 +95,7 @@ function renderRound() {
   else if (d.kind === 'samediff-find' || d.kind === 'samediff-odd') renderSamediff(d);
   else if (d.kind === 'shadow-match') renderShadow(d);
   else if (d.kind === 'positions') renderPositions(d);
+  else if (d.kind === 'length') renderLength(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -471,6 +472,34 @@ function posQuestion(rel, anchors) {
     q.appendChild(row);
   }
   return q;
+}
+
+/* S-14 «ยาว–สั้น» — items as bars on a shared baseline, widths data-scaled by `len` so the eye
+   compares instantly; the question is the S-06 pictogram family: arrow + long/short bar glyph. */
+function renderLength(d) {
+  const prompt = $('prompt');
+  prompt.className = 'qbar';
+  prompt.innerHTML = '';
+  const arrow = document.createElement('span');
+  arrow.textContent = '➡️';
+  const mag = document.createElement('span');
+  mag.className = 'lenGlyph ' + (d.q === 'longer' ? 'long' : 'short');
+  prompt.append(arrow, mag);
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = 'lenRows';
+  box.innerHTML = '';
+  for (const id of step.choices) {
+    const it = d.items.find((x) => x.id === id);
+    const btn = document.createElement('button');
+    btn.className = 'choice lenRow';
+    const bar = document.createElement('span');
+    bar.className = 'lenBar';
+    bar.style.width = (30 + it.len * 12) + 'px'; // data-scaled (S-14)
+    btn.appendChild(bar);
+    btn.addEventListener('click', () => onChoice(id));
+    box.appendChild(btn);
+  }
 }
 
 /* ---------- co-play (F-12) — turn indicator + icon handoff; no per-player anything ---------- */
