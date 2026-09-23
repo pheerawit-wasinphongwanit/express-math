@@ -25,6 +25,7 @@ const KIDS = {
     { id: 'neighbors', icon: '🧮', caption: 'เพื่อนตัวเลข', family: 'number', coPlay: false },
     { id: 'shapehunt', icon: '🔍', caption: 'ของจริงรูปทรงอะไร', family: 'shape', coPlay: false },
     { id: 'routine', icon: '🐭', caption: 'วันของหนู', family: 'arrange', coPlay: false },
+    { id: 'deal', icon: '🥕', caption: 'แจกให้ครบ', family: 'number', coPlay: true },   // OQ-B natural (S-10)
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -59,6 +60,7 @@ const KIDS = {
         neighbors: { trackMin: 3, trackMax: 5, choiceCount: 3, interior: false }, // littles: gap at the end (F-22)
         shapehunt: { choiceCount: 2, kindsCount: 3 },                // 2 shape cards, 3 kinds (F-23)
         routine: { cardCount: 3 },                                  // 3 routine cards (F-25)
+        deal: { nMin: 3, nMax: 3 },                                  // 3 carrots ↔ 3 rabbits (F-21)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -79,6 +81,7 @@ const KIDS = {
         neighbors: { trackMin: 6, trackMax: 10, choiceCount: 4, interior: true }, // bigs: interior gap (F-22)
         shapehunt: { choiceCount: 4, kindsCount: 5 },                // 4 shape cards, all 5 kinds (F-23)
         routine: { cardCount: 5 },                                  // 5 cards from the 6-step chain (F-25)
+        deal: { nMin: 4, nMax: 6 },                                  // bigger deal, still 1:1 (F-21)
       } },
   ],
 
@@ -164,6 +167,10 @@ const KIDS = {
       chain: [                                                    // rank = position; any dealt subset sorts uniquely
         { e: '⏰' }, { e: '🪥' }, { e: '🥣' }, { e: '🏫' }, { e: '🛁' }, { e: '😴' },
       ],                                                          // (emoji now; art set 5 = T-055, spot-review R15)
+    },
+    deal: {                                                       // one-to-one deal (F-21) — goal-state round; item and
+      items: ['🥕', '🌽', '🍎', '🍇', '🍪', '🍌'],                 // recipient pools stay disjoint so holdings never
+      recipients: ['🐰', '🐻', '🐸', '🐷', '🐭', '🐨'],             // read ambiguous (ST-[7])
     },
   },
 

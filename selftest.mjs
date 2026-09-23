@@ -303,6 +303,16 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
          `routine pool: feasible for band «${b.id}» (chain ${chain.length} ≥ ${b.params.routine.cardCount} cards)`);
     }
   }
+  // deal pool data invariants (F-21 — item/recipient emojis distinct within pool and disjoint
+  // across pools, so a round's holdings never read ambiguous; depth covers the biggest band N)
+  {
+    const dp = KIDS.pools.deal;
+    ok(new Set(dp.items).size === dp.items.length, 'deal pool: item emojis distinct');
+    ok(new Set(dp.recipients).size === dp.recipients.length, 'deal pool: recipient emojis distinct');
+    ok(dp.items.filter((e) => dp.recipients.includes(e)).length === 0, 'deal pool: items ∩ recipients = ∅ (unambiguous holdings)');
+    const maxN = Math.max(...KIDS.bands.map((b) => b.params.deal.nMax));
+    ok(dp.items.length >= maxN && dp.recipients.length >= maxN, `deal pool: feasible for band N ≤ ${maxN} (${dp.items.length}/${dp.recipients.length} deep)`);
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -596,6 +606,22 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       }
       return null;
     },
+    deal(r, P) {
+      const d = r.display;
+      if (d.kind !== 'deal') return 'kind';
+      if (d.items.length < P.nMin || d.items.length > P.nMax) return 'n out of band';
+      if (d.recipients.length !== d.items.length) return 'items≠recipients (1:1 deal)';
+      if (new Set(d.items.map((x) => x.id)).size !== d.items.length) return 'dup item ids';
+      if (new Set(d.recipients.map((x) => x.id)).size !== d.recipients.length) return 'dup recipient ids';
+      if (r.steps.length !== 1 || r.steps[0].goal !== 'one-each') return 'steps (goal one-each)';
+      if (r.steps[0].handoff !== 'per-action') return 'handoff per-action (J-21)';
+      const dp = KIDS.pools.deal;
+      if (d.items.some((x) => !dp.items.includes(x.e))) return 'item not in pool';
+      if (d.recipients.some((x) => !dp.recipients.includes(x.e))) return 'recipient not in pool';
+      if (new Set(d.items.map((x) => x.e)).size !== d.items.length) return 'dup item emoji in round';
+      if (new Set(d.recipients.map((x) => x.e)).size !== d.recipients.length) return 'dup recipient emoji in round';
+      return null;
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -752,6 +778,23 @@ console.log('\n[8] F-03 session contract (kids core)');
       if (KC.submit(s, s.round.steps[s.stepIndex].correctId).outcome === 'pass') passed = true;
     }
     ok(passed && s.placed.length === 0, '(c-routine) routine: completes to pass; fresh round resets placed');
+  }
+
+  // (c-deal) goal round on a REAL generator (deal): partial/skewed structures stay silent,
+  // the snapshot accumulates, the goal state alone completes the round (J-21 core semantics)
+  {
+    const s = KC.newSession('deal', 'littles', 1, 608);
+    const d = s.round.display;
+    ok(d.items.length === 3 && d.recipients.length === 3, '(c-deal) littles deal: 3 items ↔ 3 recipients');
+    const partial = d.items.slice(0, 2).map((it, i) => ({ item: it.id, recipient: d.recipients[i].id }));
+    const r1 = KC.submit(s, partial);
+    ok(r1.outcome === 'incomplete' && s.stepIndex === 0 && s.placed.length === 1, '(c-deal) partial deal → silent incomplete, snapshot stored');
+    const skewed = d.items.map((it, i) => ({ item: it.id, recipient: d.recipients[i === 0 ? 0 : 1].id })); // all placed, one rabbit holds 2
+    const r2 = KC.submit(s, skewed);
+    ok(r2.outcome === 'incomplete' && s.stepIndex === 0, '(c-deal) skewed-but-valid deal → still silent (J-21 edge: แจกซ้ำไม่ใช่ตอบผิด)');
+    const fixed = d.items.map((it, i) => ({ item: it.id, recipient: d.recipients[i].id }));
+    const r3 = KC.submit(s, fixed);
+    ok(r3.outcome === 'pass' && r3.roundChanged && s.placed.length === 0, '(c-deal) every-recipient-exactly-one → pass + fresh round');
   }
 
   // (f) goal-step contract — synthetic goal fixtures (T-021 discipline; real goal gens land in M7)
@@ -949,7 +992,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['deal'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

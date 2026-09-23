@@ -24,18 +24,19 @@
 | neighbors | 🧮 | เพื่อนตัวเลข | – | เพื่อนบ้านของเลข (F-22) | number |
 | shapehunt | 🔍 | ของจริงรูปทรงอะไร | – | ของจริง→รูปทรง (F-23) | shape |
 | routine | 🐭 | วันของหนู | – | เรียงลำดับกิจวัตร (F-25, multi-step) | arrange |
+| deal | 🥕 | แจกให้ครบ | ✔ (OQ-B natural) | แจกแบบ one-to-one (F-21, goal-state) | number |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
 | zone id | marker | label (for parents) | games (✓ = registered; others = wave-2 plan) |
 |---|---|---|---|
-| number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups ✓ · deal · neighbors ✓ |
+| number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups ✓ · deal ✓ · neighbors ✓ |
 | compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight ✓ · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt ✓ |
 | visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole ✓ |
 | arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort ✓ · trace · routine ✓ |
 
-*(M7 เหลือ deal · trace · pairoff — registry ครบ 20)*
+*(M7 เหลือ trace · pairoff — registry ครบ 20)*
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
 
@@ -60,6 +61,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | neighbors — ความยาวราง · ตำแหน่งช่องหาย · ตัวเลือก | ≤5 · ปลายราง · 3 | ≤10 · กลางราง · 4 |
 | shapehunt — ตัวเลือก · ชนิดรูปทรง | 2 · 3 | 4 · 5 |
 | routine — การ์ดกิจวัตร | 3 | 5 |
+| deal — คู่ของ↔ผู้รับ (goal-state 1:1) | 3 | 4–6 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -107,6 +109,8 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
   - ❤️ หัวใจ: 💝 💗 💖 💌
 - **routine** ห่วงโซ่กิจวัตร strictly ordered (F-25 — กลไก order เดิม เปลี่ยนเนื้อหาจากขนาดเป็นเหตุการณ์ของวัน (C6); ไม่มีคู่กำกวมแบบ กิน–เล่น ตามสเปก subset ใด sort ได้ทางเดียว — rank ต่างกันหมด acyclic โดยโครงสร้าง; การ์ดไร้คำ = emoji ตอนนี้ อัปเกรด art ชุด 5 = T-055; รอ owner spot-review [R15]):
   - ⏰ ตื่น → 🪥 แปรงฟัน → 🥣 กินข้าวเช้า → 🏫 โรงเรียน → 🛁 อาบน้ำ → 😴 นอน (6 ขั้น rank 1–6)
+- **deal** แจก one-to-one (F-21 — goal-state round ตัวแรก: คำตอบที่ถูกคือ *สถานะปลาย* «ผู้รับทุกตัวถือของพอดีหนึ่งชิ้น» ไม่ใช่เส้นทางเดียว — GOALS['one-each'] เป็นผู้ตัดสิน; โครงสร้างยังไม่ครบ = เงียบ ไม่มีการ์ตูนกลางคัน J-21; co-play ผลัดวางทีละชิ้น handoff `per-action`):
+  - ของ (สิ่งที่แจก): 🥕 🌽 🍎 🍇 🍪 🍌 · ผู้รับ: 🐰 🐻 🐸 🐷 🐭 🐨 (แยกกันชัด ไม่ซ้ำข้ามฝั่ง — รอบหยิบตาม N ของ band)
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

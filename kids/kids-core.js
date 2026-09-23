@@ -486,6 +486,24 @@ GEN.routine = function (rng, P, pools) {
   };
 };
 
+/* F-21 «แจกให้ครบ» — goal-state round (T-045): N items dealt one-to-one to N recipients.
+   The correct resolution is the GOAL STATE «every recipient holds exactly one item» —
+   GOALS['one-each'] judges structure snapshots, uniqueness is NEVER on a path (J-21);
+   incomplete structures stay silent. coPlay natural (OQ-B) with per-action handoff —
+   every accepted placement flips the turn (J-21 «แม่วางหนึ่ง น้องวางหนึ่ง»). */
+GEN.deal = function (rng, P, pools) {
+  const n = randInt(rng, P.nMin, P.nMax);
+  const items = shuffle(rng, pools.deal.items.slice()).slice(0, n)
+    .map((e, i) => ({ id: 'i' + i, e }));
+  const recipients = shuffle(rng, pools.deal.recipients.slice()).slice(0, n)
+    .map((e, i) => ({ id: 'r' + i, e }));
+  return {
+    gameId: 'deal',
+    display: { kind: 'deal', items, recipients }, // presented scattered (view shuffles visually)
+    steps: [{ goal: 'one-each', handoff: 'per-action' }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
