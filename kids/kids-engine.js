@@ -101,6 +101,7 @@ function renderRound() {
   else if (d.kind === 'equal-groups') renderEqualGroups(d);
   else if (d.kind === 'color-sort') renderColorSort(d);
   else if (d.kind === 'number-track') renderNeighbors(d);
+  else if (d.kind === 'shape-hunt') renderShapeHunt(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -429,6 +430,28 @@ function renderNeighbors(d) {
     btn.className = 'choice';
     const inner = numeralCard(c);
     inner.classList.add('cardFill');
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
+    box.appendChild(btn);
+  }
+}
+
+/* S-21 «ของจริงรูปทรงอะไร» — big real-object prompt + basic-shape cards (emoji fallback now,
+   art set 4 = T-054 recognizability upgrade — the game never blocks on an asset, J-23). */
+function renderShapeHunt(d) {
+  const prompt = $('prompt');
+  prompt.className = 'sampleShape';
+  prompt.textContent = d.object;
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'gShape';
+    inner.textContent = c;
     btn.appendChild(inner);
     btn.addEventListener('click', () => onChoice(c));
     box.appendChild(btn);
