@@ -15,6 +15,7 @@ const KIDS = {
     { id: 'order', icon: '🦆', caption: 'เรียงให้ถูก', family: 'arrange', coPlay: false },
     { id: 'sort', icon: '🧺', caption: 'จัดเข้ากลุ่ม', family: 'arrange', coPlay: false },
     { id: 'samediff', icon: '🪞', caption: 'เหมือนกันเลย', family: 'visual', coPlay: false },
+    { id: 'shadow', icon: '🌑', caption: 'เงาใครเอ่ย', family: 'visual', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -39,6 +40,7 @@ const KIDS = {
         order: { itemCountMin: 2, itemCountMax: 3 },
         sort: { itemCountMin: 3, itemCountMax: 3 },
         samediff: { choiceCount: 3, oddMembers: 3, attrs: 1 },
+        shadow: { choiceCount: 2, sameCategory: false },   // littles: cross-category distractors only
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -49,6 +51,7 @@ const KIDS = {
         order: { itemCountMin: 3, itemCountMax: 4 },
         sort: { itemCountMin: 4, itemCountMax: 6 },
         samediff: { choiceCount: 5, oddMembers: 4, attrs: 2 },
+        shadow: { choiceCount: 4, sameCategory: true },    // bigs: same-category allowed, profiles stay distinct
       } },
   ],
 
@@ -75,6 +78,22 @@ const KIDS = {
         { id: 'animals', members: ['🐰', '🐷', '🐔', '🐭', '🐸'] },
         { id: 'vehicles', members: ['🚗', '🚌', '🚲', '🚂', '🛴'] },
         { id: 'toys', members: ['🧸', '🎲', '🥁', '🪀', '🎈'] },
+      ],
+    },
+    shadow: {                                                  // object↔shadow pairs (F-14) — `p` = silhouette profile,
+      groups: [                                                // globally distinct across the pool (ST-[7] pool-level check);
+        { id: 'animals', members: [                            // rendering = CSS-filter silhouette now, art set 1 = T-051
+          { e: '🐘', p: 'elephant' }, { e: '🦒', p: 'giraffe' },
+          { e: '🐧', p: 'penguin' }, { e: '🦋', p: 'butterfly' } ] },
+        { id: 'vehicles', members: [
+          { e: '🚗', p: 'car' }, { e: '🚲', p: 'bike' },
+          { e: '🚁', p: 'heli' }, { e: '🚢', p: 'boat' } ] },
+        { id: 'fruits', members: [
+          { e: '🍌', p: 'banana' }, { e: '🍍', p: 'pineapple' },
+          { e: '🍇', p: 'grapes' }, { e: '🍈', p: 'melon' } ] },
+        { id: 'toys', members: [
+          { e: '🧸', p: 'bear' }, { e: '🎈', p: 'balloon' },
+          { e: '🪁', p: 'kite' }, { e: '🎲', p: 'dice' } ] },
       ],
     },
   },

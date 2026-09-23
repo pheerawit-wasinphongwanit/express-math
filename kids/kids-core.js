@@ -274,6 +274,28 @@ GEN.samediff = function (rng, P, pools) {
   };
 };
 
+/* F-14 «เงาใครเอ่ย» — object prompt + shadow cards. Pool-level silhouette uniqueness: every
+   pool object carries its own profile `p` (globally distinct — ST-[7] pool check), so a round's
+   members never share a shadow profile. Band: choices 2→4; littles draw distractors cross-category
+   only, bigs allow same-category (profiles still distinct). One variant — kind 'shadow-match'. */
+GEN.shadow = function (rng, P, pools) {
+  const groups = pools.shadow.groups;
+  const target = groups[Math.floor(rng() * groups.length)];
+  const prompt = target.members[Math.floor(rng() * target.members.length)].e;
+  let distract;
+  if (P.sameCategory) {
+    distract = groups.flatMap((g) => g.members.map((m) => m.e)).filter((e) => e !== prompt);
+  } else {
+    distract = groups.filter((g) => g.id !== target.id).flatMap((g) => g.members.map((m) => m.e));
+  }
+  const choices = shuffle(rng, [prompt, ...shuffle(rng, distract).slice(0, P.choiceCount - 1)]);
+  return {
+    gameId: 'shadow',
+    display: { kind: 'shadow-match', object: prompt },
+    steps: [{ choices, correctId: prompt }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

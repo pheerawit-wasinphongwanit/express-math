@@ -14,6 +14,7 @@
 | order | 🦆 | เรียงให้ถูก | – | การเรียงลำดับ (F-09, multi-step) | arrange |
 | sort | 🧺 | จัดเข้ากลุ่ม | – | จัดหมวดหมู่ (F-10, multi-step) | arrange |
 | samediff | 🪞 | เหมือนกันเลย | – | เหมือน–ต่าง (F-13) | visual |
+| shadow | 🌑 | เงาใครเอ่ย | – | จับคู่เงา (F-14) | visual |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
@@ -22,7 +23,7 @@
 | number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups · deal · neighbors |
 | compare | 🆚 | เปรียบเทียบ | compare ✓ · length · weight · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt |
-| visual | 👀 | มองภาพ | samediff ✓ · shadow · positions · partwhole |
+| visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions · partwhole |
 | arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort · trace · routine |
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
@@ -38,6 +39,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | order — items | 2–3 | 3–4 |
 | sort — items per round | 3 | 4–6 |
 | samediff — find choices · odd members · varying attrs | 3 · 3 · 1 | 5 · 4 · 2 |
+| shadow — เงา choices · หมวดตัวลวง | 2 · ต่างหมวด (cross) | 4 · หมวดเดียวกันได้ (profile ยังต่าง) |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -53,6 +55,12 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
 - **samediff** attribute groups (F-13 — the round's rule is «same kind»; each group is a crisp, unambiguous kind for 3–6 y.o.):
   - fruits: 🍓 🍎 🍇 🍒 🍍 · animals: 🐰 🐷 🐔 🐭 🐸 · vehicles: 🚗 🚌 🚲 🚂 🛴 · toys: 🧸 🎲 🥁 🪀 🎈
   - *find-same*: sample + choices; exactly one choice is the sample's kind, distractors differ — `varying attrs` = how many OTHER kinds the distractors come from (1 → 2 in bigs, so bigs choices span 3 kinds). *odd-one-out*: ≥3 conforming friends of one kind + exactly one deviant (members 3 → 4 in bigs).
+- **shadow** คู่ของ↔เงา (F-14 — 4 หมวด × 4 ชิ้น; `p` = silhouette profile ของชิ้นนั้น ใช้ตรวจ pool-level uniqueness; เรนเดอร์เงา = CSS-filter fallback, อัปเกรด art ชุดเงาที่ T-051 — รอ owner spot-review ร่วมกับ art นั้น [R15]):
+  - animals: 🐘 `elephant` · 🦒 `giraffe` · 🐧 `penguin` · 🦋 `butterfly`
+  - vehicles: 🚗 `car` · 🚲 `bike` · 🚁 `heli` · 🚢 `boat`
+  - fruits: 🍌 `banana` · 🍍 `pineapple` · 🍇 `grapes` · 🍈 `melon`
+  - toys: 🧸 `bear` · 🎈 `balloon` · 🪁 `kite` · 🎲 `dice`
+  - อีโมจิและ profile ต้องไม่ซ้ำทั้ง pool (16 ชิ้น 16 profile — ST-[7]) · littles ตัวลวงมาจากหมวดอื่นเสมอ (cross) · bigs อนุญาตหมวดเดียวกันแต่ profile ยังต่าง
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

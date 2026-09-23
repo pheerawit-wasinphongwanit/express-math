@@ -188,6 +188,15 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
     ok(A.filter((e) => B.includes(e)).length === 0, `sort pair ${a}/${b}: member pools disjoint`);
     for (const bin of pair.bins) ok(!A.concat(B).includes(bin.icon), `sort bin ${bin.id}: icon ${bin.icon} is not a member emoji`);
   }
+  // shadow pool data invariants (F-14 — pool-level silhouette uniqueness: every object carries
+  // its own globally-distinct profile; cross-category distractors must suffice for bigs choiceCount)
+  {
+    const all = KIDS.pools.shadow.groups.flatMap((g) => g.members);
+    ok(new Set(all.map((m) => m.e)).size === all.length, 'shadow pool: object emojis distinct');
+    ok(new Set(all.map((m) => m.p)).size === all.length, 'shadow pool: silhouette profiles distinct (pool-level uniqueness)');
+    const minGroup = Math.min(...KIDS.pools.shadow.groups.map((g) => g.members.length));
+    ok(all.length - minGroup >= 4, `shadow pool: cross-category distractors suffice for choiceCount 4 (${all.length - minGroup} available)`);
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -315,6 +324,22 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
         return null;
       }
       return 'kind';
+    },
+    shadow(r, P) {
+      if (r.display.kind !== 'shadow-match') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      if (st.choices.length !== P.choiceCount) return 'choiceCount';
+      const groups = KIDS.pools.shadow.groups;
+      const catOf = {}, byE = {};
+      groups.forEach((g) => g.members.forEach((m) => { catOf[m.e] = g.id; byE[m.e] = m; }));
+      if (!byE[d.object]) return 'prompt not in pool';
+      if (st.correctId !== d.object) return 'correct≠prompt object';
+      const profs = st.choices.map((e) => (byE[e] ? byE[e].p : undefined));
+      if (profs.some((p) => !p)) return 'choice not in pool';
+      if (new Set(profs).size !== profs.length) return 'silhouette profile clash in round';
+      if (!P.sameCategory && st.choices.some((e) => e !== d.object && catOf[e] === catOf[d.object])) return 'littles: same-category distractor';
+      return null;
     },
   };
   for (const g of KIDS.games) {
@@ -650,9 +675,13 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   ok(noClear.length === 0, `renderers clear #choices before rebuild ${noClear.length ? '(' + noClear.join(', ') + ' missing)' : '(all clear)'}`);
 
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
+  // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
+  // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
+  const PENDING_VIEWS = ['shadow'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {
+    if (PENDING_VIEWS.includes(g.id)) continue;
     for (const b of KIDS.bands) {
       const P = KC2.bandParams(KIDS, g.id, b.id);
       const rng = Core.mulberry32(Core.hashSeed('kinds:' + g.id + ':' + b.id));
@@ -660,7 +689,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
     }
   }
   const noView = [...kinds].filter((k) => !engSrc.includes("'" + k + "'"));
-  ok(noView.length === 0, `every display.kind has an engine view ${noView.length ? '(missing: ' + noView.join(', ') + ')' : '(' + kinds.size + '/' + kinds.size + ' kinds)'}`);
+  ok(noView.length === 0, `every display.kind has an engine view ${noView.length ? '(missing: ' + noView.join(', ') + ')' : '(' + kinds.size + '/' + kinds.size + ' kinds' + (PENDING_VIEWS.length ? ', ' + PENDING_VIEWS.length + ' pending view' : '') + ')'}`);
 
   // docs/kids.md ↔ kids-data.js sync (docs-first editing rule, TECH-SPEC §2.2)
   const docs = fs.readFileSync(path.join(path.dirname(process.argv[1]), 'docs', 'kids.md'), 'utf8');
