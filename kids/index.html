@@ -129,6 +129,12 @@
   .choice.lenRow { min-height: 64px; display: flex; align-items: center; justify-content: flex-start; padding: 6px 22px; }
   .lenBar { display: inline-block; height: 30px; border-radius: 999px; background: linear-gradient(180deg, #FFC98A, #FF9F43); }
 
+  /* S-17 «ครึ่ง–เต็ม» — half prompt via clip-path (art set 3 = T-053 upgrade) */
+  .halfImg { display: inline-block; }
+  .halfImg.cut-v { clip-path: inset(0 50% 0 0); }
+  .halfImg.cut-h { clip-path: inset(0 0 50% 0); }
+  .halfImg.cut-d { clip-path: polygon(0 0, 100% 0, 0 100%); }
+
   #overlay {
     position: absolute; inset: 0; background: rgba(255, 246, 234, .96);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; z-index: 10;

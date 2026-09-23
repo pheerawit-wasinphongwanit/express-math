@@ -97,6 +97,7 @@ function renderRound() {
   else if (d.kind === 'positions') renderPositions(d);
   else if (d.kind === 'length') renderLength(d);
   else if (d.kind === 'weight') renderWeight(d);
+  else if (d.kind === 'part-whole') renderPartWhole(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -528,6 +529,33 @@ function renderWeight(d) {
     inner.textContent = it.e;
     btn.appendChild(inner);
     btn.addEventListener('click', () => onChoice(id));
+    box.appendChild(btn);
+  }
+}
+
+/* S-17 «ครึ่ง–เต็ม» — half picture prompt (the whole clipped along the round's cut orientation —
+   clip-path fallback now, art set 3 = T-053) + whole cards; tap the complete thing the half
+   belongs to. */
+function renderPartWhole(d) {
+  const prompt = $('prompt');
+  prompt.className = 'sampleShape';
+  prompt.innerHTML = '';
+  const half = document.createElement('span');
+  half.className = 'halfImg cut-' + d.cut;
+  half.textContent = d.whole;
+  prompt.appendChild(half);
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'gShape';
+    inner.textContent = c;
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
     box.appendChild(btn);
   }
 }
