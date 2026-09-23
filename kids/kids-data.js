@@ -27,6 +27,7 @@ const KIDS = {
     { id: 'routine', icon: '🐭', caption: 'วันของหนู', family: 'arrange', coPlay: false },
     { id: 'deal', icon: '🥕', caption: 'แจกให้ครบ', family: 'number', coPlay: true },   // OQ-B natural (S-10)
     { id: 'trace', icon: '✏️', caption: 'เดินตามเส้น', family: 'arrange', coPlay: true },  // OQ-B natural (S-10)
+    { id: 'pairoff', icon: '🤝', caption: 'จับคู่แล้วเทียบ', family: 'compare', coPlay: true }, // OQ-B natural (S-10)
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -63,6 +64,7 @@ const KIDS = {
         routine: { cardCount: 3 },                                  // 3 routine cards (F-25)
         deal: { nMin: 3, nMax: 3 },                                  // 3 carrots ↔ 3 rabbits (F-21)
         trace: { turnsMin: 2, turnsMax: 2 },                         // 2 bends (F-24)
+        pairoff: { smallMin: 2, smallMax: 3, groupMax: 5, minGap: 2 }, // no near-ties (F-26, mirrors F-07)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -85,6 +87,7 @@ const KIDS = {
         routine: { cardCount: 5 },                                  // 5 cards from the 6-step chain (F-25)
         deal: { nMin: 4, nMax: 6 },                                  // bigger deal, still 1:1 (F-21)
         trace: { turnsMin: 3, turnsMax: 4 },                         // longer line, more bends (F-24)
+        pairoff: { smallMin: 3, smallMax: 5, groupMax: 6, minGap: 1 }, // bigger groups, gap narrows (F-26)
       } },
   ],
 
@@ -178,6 +181,9 @@ const KIDS = {
     trace: {                                                      // follow-the-line (F-24) — no item pool: the path is
       start: '🦆', end: '🏞️',                                       // synthesized x-monotone on a grid (simple by
     },                                                             // construction, R14); only the markers are content
+    pairoff: {                                                    // pair-off to compare (F-26) — kind pairs for the two
+      pairs: [['🐟', '🐸'], ['🍓', '🍇'], ['🎈', '🎲']],           // sides: one kind per side, different across sides
+    },
   },
 
   // Co-play / hub copy lands here as it is added (kids copy budget ≤ 40 words, ST-[9]).

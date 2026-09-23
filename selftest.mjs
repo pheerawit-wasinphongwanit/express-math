@@ -320,6 +320,19 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
     ok(typeof tp.start === 'string' && tp.start.length > 0 && typeof tp.end === 'string' && tp.end.length > 0, 'trace pool: start/end markers present');
     ok(tp.start !== tp.end, 'trace pool: start ≠ end marker');
   }
+  // pairoff pool data invariants (F-26 — each pair has two distinct kinds so cross-pairs
+  // read unambiguously; every emoji globally distinct for cleanliness; depth per band)
+  {
+    const pp = KIDS.pools.pairoff.pairs;
+    ok(pp.length >= 1, `pairoff pool: ≥ 1 kind pair (${pp.length})`);
+    for (const pair of pp) ok(pair.length === 2 && pair[0] !== pair[1], `pairoff pair ${pair.join('↔')}: two distinct kinds`);
+    const flat = pp.flat();
+    ok(new Set(flat).size === flat.length, 'pairoff pool: emojis globally distinct');
+    for (const b of KIDS.bands) {
+      const P = b.params.pairoff;
+      ok(P.smallMax + P.minGap <= P.groupMax, `pairoff params «${b.id}»: feasible (smallMax+minGap ${P.smallMax + P.minGap} ≤ groupMax ${P.groupMax})`);
+    }
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -661,6 +674,30 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       }
       return null;
     },
+    pairoff(r, P) {
+      const d = r.display;
+      if (d.kind !== 'pair-off') return 'kind';
+      if (r.steps.length !== 2) return 'steps≠2 (goal→choice)';
+      const g = r.steps[0];
+      if (g.goal !== 'all-paired' || g.handoff !== 'per-action') return 'phase 1 (all-paired, per-action)';
+      const st = r.steps[1];
+      if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(['left', 'right'])) return 'phase 2 choices';
+      const L = d.left, R = d.right;
+      const lo = Math.min(L.length, R.length), hi = Math.max(L.length, R.length);
+      if (lo < P.smallMin || lo > P.smallMax) return 'small side out of band';
+      if (hi > P.groupMax) return 'group too big';
+      if (hi - lo < P.minGap) return 'gap < band min (no near-ties)';
+      if (st.correctId !== (L.length > R.length ? 'left' : 'right')) return 'correct ≠ bigger side';
+      const ids = new Set([...L, ...R].map((x) => x.id));
+      if (ids.size !== L.length + R.length) return 'dup member ids';
+      const poolPairs = KIDS.pools.pairoff.pairs;
+      const pairOk = poolPairs.some((p) =>
+        (L.every((m) => m.e === p[0]) && R.every((m) => m.e === p[1])) ||
+        (L.every((m) => m.e === p[1]) && R.every((m) => m.e === p[0])));
+      if (!pairOk) return 'kinds not from a pool pair';
+      if (L[0].e === R[0].e) return 'sides share one kind (pairing unreadable)';
+      return null;
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -851,6 +888,29 @@ console.log('\n[8] F-03 session contract (kids core)');
     r = KC.submit(s, ids);
     ok(r.outcome === 'pass' && r.roundChanged, '(c-trace) full in-order traversal → pass + fresh round');
     ok(s.placed.length === 0, '(c-trace) fresh round resets the log');
+  }
+
+  // (c-pairoff) two-phase goal round on a REAL generator (pairoff): partial pairs silent,
+  // all-pairs → step with the snapshot persisting, wrong side → retry keeps the pairs (J-26),
+  // the bigger side alone passes the round
+  {
+    const s = KC.newSession('pairoff', 'littles', 1, 810);
+    const d = s.round.display;
+    const n = Math.min(d.left.length, d.right.length);
+    const gap = Math.abs(d.left.length - d.right.length);
+    ok(gap >= 2, `(c-pairoff) littles gap ≥ 2 (${gap})`);
+    let r = KC.submit(s, [{ left: d.left[0].id, right: d.right[0].id }]);
+    ok(r.outcome === 'incomplete' && s.stepIndex === 0, '(c-pairoff) one pair made → silent');
+    const all = [];
+    for (let i = 0; i < n; i++) all.push({ left: d.left[i].id, right: d.right[i].id });
+    r = KC.submit(s, all);
+    ok(r.outcome === 'step' && s.stepIndex === 1, '(c-pairoff) all cross-pairs made → phase 2 (step)');
+    ok(JSON.stringify(s.placed) === JSON.stringify([all]), '(c-pairoff) pairs snapshot persists into the final question (J-26)');
+    const wrong = d.left.length > d.right.length ? 'right' : 'left';
+    r = KC.submit(s, wrong);
+    ok(r.outcome === 'retry' && s.stepIndex === 1 && JSON.stringify(s.placed) === JSON.stringify([all]), '(c-pairoff) wrong side → retry, groups & pairs stay (J-26)');
+    r = KC.submit(s, s.round.steps[1].correctId);
+    ok(r.outcome === 'pass' && r.roundChanged, '(c-pairoff) bigger side → pass + fresh round');
   }
 
   // (f) goal-step contract — synthetic goal fixtures (T-021 discipline; real goal gens land in M7)
@@ -1048,7 +1108,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['pairoff'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

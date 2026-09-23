@@ -26,18 +26,19 @@
 | routine | 🐭 | วันของหนู | – | เรียงลำดับกิจวัตร (F-25, multi-step) | arrange |
 | deal | 🥕 | แจกให้ครบ | ✔ (OQ-B natural) | แจกแบบ one-to-one (F-21, goal-state) | number |
 | trace | ✏️ | เดินตามเส้น | ✔ (OQ-B natural) | ตามเส้นลายมือ (F-24, goal-state) | arrange |
+| pairoff | 🤝 | จับคู่แล้วเทียบ | ✔ (OQ-B natural) | เทียบกลุ่มด้วยการจับคู่ (F-26, goal→choice) | compare |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
 | zone id | marker | label (for parents) | games (✓ = registered; others = wave-2 plan) |
 |---|---|---|---|
 | number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups ✓ · deal ✓ · neighbors ✓ |
-| compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight ✓ · pairoff |
+| compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight ✓ · pairoff ✓ |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt ✓ |
 | visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole ✓ |
 | arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort ✓ · trace ✓ · routine ✓ |
 
-*(M7 เหลือ pairoff — registry ครบ 20)*
+*(registry ครบ 20 เกม — M6+M7 ปิดครบทุกโซน)*
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
 
@@ -64,6 +65,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | routine — การ์ดกิจวัตร | 3 | 5 |
 | deal — คู่ของ↔ผู้รับ (goal-state 1:1) | 3 | 4–6 |
 | trace — จุดเลี้ยว (turns) | 2 | 3–4 |
+| pairoff — ฝั่งเล็ก · กลุ่มใหญ่สุด · ส่วนต่างขั้นต่ำ | 2–3 · 5 · ≥2 (no near-ties) | 3–5 · 6 · ≥1 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -116,6 +118,9 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
 - **trace** เส้นทางลายมือ (F-24 — goal-state round ตัวที่สอง: โครงสร้างคือ log การไถลตามลำดับ waypoint; หลุดออกนอกเส้น = ไถลหยุดชั่วคราว ไม่มีการ์ตูน ไม่บังคับเริ่มใหม่ J-24; co-play ผลัดไถลรอบละเส้น handoff `on-pass` คือพลิกเมื่อผ่านเท่านั้น):
   - ไม่มี pool ไอเทม — เส้นทางสังเคราะห์บนกริด x 0..k · y 0..4 โดย **x เพิ่มเข้มงวดทุกจุด** (x-monotone → เส้นทาง simple โดยโครงสร้าง R14 ไม่ตัดตัวเอง) และ y เปลี่ยนเสมอทุกจุด (ทุก bend เป็นเหลี่ยวจริง) · ST-[7] พิสูจน์ความ simple ด้วย segment-intersection predicate เต็มรูปแบบทุกรอบอยู่ดี
   - marker: เริ่ม 🦆 (เป็ดน้อย) → จบ 🏞️ (สระน้ำ) · band: littles จุดเลี้ยว 2 → bigs 3–4
+- **pairoff** จับคู่ข้ามสองกลุ่ม (F-26 — goal-state round ตัวที่สาม สองเฟสต่อรอบ: เฟส 1 จับคู่ครบทุกคู่ที่ทำได้ (goal `all-paired` handoff `per-action`) → เฟส 2 ถามไอคอน «ข้างไหนมากกว่า» (choice on-pass); ปิดคู่พลาด = เงียบ ตอบผิดฝั่ง = การ์ตูนยังไม่ผ่าน กลุ่ม+เส้นคู่เดิมอยู่ J-26; co-play นั่งคนละฝั่ง ผลัดทีละคู่):
+  - คู่ชนิดของสองกลุ่ม: 🐟↔🐸 · 🍓↔🍇 · 🎈↔🎲 (ฝั่งละชนิดเดียว ต่างกันข้ามฝั่ง — จับคู่อ่านได้จากหน้าตาไม่กำกวม)
+  - ขนาด: ฝั่งเล็ก · กลุ่มใหญ่สุด · ส่วนต่าง ≥ ขั้นต่ำของ band (littles ≥2 no near-ties · bigs ≥1) — ฝั่งที่มากกว่าถูกตัวเดียว
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

@@ -530,6 +530,31 @@ GEN.trace = function (rng, P, pools) {
   };
 };
 
+/* F-26 «จับคู่แล้วเทียบ» — two-phase goal round (T-049): phase 1 pairs off min(|L|,|R|)
+   cross-pairs (GOALS['all-paired'], per-action handoff — each made pair flips the turn,
+   J-26 «วนสลับจนครบ»); phase 2 asks (icon-led) which side has more — a plain choice step
+   (on-pass). Sizes keep a band-minimum gap (no near-ties); exactly one side is bigger and
+   the final correctId names it. Pairing mistakes simply never link (view guards reuse;
+   the core rejects fabricated reuse defensively) — never a wrong answer. */
+GEN.pairoff = function (rng, P, pools) {
+  const kinds = pools.pairoff.pairs[Math.floor(rng() * pools.pairoff.pairs.length)];
+  const small = randInt(rng, P.smallMin, P.smallMax);
+  const big = randInt(rng, Math.min(small + P.minGap, P.groupMax), P.groupMax);
+  const mk = (e, n, pfx) => Array.from({ length: n }, (_, i) => ({ id: pfx + i, e }));
+  const swap = rng() < 0.5;                              // the bigger side lands on a random side
+  const left = swap ? mk(kinds[1], small, 'l') : mk(kinds[0], big, 'l');
+  const right = swap ? mk(kinds[0], big, 'r') : mk(kinds[1], small, 'r');
+  const correctId = left.length > right.length ? 'left' : 'right';
+  return {
+    gameId: 'pairoff',
+    display: { kind: 'pair-off', q: 'more', left, right },
+    steps: [
+      { goal: 'all-paired', handoff: 'per-action' },
+      { choices: ['left', 'right'], correctId },
+    ],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
