@@ -677,7 +677,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = ['shadow'];
+  const PENDING_VIEWS = [];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {
@@ -690,6 +690,20 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   }
   const noView = [...kinds].filter((k) => !engSrc.includes("'" + k + "'"));
   ok(noView.length === 0, `every display.kind has an engine view ${noView.length ? '(missing: ' + noView.join(', ') + ')' : '(' + kinds.size + '/' + kinds.size + ' kinds' + (PENDING_VIEWS.length ? ', ' + PENDING_VIEWS.length + ' pending view' : '') + ')'}`);
+
+  // art-ref fallback scan (TECH-SPEC §6.4/§6.5): every asset: ref in kids-data.js must carry its
+  // zero-dep fallback in markup — the art block holds an <svg> the img-error path reveals, so the
+  // game never blocks on a missing asset (M5 gate: fallback walk with art-gated views present)
+  const kidsDataSrc = fs.readFileSync(path.join(kidsDir, 'kids-data.js'), 'utf8');
+  const htmlSrc = fs.readFileSync(path.join(kidsDir, 'index.html'), 'utf8');
+  const refs = [...kidsDataSrc.matchAll(/asset:([\w./-]+)/g)].map((m) => m[1]);
+  ok(refs.length > 0, 'art-ref scan: asset refs present (cartoon pair)');
+  for (const ref of refs) {
+    const stem = path.basename(ref).replace(/\.\w+$/, '');
+    const at = htmlSrc.indexOf('id="art-' + stem + '"');
+    ok(at >= 0, `art ref ${ref}: fallback block art-${stem} present in markup`);
+    if (at >= 0) ok(htmlSrc.slice(at, htmlSrc.indexOf('</div>', at)).includes('<svg'), `art-${stem}: inline <svg> fallback inside the block`);
+  }
 
   // docs/kids.md ↔ kids-data.js sync (docs-first editing rule, TECH-SPEC §2.2)
   const docs = fs.readFileSync(path.join(path.dirname(process.argv[1]), 'docs', 'kids.md'), 'utf8');

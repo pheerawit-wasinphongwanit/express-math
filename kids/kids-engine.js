@@ -93,6 +93,7 @@ function renderRound() {
   else if (d.kind === 'order') renderOrder(d);
   else if (d.kind === 'sort') renderSort(d);
   else if (d.kind === 'samediff-find' || d.kind === 'samediff-odd') renderSamediff(d);
+  else if (d.kind === 'shadow-match') renderShadow(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -347,6 +348,28 @@ function renderSamediff(d) {
     btn.className = 'choice';
     const inner = document.createElement('span');
     inner.className = 'gShape';
+    inner.textContent = c;
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
+    box.appendChild(btn);
+  }
+}
+
+/* S-12 «เงาใครเอ่ย» — big object prompt + shadow cards. Silhouettes render via the
+   CSS-filter fallback now (asset upgrade = art set 1, T-051 — game never blocks on an asset). */
+function renderShadow(d) {
+  const prompt = $('prompt');
+  prompt.className = 'sampleShape';
+  prompt.textContent = d.object;
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'sil';
     inner.textContent = c;
     btn.appendChild(inner);
     btn.addEventListener('click', () => onChoice(c));
