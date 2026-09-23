@@ -18,6 +18,7 @@ const KIDS = {
     { id: 'shadow', icon: '🌑', caption: 'เงาใครเอ่ย', family: 'visual', coPlay: false },
     { id: 'positions', icon: '📍', caption: 'บน–ล่าง–ใน–นอก', family: 'visual', coPlay: false },
     { id: 'length', icon: '📏', caption: 'ยาว–สั้น', family: 'compare', coPlay: false },
+    { id: 'weight', icon: '⚖️', caption: 'หนัก–เบา', family: 'compare', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -45,6 +46,7 @@ const KIDS = {
         shadow: { choiceCount: 2, sameCategory: false },   // littles: cross-category distractors only
         positions: { relations: 2 },
         length: { items: 2, ratio: 1.5 },                   // no near-ties (F-16, mirrors F-07 discipline)
+        weight: { items: 2, minRankGap: 2 },                 // curated contrastive classes only (F-17)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -58,6 +60,7 @@ const KIDS = {
         shadow: { choiceCount: 4, sameCategory: true },    // bigs: same-category allowed, profiles stay distinct
         positions: { relations: 4 },
         length: { items: 3, ratio: 1.25 },
+        weight: { items: 3, minRankGap: 1 },
       } },
   ],
 
@@ -108,6 +111,12 @@ const KIDS = {
         [{ e: '🐱', rel: 'on' }, { e: '🐭', rel: 'under' }, { e: '⚽', rel: 'in' }, { e: '🦆', rel: 'out' }],
         [{ e: '🧸', rel: 'on' }, { e: '🐶', rel: 'under' }, { e: '👕', rel: 'in' }, { e: '🪁', rel: 'out' }],
         [{ e: '🍎', rel: 'on' }, { e: '🐰', rel: 'under' }, { e: '🎁', rel: 'in' }, { e: '🚗', rel: 'out' }],
+      ],
+    },
+    weight: {                                                   // curated weight classes, heavy→light (F-17) —
+      classes: [                                                // contrastive only, no near-equal pairs;
+        { id: 'c4', e: '🐘' }, { id: 'c3', e: '🚗' }, { id: 'c2', e: '🍉' },   // owner spot-review rides T-052 (R15)
+        { id: 'c1', e: '🍎' }, { id: 'c0', e: '🪶' },
       ],
     },
   },

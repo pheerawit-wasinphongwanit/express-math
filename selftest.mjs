@@ -204,6 +204,16 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
     ok(set.length === 4 && new Set(set.map((it) => it.rel)).size === 4, `positions scene ${si + 1}: covers on/under/in/out exactly once (bijection)`);
     ok(new Set(set.map((it) => it.e)).size === set.length, `positions scene ${si + 1}: object emojis distinct`);
   }
+  // weight pool data invariants (F-17 — curated ranking strict: class emojis distinct so each
+  // round maps injectively to ranks; pool feasible for both bands' gap requirements)
+  {
+    const cls = KIDS.pools.weight.classes;
+    ok(new Set(cls.map((c) => c.e)).size === cls.length, 'weight pool: class emojis distinct (strict ranking decodable)');
+    for (const b of KIDS.bands) {
+      const P = b.params.weight;
+      ok(cls.length >= (P.items - 1) * P.minRankGap + 1, `weight pool: feasible for band «${b.id}» (${P.items} items, gap ≥${P.minRankGap}, ${cls.length} classes)`);
+    }
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -374,6 +384,25 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       for (let i = 1; i < asc.length; i++) if (asc[i] / asc[i - 1] < P.ratio) return 'pairwise ratio < band min (near-tie)';
       const target = d.q === 'longer' ? Math.max(...lens) : Math.min(...lens);
       if (st.correctId !== d.items.find((it) => it.len === target).id) return 'correct ≠ ' + d.q + ' item';
+      if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.items.map((it) => it.id).sort())) return 'choices≠items';
+      return null;
+    },
+    weight(r, P) {
+      if (r.display.kind !== 'weight') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      if (!['heavier', 'lighter'].includes(d.q)) return 'q';
+      if (d.items.length !== P.items) return 'item count';
+      const cls = KIDS.pools.weight.classes;
+      const rankOf = {};
+      cls.forEach((c, i) => { rankOf[c.e] = i; });                  // 0 = heaviest
+      const ranks = d.items.map((it) => rankOf[it.e]);
+      if (ranks.some((x) => x === undefined)) return 'item not curated';
+      if (new Set(ranks).size !== ranks.length) return 'rank tie (not strict)';
+      const asc = ranks.slice().sort((a, b) => a - b);
+      for (let i = 1; i < asc.length; i++) if (asc[i] - asc[i - 1] < P.minRankGap) return 'rank gap < band min';
+      const bestRank = d.q === 'heavier' ? Math.min(...ranks) : Math.max(...ranks);
+      if (st.correctId !== d.items.find((it) => rankOf[it.e] === bestRank).id) return 'correct ≠ ' + d.q + ' item';
       if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.items.map((it) => it.id).sort())) return 'choices≠items';
       return null;
     },
@@ -713,7 +742,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['weight'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

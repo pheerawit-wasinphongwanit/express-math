@@ -337,6 +337,32 @@ GEN.length = function (rng, P) {
   };
 };
 
+/* F-17 «หนัก–เบา» — weight comparison on curated contrastive classes only (heavy→light ranked
+   pool; no near-equal pairs like apple vs orange — content discipline, owner spot-review rides
+   T-052). Rounds draw items from distinct classes with rank gap ≥ band minimum (littles ≥2,
+   bigs ≥1), so the in-round ranking is strict; exactly one heaviest/lightest (ST-[7]). */
+GEN.weight = function (rng, P, pools) {
+  const classes = pools.weight.classes;                     // index 0 = heaviest
+  const shuffled = shuffle(rng, classes.map((_, i) => i));
+  const picked = [];
+  for (const i of shuffled) {
+    if (picked.every((j) => Math.abs(i - j) >= P.minRankGap)) picked.push(i);
+    if (picked.length === P.items) break;
+  }
+  for (let i = 0; i < classes.length && picked.length < P.items; i++) {
+    if (picked.every((j) => Math.abs(i - j) >= P.minRankGap)) picked.push(i); // deterministic completion
+  }
+  const items = shuffle(rng, picked.map((ci) => ({ id: 'w' + ci, e: classes[ci].e })));
+  const q = rng() < 0.5 ? 'heavier' : 'lighter';
+  const bestRank = q === 'heavier' ? Math.min(...picked) : Math.max(...picked);
+  const correctId = items.find((it) => it.e === classes[bestRank].e).id;
+  return {
+    gameId: 'weight',
+    display: { kind: 'weight', q, items },
+    steps: [{ choices: items.map((it) => it.id), correctId }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
