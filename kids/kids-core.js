@@ -399,6 +399,35 @@ GEN.equalgroups = function (rng, P, pools) {
   };
 };
 
+/* F-20 «จัดตามสี» — sort machinery, color criterion (C6): one step per item, choices = the
+   round's color bins (band-count subset of the pool). Every item carries exactly one color by
+   pool construction; bins lead with a swatch + exemplar marker (marker ∉ members). Finish =
+   pass cartoon only — no tally anywhere (mirrors F-10). */
+GEN.colorsort = function (rng, P, pools) {
+  const colors = shuffle(rng, pools.colorsort.colors).slice(0, P.binCount);
+  const n = randInt(rng, P.itemCountMin, P.itemCountMax);
+  const take = colors.map(() => 1);                              // ≥ 1 item per bin
+  let left = n - colors.length, ci = 0;
+  while (left > 0 && ci < 100) {                                 // spread extras over bins with capacity
+    if (colors[ci % colors.length].members.length > take[ci % colors.length]) {
+      take[ci % colors.length] += 1; left -= 1;
+    }
+    ci += 1;
+  }
+  const items = [];
+  colors.forEach((c, i) => {
+    shuffle(rng, c.members.slice()).slice(0, take[i])
+      .forEach((emoji, k) => items.push({ id: 'c' + i + 'k' + k, emoji, bin: c.id }));
+  });
+  const chosen = shuffle(rng, items);                            // send order
+  const steps = chosen.map((it) => ({ choices: colors.map((c) => c.id), correctId: it.bin }));
+  return {
+    gameId: 'colorsort',
+    display: { kind: 'color-sort', bins: colors.map((c) => ({ id: c.id, swatch: c.swatch, marker: c.marker })), items: chosen },
+    steps,
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

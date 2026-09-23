@@ -241,6 +241,27 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       ok(minCand >= P.choiceCount - 1, `equalgroups pool: feasible for band «${b.id}» (min ${minCand} distractor values ≥ ${P.choiceCount - 1} needed)`);
     }
   }
+  // colorsort pool data invariants (F-20 — mirrors the sort pair checks: member pools disjoint
+  // and non-empty, marker ∉ members in ANY bin, markers/swatches distinct, depth per band)
+  {
+    const cols = KIDS.pools.colorsort.colors;
+    ok(cols.length >= 3, `colorsort pool: ≥ 3 colors for the 3-bin band (${cols.length})`);
+    const allMembers = cols.flatMap((c) => c.members);
+    ok(new Set(allMembers).size === allMembers.length, 'colorsort pool: member emojis distinct globally (disjoint bins)');
+    for (const c of cols) {
+      ok(c.members.length > 0, `colorsort bin ${c.id}: member pool non-empty`);
+      ok(!allMembers.includes(c.marker), `colorsort bin ${c.id}: marker ${c.marker} ∉ members (any bin)`);
+    }
+    ok(new Set(cols.map((c) => c.marker)).size === cols.length, 'colorsort pool: marker emojis distinct');
+    ok(new Set(cols.map((c) => c.swatch)).size === cols.length, 'colorsort pool: swatches distinct');
+    for (const b of KIDS.bands) {
+      const P = b.params.colorsort;
+      const maxTake = P.itemCountMax - P.binCount + 1;           // worst-case items in one bin
+      ok(P.binCount <= cols.length, `colorsort params «${b.id}»: binCount ≤ pool colors`);
+      ok(Math.min(...cols.map((c) => c.members.length)) >= maxTake,
+         `colorsort pool: feasible for band «${b.id}» (members ≥ ${maxTake} per bin)`);
+    }
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -459,6 +480,30 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       const emojis = d.groups.map((g) => g.emoji);
       if (new Set(emojis).size !== emojis.length || emojis.includes(d.sample.emoji)) return 'kind clash (appearance matching)';
       if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.groups.map((g) => g.id).sort())) return 'choices≠groups';
+      return null;
+    },
+    colorsort(r, P) {
+      const d = r.display;
+      if (d.kind !== 'color-sort') return 'kind';
+      const binIds = d.bins.map((b) => b.id).sort();
+      if (binIds.length !== P.binCount || new Set(binIds).size !== binIds.length) return 'bins';
+      if (d.items.length < P.itemCountMin || d.items.length > P.itemCountMax) return 'count';
+      if (new Set(d.items.map((it) => it.emoji)).size !== d.items.length) return 'dup items';
+      const perBin = {};
+      for (const it of d.items) {
+        if (!binIds.includes(it.bin)) return 'item bin invalid (partition)';
+        perBin[it.bin] = (perBin[it.bin] || 0) + 1;
+      }
+      if (Object.keys(perBin).length !== binIds.length) return 'empty bin';
+      if (r.steps.length !== d.items.length) return 'steps≠items';
+      for (let i = 0; i < r.steps.length; i++) {
+        if (JSON.stringify(r.steps[i].choices.slice().sort()) !== JSON.stringify(binIds)) return 'step choices';
+        if (r.steps[i].correctId !== d.items[i].bin) return 'step correct';
+      }
+      const colOf = {};                                       // content truth: emoji really belongs to its bin's color
+      KIDS.pools.colorsort.colors.forEach((c) => c.members.forEach((m) => { colOf[m] = c.id; }));
+      if (d.items.some((it) => colOf[it.emoji] !== it.bin)) return 'item color mismatch vs pool';
+      if (d.bins.some((b) => d.items.some((it) => it.emoji === b.marker))) return 'marker among round items';
       return null;
     },
   };
@@ -797,7 +842,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['colorsort'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

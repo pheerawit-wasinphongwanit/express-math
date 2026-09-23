@@ -20,6 +20,7 @@
 | weight | ⚖️ | หนัก–เบา | – | น้ำหนัก (F-17) | compare |
 | partwhole | 🌓 | ครึ่ง–เต็ม | – | ส่วน–ทั้งหมด (F-19) | visual |
 | equalgroups | 🍒 | เท่ากันไหม | – | ความเท่ากันของกลุ่ม (F-18) | number |
+| colorsort | 🎨 | จัดตามสี | – | จัดหมวดตามสี (F-20, multi-step) | arrange |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
@@ -29,7 +30,7 @@
 | compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight ✓ · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt |
 | visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole ✓ |
-| arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort · trace · routine |
+| arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort ✓ · trace · routine ✓ |
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
 
@@ -50,6 +51,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | weight — ชิ้น · ช่องห่าง class ขั้นต่ำ | 2 · ≥2 | 3 · ≥1 |
 | partwhole — การ์ด · ทิศทางผ่า | 2 · ตั้ง (v) | 4 · ตั้ง/นอน/เฉียง (v/h/d) |
 | equalgroups — ช่วงนับ · ส่วนต่างตัวลวง | 1–5 · ≥2 (no near-ties) | 1–10 · ≥1 |
+| colorsort — ถ้วยสี · ชิ้นต่อรอบ | 2 · 4 | 3 · 5–6 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -84,6 +86,10 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
   - 🍕 · 🍉 · 🍪 · 🌭 · 🥕 · 🥨
   - โจทย์ = ครึ่ง (ผ่าตาม `cut` ของรอบ) · ตัวเลือก = ของเต็ม · ทิศผ่าเป็น band param: littles ตั้ง (v) เท่านั้น → bigs เพิ่ม นอน (h) / เฉียง (d)
 - **equalgroups** กลุ่มเท่ากัน (F-18 — กลุ่มละชนิดเดียว และทุกกลุ่มในรอบต่างชนิดกัน + ต่างจากกลุ่มตัวอย่าง เพื่อบังคับเทียบ «จำนวน» ไม่ใช่หน้าตา; กลุ่มที่เท่ามีเดียว ตัวลวงห่าง ≥ ขั้นต่ำของ band): 🍒 🍓 🍊 🍇 🫐 🍪 🧁 🐟
+- **colorsort** ถ้วยสี (F-20 — กลไก sort เดิมเปลี่ยนเกณฑ์จากชนิดเป็นสีเท่านั้น (C6); ถ้วยนำด้วย**แถบสี + ของตัวอย่าง marker ∉ members** ทุกถ้วย; สมาชิกถือสีเดียวจำเนก 3–6 ขวบ; ไม่มีป้ายคำ — แถบสีอ่านได้เอง ไม่ต้องมี label เหมือน sort):
+  - แดง swatch `#E5484D` + marker 🍓: 🍅 🌹 🍒 🦀 🍎
+  - เหลือง swatch `#F2B33D` + marker ⭐: 🍌 🌻 🧀 🌽 🍋
+  - เขียว swatch `#30A46C` + marker 🌲: 🥑 🥦 🐢 🥒 🍏
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

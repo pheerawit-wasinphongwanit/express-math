@@ -21,6 +21,7 @@ const KIDS = {
     { id: 'weight', icon: '⚖️', caption: 'หนัก–เบา', family: 'compare', coPlay: false },
     { id: 'partwhole', icon: '🌓', caption: 'ครึ่ง–เต็ม', family: 'visual', coPlay: false },
     { id: 'equalgroups', icon: '🍒', caption: 'เท่ากันไหม', family: 'number', coPlay: false },
+    { id: 'colorsort', icon: '🎨', caption: 'จัดตามสี', family: 'arrange', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -51,6 +52,7 @@ const KIDS = {
         weight: { items: 2, minRankGap: 2 },                 // curated contrastive classes only (F-17)
         partwhole: { choiceCount: 2, cuts: ['v'] },           // littles: vertical cut only (F-19)
         equalgroups: { rangeLo: 1, rangeHi: 5, choiceCount: 3, minGap: 2 }, // no near-ties (F-18)
+        colorsort: { binCount: 2, itemCountMin: 4, itemCountMax: 4 },        // 2 color bowls (F-20)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -67,6 +69,7 @@ const KIDS = {
         weight: { items: 3, minRankGap: 1 },
         partwhole: { choiceCount: 4, cuts: ['v', 'h', 'd'] }, // bigs add horizontal + diagonal cuts
         equalgroups: { rangeLo: 1, rangeHi: 10, choiceCount: 3, minGap: 1 },
+        colorsort: { binCount: 3, itemCountMin: 5, itemCountMax: 6 },        // 3 bowls, more items (F-20)
       } },
   ],
 
@@ -130,6 +133,13 @@ const KIDS = {
     },
     equalgroups: {                                              // group items (F-18) — one kind per group, all kinds
       items: ['🍒', '🍓', '🍊', '🍇', '🫐', '🍪', '🧁', '🐟'],  // distinct in a round (+ ≠ sample): compare counts, not looks
+    },
+    colorsort: {                                                // color bowls (F-20) — same machinery as sort, color
+      colors: [                                                 // criterion; bins lead with swatch + exemplar marker
+        { id: 'red', swatch: '#E5484D', marker: '🍓', members: ['🍅', '🌹', '🍒', '🦀', '🍎'] },
+        { id: 'yellow', swatch: '#F2B33D', marker: '⭐', members: ['🍌', '🌻', '🧀', '🌽', '🍋'] },
+        { id: 'green', swatch: '#30A46C', marker: '🌲', members: ['🥑', '🥦', '🐢', '🥒', '🍏'] },
+      ],                                                        // (marker ∉ members — mirrors sort bin rule)
     },
   },
 
