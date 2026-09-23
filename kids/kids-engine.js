@@ -100,6 +100,7 @@ function renderRound() {
   else if (d.kind === 'part-whole') renderPartWhole(d);
   else if (d.kind === 'equal-groups') renderEqualGroups(d);
   else if (d.kind === 'color-sort') renderColorSort(d);
+  else if (d.kind === 'number-track') renderNeighbors(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -387,6 +388,49 @@ function renderColorSort(d) {
       btn.appendChild(inner);
     }
     btn.addEventListener('click', () => onChoice(bid));
+    box.appendChild(btn);
+  }
+}
+
+/* S-20 «เพื่อนตัวเลข» — number track: every cell shows its numeral with a dot bar beneath
+   (quantity readable without knowing words); the gap highlights and waits; choices are big
+   numeral cards (J-22). */
+function renderNeighbors(d) {
+  const prompt = $('prompt');
+  prompt.className = 'trackRow';
+  prompt.innerHTML = '';
+  d.track.forEach((v, i) => {
+    const cell = document.createElement('span');
+    cell.className = 'tCell' + (i === d.gapIndex ? ' tGap' : '');
+    if (v === null) {
+      cell.textContent = '?';
+    } else {
+      const num = document.createElement('span');
+      num.className = 'tNum';
+      num.textContent = v;
+      const dots = document.createElement('span');
+      dots.className = 'tDots';
+      for (let k = 0; k < v; k++) {
+        const dt = document.createElement('i');
+        dt.className = 'tDot';
+        dt.textContent = '•';
+        dots.appendChild(dt);
+      }
+      cell.append(num, dots);
+    }
+    prompt.appendChild(cell);
+  });
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = numeralCard(c);
+    inner.classList.add('cardFill');
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
     box.appendChild(btn);
   }
 }
