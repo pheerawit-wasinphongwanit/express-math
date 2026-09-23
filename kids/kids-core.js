@@ -169,6 +169,74 @@ GEN.sort = function (rng, P, pools) {
   };
 };
 
+/* ---------- GOALS (v2 · TECH-SPEC §2.1) — pure predicate registry for goal steps ----------
+   Goal steps (F-21/F-24/F-26 only) resolve to a GOAL STATE, not a single pick: the engine
+   reports each completed action as a structure snapshot; the core judges it here.
+   Purity contract: no rng, no hidden state, no DOM — deterministic (structure, round) (ST-[8](f)). */
+const GOALS = {};
+
+/* F-21 «แจกให้ครบ» — structure: [{item, recipient}, …] placements so far.
+   valid: ids real, each item placed ≤ 1 time. met: every recipient holds exactly one item
+   AND every item is placed (uniqueness is on the goal state, never the path — FEATURES F-21). */
+GOALS['one-each'] = {
+  valid(structure, round) {
+    const d = round.display;
+    const items = new Set(d.items.map((x) => x.id));
+    const recips = new Set(d.recipients.map((x) => x.id));
+    const placedItems = new Set();
+    for (const p of structure) {
+      if (!p || !items.has(p.item) || !recips.has(p.recipient)) return false;
+      if (placedItems.has(p.item)) return false;
+      placedItems.add(p.item);
+    }
+    return true;
+  },
+  met(structure, round) {
+    const d = round.display;
+    if (structure.length !== d.items.length) return false; // every item placed
+    const held = new Map(d.recipients.map((r) => [r.id, 0]));
+    for (const p of structure) held.set(p.recipient, held.get(p.recipient) + 1);
+    for (const n of held.values()) if (n !== 1) return false; // every recipient exactly one
+    return true;
+  },
+};
+
+/* F-24 «เดินตามเส้น» — structure: ordered log of legitimately-reached waypoint ids.
+   valid: log is a prefix, in order, of the round's waypoint sequence. met: log = full sequence. */
+GOALS['trace'] = {
+  valid(structure, round) {
+    const seq = round.display.waypoints.map((w) => w.id);
+    if (structure.length > seq.length) return false;
+    for (let i = 0; i < structure.length; i++) if (structure[i] !== seq[i]) return false;
+    return true;
+  },
+  met(structure, round) {
+    const seq = round.display.waypoints.map((w) => w.id);
+    return structure.length === seq.length && structure.every((w, i) => w === seq[i]);
+  },
+};
+
+/* F-26 «จับคู่แล้วเทียบ» — structure: [{left, right}, …] cross-group pairs made so far.
+   valid: members real, none reused. met: every possible cross-pair is made (min(|L|,|R|)). */
+GOALS['all-paired'] = {
+  valid(structure, round) {
+    const d = round.display;
+    const L = new Set(d.left.map((x) => x.id));
+    const R = new Set(d.right.map((x) => x.id));
+    const usedL = new Set(), usedR = new Set();
+    for (const p of structure) {
+      if (!p || !L.has(p.left) || !R.has(p.right)) return false;
+      if (usedL.has(p.left) || usedR.has(p.right)) return false;
+      usedL.add(p.left); usedR.add(p.right);
+    }
+    return true;
+  },
+  met(structure, round) {
+    const d = round.display;
+    return structure.length === Math.min(d.left.length, d.right.length);
+  },
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
@@ -202,16 +270,25 @@ function newSession(gameId, bandId, players, seed, data) {
 }
 
 /* ---------- submit — the whole game loop ----------
+   CHOICE step (v1, verbatim semantics):
    correct + non-final step → 'step'  (placed grows; no cartoon)
    correct + final step   → 'pass'   (new round; turn flips iff players===2)
-   wrong                  → 'retry'  (round, stepIndex, placed all unchanged — same child retries) */
-function submit(s, choiceId, data) {
+   wrong                  → 'retry'  (round, stepIndex, placed all unchanged — same child retries)
+   GOAL step (v2 — answer is a structure snapshot, not a choice id):
+   malformed / fabricated → 'incomplete' (defensive: nothing at all changes)
+   valid + goal not met   → 'incomplete' (silent: no cartoon, no penalty; placed ← latest snapshot;
+                            turn flips iff handoff 'per-action' — an accepted action, J-21/J-26)
+   valid + met, non-final → 'step'   (placed keeps the snapshot — F-26 pairs persist into phase 2)
+   valid + met, final     → 'pass'   (new round; flip iff 'per-action' already flipped, else iff
+                            players===2 — exactly one flip, never two: no-double-flip R12) */
+function submit(s, answer, data) {
   data = data || global.EXPRESS_KIDS_DATA;
   const step = s.round.steps[s.stepIndex];
-  if (choiceId !== step.correctId) {
+  if (step.goal !== undefined) return submitGoal(s, step, answer, data);
+  if (answer !== step.correctId) {
     return { outcome: 'retry', roundChanged: false, turnAdvanced: false };
   }
-  s.placed.push(choiceId);
+  s.placed.push(answer);
   if (s.stepIndex + 1 < s.round.steps.length) {
     s.stepIndex += 1;
     return { outcome: 'step', roundChanged: false, turnAdvanced: false };
@@ -225,7 +302,30 @@ function submit(s, choiceId, data) {
   return { outcome: 'pass', roundChanged: true, turnAdvanced };
 }
 
-const KidsCore = { newSession, submit, GEN, bandParams, shuffle, nextSeed };
+function submitGoal(s, step, structure, data) {
+  const judge = GOALS[step.goal];
+  if (!judge || !Array.isArray(structure) || !judge.valid(structure, s.round)) {
+    return { outcome: 'incomplete', roundChanged: false, turnAdvanced: false }; // fabricated → nothing changes
+  }
+  s.placed = [structure]; // latest accepted snapshot replaces (view renders live state itself)
+  const perAction = step.handoff === 'per-action' && s.players === 2;
+  let turnAdvanced = false;
+  if (perAction) { s.turn = 1 - s.turn; turnAdvanced = true; } // accepted action flips exactly once
+  if (!judge.met(structure, s.round)) {
+    return { outcome: 'incomplete', roundChanged: false, turnAdvanced };
+  }
+  if (s.stepIndex + 1 < s.round.steps.length) {
+    s.stepIndex += 1;
+    return { outcome: 'step', roundChanged: false, turnAdvanced }; // snapshot stays in placed (F-26)
+  }
+  s.round = makeRound(s.gameId, s.bandId, nextSeed(s.round.seed), data);
+  s.stepIndex = 0;
+  s.placed = [];
+  if (!perAction && s.players === 2) { s.turn = 1 - s.turn; turnAdvanced = true; } // on-pass flips here
+  return { outcome: 'pass', roundChanged: true, turnAdvanced };
+}
+
+const KidsCore = { newSession, submit, GEN, GOALS, bandParams, shuffle, nextSeed };
 global.EXPRESS_KIDS_CORE = KidsCore;
 if (typeof module !== 'undefined' && module.exports) module.exports = KidsCore;
 })(typeof window !== 'undefined' ? window : globalThis);

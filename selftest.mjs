@@ -420,8 +420,147 @@ console.log('\n[8] F-03 session contract (kids core)');
     ok(passed && s.stepIndex === 0 && s.placed.length === 0, '(c-real) order: completes to pass; fresh round resets placed');
   }
 
+  // (f) goal-step contract — synthetic goal fixtures (T-021 discipline; real goal gens land in M7)
+  const fxg = { games: [{ id: 'gfx' }, { id: 'gfx1' }], bands: [{ id: 'fxb', params: { gfx: {}, gfx1: {} } }], pools: {} };
+  const pairFix = () => [
+    { item: 'i0', recipient: 'r0' }, { item: 'i1', recipient: 'r1' }, { item: 'i2', recipient: 'r2' },
+  ];
+  KC.GEN.gfx = function () { // 2 steps: goal (per-action) then choice — proves the phase transition
+    return { gameId: 'gfx', display: { kind: 'gfx', items: [{ id: 'i0' }, { id: 'i1' }, { id: 'i2' }],
+             recipients: [{ id: 'r0' }, { id: 'r1' }, { id: 'r2' }] },
+             steps: [{ goal: 'one-each', handoff: 'per-action' }, { choices: ['x', 'y'], correctId: 'x' }] };
+  };
+  KC.GEN.gfx1 = function () { // 1 goal step, on-pass default — proves final-step met → pass
+    return { gameId: 'gfx1', display: { kind: 'gfx1', waypoints: [{ id: 'w0' }, { id: 'w1' }, { id: 'w2' }] },
+             steps: [{ goal: 'trace' }] };
+  };
+  {
+    // (f1) 50 valid-but-incomplete submits → silent incomplete; round identical; placed = latest snapshot
+    const s = KC.newSession('gfx', 'fxb', 1, 701, fxg);
+    const before = roundJson(s);
+    let allSilent = true;
+    for (let i = 0; i < 50; i++) {
+      const partial = [{ item: 'i0', recipient: 'r0' }, { item: 'i1', recipient: 'r1' }];
+      const r = KC.submit(s, partial, fxg);
+      if (r.outcome !== 'incomplete' || r.roundChanged || r.turnAdvanced) allSilent = false;
+    }
+    ok(allSilent, '(f1) 50 incomplete submits → silent incomplete, no round/turn change');
+    ok(roundJson(s) === before && s.stepIndex === 0, '(f1) round JSON + stepIndex identical');
+    ok(JSON.stringify(s.placed) === JSON.stringify([[{ item: 'i0', recipient: 'r0' }, { item: 'i1', recipient: 'r1' }]]), '(f1) placed = latest accepted snapshot');
+    ok(KC.submit(s, pairFix(), fxg).outcome === 'step', '(f1) session still usable after 50 incompletes (unlimited)');
+  }
+  {
+    // (f2) goal met at NON-final step → 'step'; snapshot persists into the next phase (F-26 shape)
+    const s = KC.newSession('gfx', 'fxb', 1, 702, fxg);
+    const r = KC.submit(s, pairFix(), fxg);
+    ok(r.outcome === 'step' && s.stepIndex === 1, '(f2) goal-met non-final → step, stepIndex advances');
+    ok(JSON.stringify(s.placed) === JSON.stringify([pairFix()]), '(f2) structure snapshot persists in placed (J-26 pairs stay)');
+    ok(KC.submit(s, 'x', fxg).outcome === 'pass', '(f2) phase transition completes to pass');
+  }
+  {
+    // (f3) goal met at FINAL step → pass + fresh round (single-step on-pass fixture)
+    const s = KC.newSession('gfx1', 'fxb', 1, 703, fxg);
+    const old = roundJson(s);
+    const r = KC.submit(s, ['w0', 'w1', 'w2'], fxg);
+    ok(r.outcome === 'pass' && r.roundChanged && roundJson(s) !== old, '(f3) goal-met final → pass + new round');
+    ok(s.placed.length === 0 && s.stepIndex === 0, '(f3) fresh round resets placed/stepIndex');
+  }
+  {
+    // (f4) fabricated / malformed structures → defensive incomplete, NOTHING changes
+    const s = KC.newSession('gfx', 'fxb', 1, 704, fxg);
+    KC.submit(s, [{ item: 'i0', recipient: 'r0' }], fxg);
+    const before = roundJson(s);
+    const placedBefore = JSON.stringify(s.placed);
+    const junk = [
+      [{ item: 'zz', recipient: 'r0' }],                                  // fabricated item id
+      [{ item: 'i0', recipient: 'rx' }],                                  // fabricated recipient id
+      [{ item: 'i0', recipient: 'r1' }, { item: 'i0', recipient: 'r2' }],  // item placed twice
+      'w0', 42, null, {}, [['i0', 'r0']],                                 // malformed shapes
+    ];
+    let allDefensive = true;
+    for (const j of junk) {
+      const r = KC.submit(s, j, fxg);
+      if (r.outcome !== 'incomplete' || r.roundChanged || r.turnAdvanced) allDefensive = false;
+    }
+    ok(allDefensive, '(f4) fabricated/malformed structures → defensive incomplete');
+    ok(roundJson(s) === before && s.stepIndex === 0 && JSON.stringify(s.placed) === placedBefore,
+       '(f4) round/stepIndex/placed untouched by junk');
+  }
+  {
+    // (f5) GOALS statelessness — double evaluation + before/after submits give identical verdicts
+    const s = KC.newSession('gfx', 'fxb', 1, 705, fxg);
+    const g = KC.GOALS['one-each'];
+    const partial = [{ item: 'i0', recipient: 'r0' }];
+    const v1 = g.valid(partial, s.round), m1 = g.met(partial, s.round);
+    ok(v1 === g.valid(partial, s.round) && m1 === g.met(partial, s.round) && v1 === true && m1 === false,
+       '(f5) double evaluation → identical verdicts');
+    for (let i = 0; i < 5; i++) KC.submit(s, partial, fxg);
+    ok(g.valid(partial, s.round) === v1 && g.met(partial, s.round) === m1, '(f5) verdicts unchanged after submits (no hidden state)');
+    const tr = { display: { waypoints: [{ id: 'w0' }, { id: 'w1' }] } };
+    ok(KC.GOALS.trace.valid(['w0'], tr) === true && KC.GOALS.trace.met(['w0'], tr) === false &&
+       KC.GOALS.trace.valid(['w1'], tr) === false && KC.GOALS.trace.met(['w0', 'w1'], tr) === true,
+       '(f5) trace predicate: prefix-in-order / full-log semantics');
+    const pr = { display: { left: [{ id: 'l0' }, { id: 'l1' }], right: [{ id: 'r0' }] } };
+    ok(KC.GOALS['all-paired'].valid([{ left: 'l0', right: 'r0' }], pr) === true &&
+       KC.GOALS['all-paired'].met([{ left: 'l0', right: 'r0' }], pr) === true &&
+       KC.GOALS['all-paired'].valid([{ left: 'l0', right: 'r0' }, { left: 'l0', right: 'rx' }], pr) === false,
+       '(f5) all-paired predicate: min(|L|,|R|) + no reuse');
+  }
+
+  // (g) handoff-mode contract — per-action vs on-pass · no double flip · solo never flips
+  {
+    // (g1) per-action flips on ACCEPTED actions only — never on malformed/rejected
+    const s = KC.newSession('gfx', 'fxb', 2, 801, fxg);
+    ok(s.turn === 0, '(g1) start turn 0');
+    KC.submit(s, [{ item: 'zz', recipient: 'r0' }], fxg);
+    ok(s.turn === 0, '(g1) malformed action flips nothing');
+    let r = KC.submit(s, [{ item: 'i0', recipient: 'r0' }], fxg); // accepted, incomplete
+    ok(r.outcome === 'incomplete' && r.turnAdvanced && s.turn === 1, '(g1) accepted placement flips (J-21)');
+    r = KC.submit(s, [{ item: 'i0', recipient: 'r0' }, { item: 'i1', recipient: 'r1' }], fxg);
+    ok(r.turnAdvanced && s.turn === 0, '(g1) next accepted placement flips back');
+  }
+  {
+    // (g2) no-double-flip on the goal-completing action (R12)
+    const s = KC.newSession('gfx', 'fxb', 2, 802, fxg);
+    KC.submit(s, [{ item: 'i0', recipient: 'r0' }, { item: 'i1', recipient: 'r1' }], fxg); // turn → 1
+    const before = s.turn;
+    const r = KC.submit(s, pairFix(), fxg);
+    ok(r.outcome === 'step' && r.turnAdvanced === true && s.turn === 1 - before, '(g2) completing action flips EXACTLY once');
+    const before2 = s.turn;
+    const p = KC.submit(s, 'x', fxg); // following choice step final → pass flips once (choice path)
+    ok(p.outcome === 'pass' && p.turnAdvanced && s.turn === 1 - before2, '(g2) following choice pass flips once');
+  }
+  {
+    // (g3) on-pass goal steps flip ONLY at pass (F-24 trace semantics)
+    const s = KC.newSession('gfx1', 'fxb', 2, 803, fxg);
+    let r = KC.submit(s, ['w0'], fxg);
+    ok(r.outcome === 'incomplete' && !r.turnAdvanced && s.turn === 0, '(g3) on-pass: incomplete glide flips nothing');
+    r = KC.submit(s, ['w0', 'w1'], fxg);
+    ok(r.outcome === 'incomplete' && !r.turnAdvanced && s.turn === 0, '(g3) on-pass: nothing until the line completes');
+    r = KC.submit(s, ['w0', 'w1', 'w2'], fxg);
+    ok(r.outcome === 'pass' && r.turnAdvanced && s.turn === 1, '(g3) on-pass: flips exactly once at pass');
+  }
+  {
+    // (g4) solo never flips
+    const s = KC.newSession('gfx', 'fxb', 1, 804, fxg);
+    let flipped = false;
+    const submits = [
+      [{ item: 'i0', recipient: 'r0' }],
+      [{ item: 'i0', recipient: 'r0' }, { item: 'i1', recipient: 'r1' }],
+      pairFix(), // → step
+      'x',       // → pass
+      [{ item: 'i0', recipient: 'r0' }], // fresh round, still silent
+    ];
+    for (const a of submits) {
+      const r = KC.submit(s, a, fxg);
+      if (r.turnAdvanced || s.turn !== 0) flipped = true;
+    }
+    ok(!flipped, '(g4) solo (players=1) never flips across outcomes');
+  }
+
   delete KC.GEN.fx; // fixture never leaks into registry parity (ST-[6])
-  ok(!('fx' in KC.GEN), 'fixture generator cleaned up');
+  delete KC.GEN.gfx; delete KC.GEN.gfx1; // goal fixtures too (T-021)
+  ok(!('fx' in KC.GEN) && !('gfx' in KC.GEN) && !('gfx1' in KC.GEN), 'fixture generators cleaned up');
 }
 
 /* ---------- 9. budgets & hygiene (kindergarten mode) ---------- */
