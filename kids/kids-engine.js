@@ -18,6 +18,8 @@ let traceDuckEl = null, traceEndEl = null, traceDots = [];
 let traceLog = [];            // S-22 traversal log — mirrors session.placed[0] (progress is never reset)
 let traceActive = false;      // pointer down = gliding
 let traceGeo = null;          // {maxX, g, gy} — grid→pixel mapping shared by SVG viewBox and hit geometry
+let pairSel = null;           // S-24 pending half of the next pair {side, id} — ephemeral view state
+let pairSelEl = null;         // its chip element (selection highlight bookkeeping)
 
 function $(id) { return document.getElementById(id); }
 
@@ -87,6 +89,7 @@ function goHome() {
   dealSel = null; dealSelEl = null;
   traceWrapEl = null; traceDuckEl = null; traceEndEl = null; traceDots = [];
   traceLog = []; traceActive = false; traceGeo = null;
+  pairSel = null; pairSelEl = null;
   $('overlay').hidden = true;
   $('chooser').hidden = true;
   $('play').hidden = true;
@@ -115,6 +118,7 @@ function renderRound() {
   else if (d.kind === 'routine') renderRoutine(d);
   else if (d.kind === 'deal') renderDeal(d);
   else if (d.kind === 'trace') renderTrace(d);
+  else if (d.kind === 'pair-off') renderPairOff(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -755,6 +759,105 @@ function traceFollow(ev) {
   const r = K.submit(session, traceLog.slice());
   if (r.outcome === 'pass') showOverlay('pass', r.turnAdvanced); // the pond → pass cartoon
   // anything else stays silent — the glide simply continues (J-24)
+}
+
+/* S-24 «จับคู่แล้วเทียบ» — two-phase goal view (F-26): phase 1 = the pairing board — tap one
+   member on each side and a hand-joined pair chip (🐟🤝🐸) joins the middle lane; invalid
+   attempts (a paired member) simply never link — silent (J-26). When every possible
+   cross-pair is made the leftovers bounce and phase 2 asks (S-06 pictogram) which side has
+   more; groups and pair-links stay rendered from session.placed through the final question
+   and any retry (J-26). inputLink = the tap-tap pairing below (Pointer-free: plain taps). */
+function renderPairOff(d) {
+  const phase2 = session.stepIndex === 1;
+  const pairs = session.placed[0] || [];
+  const pairedIds = new Set(pairs.flatMap((p) => [p.left, p.right]));
+  pairSel = null; pairSelEl = null;
+
+  const prompt = $('prompt');
+  prompt.className = 'poWrap';
+  prompt.innerHTML = '';
+  if (phase2) prompt.appendChild(poQuestion());    // ⬆️ + ●●● = which side has MORE (S-06 family)
+  const board = document.createElement('div');
+  board.className = 'poBoard';
+  const lane = document.createElement('div');
+  lane.className = 'poLane';
+  for (const p of pairs) {
+    const le = d.left.find((m) => m.id === p.left);
+    const re = d.right.find((m) => m.id === p.right);
+    const chip = document.createElement('span');
+    chip.className = 'poPair';
+    chip.textContent = le.e + '🤝' + re.e;
+    lane.appendChild(chip);
+  }
+  board.append(poCol(d.left, pairedIds, 'left', phase2), lane, poCol(d.right, pairedIds, 'right', phase2));
+  prompt.appendChild(board);
+
+  const box = $('choices');
+  box.className = phase2 ? 'sides' : '';
+  box.innerHTML = '';
+  if (phase2) {
+    for (const side of ['left', 'right']) {
+      const btn = document.createElement('button');
+      btn.className = 'choice side';
+      const kind = document.createElement('span');
+      kind.className = 'sideItem';
+      kind.textContent = d[side][0].e;              // the side's kind answers the question
+      btn.appendChild(kind);
+      btn.addEventListener('click', () => onChoice(side));
+      box.appendChild(btn);
+    }
+  }
+}
+function poCol(members, pairedIds, side, phase2) {
+  const col = document.createElement('div');
+  col.className = 'poCol';
+  for (const m of members) {
+    if (pairedIds.has(m.id)) continue;              // paired members live in the middle lane
+    const chip = document.createElement('button');
+    chip.className = 'poChip' + (phase2 ? ' leftover' : '');
+    chip.textContent = m.e;
+    chip.addEventListener('click', () => pairTap(side, m.id, chip));
+    col.appendChild(chip);
+  }
+  return col;
+}
+function poQuestion() {
+  const q = document.createElement('div');
+  q.className = 'qbar poQ';
+  const arrow = document.createElement('span');
+  arrow.textContent = '⬆️';
+  const mag = document.createElement('span');
+  mag.className = 'qDots';
+  mag.textContent = '●●●';
+  q.append(arrow, mag);
+  return q;
+}
+
+/* inputLink (S-24) — the pairing input: a tap on one side selects, a tap on the OTHER side
+   joins the pair (any same-side retap just moves the selection). Invalid targets (already
+   paired — removed from the board by construction; phase-2 leftovers) never submit. */
+function pairTap(side, id, el) {
+  if (!session || !$('overlay').hidden) return;
+  if (session.stepIndex !== 0) return;              // phase 2: leftovers are not input anymore
+  if (pairSel && pairSel.side !== side) {
+    const lid = side === 'left' ? id : pairSel.id;
+    const rid = side === 'right' ? id : pairSel.id;
+    if (pairSelEl) pairSelEl.classList.remove('sel');
+    pairSel = null; pairSelEl = null;
+    pairSubmit(lid, rid);
+    return;
+  }
+  if (pairSelEl) pairSelEl.classList.remove('sel');
+  pairSel = { side, id };
+  pairSelEl = el;
+  el.classList.add('sel');
+}
+function pairSubmit(lid, rid) {
+  const snap = (session.placed[0] || []).slice();
+  snap.push({ left: lid, right: rid });
+  const r = K.submit(session, snap);                // silent until the goal completes (J-26)
+  if (r.outcome === 'pass') { showOverlay('pass', r.turnAdvanced); return; } // unreachable for pairoff (non-final goal) — future-proof
+  renderRound();                                    // phase transition (step) rides stepIndex
 }
 
 /* S-11 «เหมือนกันเลย» — find-same: big sample + choice cards (tap the same kind);
