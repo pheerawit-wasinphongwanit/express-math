@@ -649,6 +649,19 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   }
   ok(noClear.length === 0, `renderers clear #choices before rebuild ${noClear.length ? '(' + noClear.join(', ') + ' missing)' : '(all clear)'}`);
 
+  // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
+  const KC2 = require('./kids/kids-core.js');
+  const kinds = new Set();
+  for (const g of KIDS.games) {
+    for (const b of KIDS.bands) {
+      const P = KC2.bandParams(KIDS, g.id, b.id);
+      const rng = Core.mulberry32(Core.hashSeed('kinds:' + g.id + ':' + b.id));
+      for (let i = 0; i < 40; i++) kinds.add(KC2.GEN[g.id](rng, P, KIDS.pools).display.kind);
+    }
+  }
+  const noView = [...kinds].filter((k) => !engSrc.includes("'" + k + "'"));
+  ok(noView.length === 0, `every display.kind has an engine view ${noView.length ? '(missing: ' + noView.join(', ') + ')' : '(' + kinds.size + '/' + kinds.size + ' kinds)'}`);
+
   // docs/kids.md ↔ kids-data.js sync (docs-first editing rule, TECH-SPEC §2.2)
   const docs = fs.readFileSync(path.join(path.dirname(process.argv[1]), 'docs', 'kids.md'), 'utf8');
   const need = [];

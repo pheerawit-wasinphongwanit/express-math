@@ -92,6 +92,7 @@ function renderRound() {
   else if (d.kind === 'shape-match' || d.kind === 'pattern') renderShapes(d);
   else if (d.kind === 'order') renderOrder(d);
   else if (d.kind === 'sort') renderSort(d);
+  else if (d.kind === 'samediff-find' || d.kind === 'samediff-odd') renderSamediff(d);
   else goHome(); // unknown display kind → defensive home (generators own their kinds)
 }
 /* S-06 «ข้างไหนมากกว่า» — two large sides; the question is icon+arrow only (C4, no words):
@@ -326,6 +327,29 @@ function renderSort(d) {
       btn.appendChild(inner);
     }
     btn.addEventListener('click', () => onChoice(bid));
+    box.appendChild(btn);
+  }
+}
+
+/* S-11 «เหมือนกันเลย» — find-same: big sample + choice cards (tap the same kind);
+   odd-one-out: ❓ + member cards (tap the different one). Both render from display.kind —
+   one view, two data shapes (C6); wrong tap → same round stays (J-13). */
+function renderSamediff(d) {
+  const prompt = $('prompt');
+  prompt.className = 'sampleShape';
+  prompt.textContent = d.kind === 'samediff-find' ? d.sample : '❓';
+  const step = session.round.steps[session.stepIndex];
+  const box = $('choices');
+  box.className = '';
+  box.innerHTML = '';
+  for (const c of step.choices) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    const inner = document.createElement('span');
+    inner.className = 'gShape';
+    inner.textContent = c;
+    btn.appendChild(inner);
+    btn.addEventListener('click', () => onChoice(c));
     box.appendChild(btn);
   }
 }
