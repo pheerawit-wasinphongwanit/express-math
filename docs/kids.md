@@ -18,6 +18,7 @@
 | positions | 📍 | บน–ล่าง–ใน–นอก | – | ตำแหน่งเชิงพื้นที่ (F-15) | visual |
 | length | 📏 | ยาว–สั้น | – | ความยาว (F-16) | compare |
 | weight | ⚖️ | หนัก–เบา | – | น้ำหนัก (F-17) | compare |
+| partwhole | 🌓 | ครึ่ง–เต็ม | – | ส่วน–ทั้งหมด (F-19) | visual |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
@@ -26,7 +27,7 @@
 | number | 🔢 | เลขและปริมาณ | count ✓ · match ✓ · equalgroups · deal · neighbors |
 | compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight ✓ · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt |
-| visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole |
+| visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole ✓ |
 | arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort · trace · routine |
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
@@ -46,6 +47,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | positions — ความสัมพันธ์ในฉาก (= จำนวนตัวเลือก) | 2 | 4 |
 | length — ชิ้น · อัตราส่วนคู่ขั้นต่ำ | 2 · ≥1.5× (no near-ties) | 3 · ≥1.25× |
 | weight — ชิ้น · ช่องห่าง class ขั้นต่ำ | 2 · ≥2 | 3 · ≥1 |
+| partwhole — การ์ด · ทิศทางผ่า | 2 · ตั้ง (v) | 4 · ตั้ง/นอน/เฉียง (v/h/d) |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -76,6 +78,9 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
 - **weight** คลาสน้ำหนักคัดแล้ว เรียงหนัก→เบา (F-17 — curated contrastive เท่านั้น ห้ามคู่เฉียดแบบ แอปเปิ้ล–ส้ม; รอ owner spot-review ร่วม art ชุด 2 ที่ T-052 [R15]):
   - 🐘 elephant · 🚗 car · 🍉 watermelon · 🍎 apple · 🪶 feather (5 คลาส — rank ตามลำดับ)
   - รอบหยิบชิ้นจากคลาสต่างกันแบบช่องห่าง rank ≥ ขั้นต่ำของ band (littles ≥2, bigs ≥1) — ranking ภายในรอบ strict เสมอ
+- **partwhole** ครึ่ง↔เต็ม (F-19 — wholes 6 ชิ้น คู่ครึ่ง↔เต็มเป็น bijection โดยโครงสร้าง clip-path: ครึ่ง = ตัวของเต็มถูกผ่าตามทิศ; อัปเกรด art ชุด 3 ที่ T-053 — รอ owner review [R15]):
+  - 🍕 · 🍉 · 🍪 · 🌭 · 🥕 · 🥨
+  - โจทย์ = ครึ่ง (ผ่าตาม `cut` ของรอบ) · ตัวเลือก = ของเต็ม · ทิศผ่าเป็น band param: littles ตั้ง (v) เท่านั้น → bigs เพิ่ม นอน (h) / เฉียง (d)
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 

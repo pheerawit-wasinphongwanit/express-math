@@ -214,6 +214,15 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       ok(cls.length >= (P.items - 1) * P.minRankGap + 1, `weight pool: feasible for band «${b.id}» (${P.items} items, gap ≥${P.minRankGap}, ${cls.length} classes)`);
     }
   }
+  // partwhole pool data invariants (F-19 — half↔whole bijection by construction: wholes distinct;
+  // pool deep enough for bigs choiceCount; cut vocabulary v/h/d only)
+  {
+    const ws = KIDS.pools.partwhole.wholes;
+    ok(new Set(ws).size === ws.length, 'partwhole pool: wholes distinct (half↔whole bijection)');
+    ok(ws.length >= 4, `partwhole pool: ≥ 4 wholes for bigs choiceCount (${ws.length})`);
+    const cuts = new Set(KIDS.bands.flatMap((b) => b.params.partwhole.cuts));
+    ok([...cuts].every((c) => ['v', 'h', 'd'].includes(c)), 'partwhole cuts: v/h/d vocabulary only');
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -404,6 +413,17 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       const bestRank = d.q === 'heavier' ? Math.min(...ranks) : Math.max(...ranks);
       if (st.correctId !== d.items.find((it) => rankOf[it.e] === bestRank).id) return 'correct ≠ ' + d.q + ' item';
       if (JSON.stringify(st.choices.slice().sort()) !== JSON.stringify(d.items.map((it) => it.id).sort())) return 'choices≠items';
+      return null;
+    },
+    partwhole(r, P) {
+      if (r.display.kind !== 'part-whole') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      if (st.choices.length !== P.choiceCount) return 'choiceCount';
+      if (!KIDS.pools.partwhole.wholes.includes(d.whole)) return 'whole not in pool';
+      if (!P.cuts.includes(d.cut)) return 'cut not in band set';
+      if (st.correctId !== d.whole) return 'correct≠matching whole';
+      if (!st.choices.every((c) => KIDS.pools.partwhole.wholes.includes(c))) return 'choice not curated';
       return null;
     },
   };
@@ -742,7 +762,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['partwhole'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

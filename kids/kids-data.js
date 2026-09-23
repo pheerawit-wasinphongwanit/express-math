@@ -19,6 +19,7 @@ const KIDS = {
     { id: 'positions', icon: '📍', caption: 'บน–ล่าง–ใน–นอก', family: 'visual', coPlay: false },
     { id: 'length', icon: '📏', caption: 'ยาว–สั้น', family: 'compare', coPlay: false },
     { id: 'weight', icon: '⚖️', caption: 'หนัก–เบา', family: 'compare', coPlay: false },
+    { id: 'partwhole', icon: '🌓', caption: 'ครึ่ง–เต็ม', family: 'visual', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -47,6 +48,7 @@ const KIDS = {
         positions: { relations: 2 },
         length: { items: 2, ratio: 1.5 },                   // no near-ties (F-16, mirrors F-07 discipline)
         weight: { items: 2, minRankGap: 2 },                 // curated contrastive classes only (F-17)
+        partwhole: { choiceCount: 2, cuts: ['v'] },           // littles: vertical cut only (F-19)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -61,6 +63,7 @@ const KIDS = {
         positions: { relations: 4 },
         length: { items: 3, ratio: 1.25 },
         weight: { items: 3, minRankGap: 1 },
+        partwhole: { choiceCount: 4, cuts: ['v', 'h', 'd'] }, // bigs add horizontal + diagonal cuts
       } },
   ],
 
@@ -118,6 +121,9 @@ const KIDS = {
         { id: 'c4', e: '🐘' }, { id: 'c3', e: '🚗' }, { id: 'c2', e: '🍉' },   // owner spot-review rides T-052 (R15)
         { id: 'c1', e: '🍎' }, { id: 'c0', e: '🪶' },
       ],
+    },
+    partwhole: {                                                // half↔whole bijection pool (F-19) — half = the whole
+      wholes: ['🍕', '🍉', '🍪', '🌭', '🥕', '🥨'],             // clip-path cut per round `cut`; art set 3 = T-053
     },
   },
 

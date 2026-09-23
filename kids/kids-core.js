@@ -363,6 +363,23 @@ GEN.weight = function (rng, P, pools) {
   };
 };
 
+/* F-19 «ครึ่ง–เต็ม» — part–whole matching. The pool's half↔whole mapping is a bijection by
+   construction (a half IS the whole clipped along the round's cut orientation — clip-path now,
+   art set 3 = T-053); exactly one matching whole among choices, distractor wholes belong to
+   other halves. Cut orientation is a band param: littles vertical only → bigs add h/d. */
+GEN.partwhole = function (rng, P, pools) {
+  const wholes = pools.partwhole.wholes;
+  const target = wholes[Math.floor(rng() * wholes.length)];
+  const cut = P.cuts[Math.floor(rng() * P.cuts.length)];
+  const others = wholes.filter((w) => w !== target);
+  const choices = shuffle(rng, [target, ...shuffle(rng, others).slice(0, P.choiceCount - 1)]);
+  return {
+    gameId: 'partwhole',
+    display: { kind: 'part-whole', whole: target, cut },
+    steps: [{ choices, correctId: target }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);
