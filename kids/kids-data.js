@@ -26,6 +26,7 @@ const KIDS = {
     { id: 'shapehunt', icon: '🔍', caption: 'ของจริงรูปทรงอะไร', family: 'shape', coPlay: false },
     { id: 'routine', icon: '🐭', caption: 'วันของหนู', family: 'arrange', coPlay: false },
     { id: 'deal', icon: '🥕', caption: 'แจกให้ครบ', family: 'number', coPlay: true },   // OQ-B natural (S-10)
+    { id: 'trace', icon: '✏️', caption: 'เดินตามเส้น', family: 'arrange', coPlay: true },  // OQ-B natural (S-10)
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -61,6 +62,7 @@ const KIDS = {
         shapehunt: { choiceCount: 2, kindsCount: 3 },                // 2 shape cards, 3 kinds (F-23)
         routine: { cardCount: 3 },                                  // 3 routine cards (F-25)
         deal: { nMin: 3, nMax: 3 },                                  // 3 carrots ↔ 3 rabbits (F-21)
+        trace: { turnsMin: 2, turnsMax: 2 },                         // 2 bends (F-24)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -82,6 +84,7 @@ const KIDS = {
         shapehunt: { choiceCount: 4, kindsCount: 5 },                // 4 shape cards, all 5 kinds (F-23)
         routine: { cardCount: 5 },                                  // 5 cards from the 6-step chain (F-25)
         deal: { nMin: 4, nMax: 6 },                                  // bigger deal, still 1:1 (F-21)
+        trace: { turnsMin: 3, turnsMax: 4 },                         // longer line, more bends (F-24)
       } },
   ],
 
@@ -172,6 +175,9 @@ const KIDS = {
       items: ['🥕', '🌽', '🍎', '🍇', '🍪', '🍌'],                 // recipient pools stay disjoint so holdings never
       recipients: ['🐰', '🐻', '🐸', '🐷', '🐭', '🐨'],             // read ambiguous (ST-[7])
     },
+    trace: {                                                      // follow-the-line (F-24) — no item pool: the path is
+      start: '🦆', end: '🏞️',                                       // synthesized x-monotone on a grid (simple by
+    },                                                             // construction, R14); only the markers are content
   },
 
   // Co-play / hub copy lands here as it is added (kids copy budget ≤ 40 words, ST-[9]).

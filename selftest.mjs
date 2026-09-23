@@ -313,6 +313,13 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
     const maxN = Math.max(...KIDS.bands.map((b) => b.params.deal.nMax));
     ok(dp.items.length >= maxN && dp.recipients.length >= maxN, `deal pool: feasible for band N ≤ ${maxN} (${dp.items.length}/${dp.recipients.length} deep)`);
   }
+  // trace pool data invariants (F-24 — no item pool; markers are the only content, must be
+  // distinct non-empty strings so start and end never read the same)
+  {
+    const tp = KIDS.pools.trace;
+    ok(typeof tp.start === 'string' && tp.start.length > 0 && typeof tp.end === 'string' && tp.end.length > 0, 'trace pool: start/end markers present');
+    ok(tp.start !== tp.end, 'trace pool: start ≠ end marker');
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -622,6 +629,38 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       if (new Set(d.recipients.map((x) => x.e)).size !== d.recipients.length) return 'dup recipient emoji in round';
       return null;
     },
+    trace(r, P) {
+      const d = r.display;
+      if (d.kind !== 'trace') return 'kind';
+      const w = d.waypoints;
+      if (w.length < P.turnsMin + 2 || w.length > P.turnsMax + 2) return 'turns out of band';
+      if (new Set(w.map((p) => p.id)).size !== w.length) return 'dup waypoint ids';
+      if (!w.every((p) => Number.isInteger(p.x) && Number.isInteger(p.y) && p.y >= 0 && p.y <= 4)) return 'grid domain (x·y integers, y 0–4)';
+      for (let i = 1; i < w.length; i++) {
+        if (w[i].x <= w[i - 1].x) return 'x not strictly increasing (simple-by-construction broken)';
+        if (w[i].y === w[i - 1].y) return 'invisible bend (y must change at every waypoint)';
+      }
+      if (d.start !== KIDS.pools.trace.start || d.end !== KIDS.pools.trace.end) return 'markers not from pool';
+      if (r.steps.length !== 1 || r.steps[0].goal !== 'trace') return 'steps (goal trace)';
+      if (r.steps[0].handoff !== undefined) return 'handoff must default to on-pass (J-24)';
+      // simplicity re-proof (R14): a REAL segment-intersection predicate on every non-adjacent
+      // pair — adjacent pairs can only meet at their shared vertex because x strictly increases
+      const o = (p, q, s) => Math.sign((q.x - p.x) * (s.y - p.y) - (q.y - p.y) * (s.x - p.x));
+      const onSeg = (p, q, s) => Math.min(p.x, s.x) <= q.x && q.x <= Math.max(p.x, s.x) && Math.min(p.y, s.y) <= q.y && q.y <= Math.max(p.y, s.y); // q inside bbox of p..s (query first-class)
+      const segCross = (a, b, c, e) => {
+        const o1 = o(a, b, c), o2 = o(a, b, e), o3 = o(c, e, a), o4 = o(c, e, b);
+        if (o1 !== o2 && o3 !== o4) return true;          // proper crossing
+        if ((o1 === 0 && onSeg(a, c, b)) || (o2 === 0 && onSeg(a, e, b)) ||
+            (o3 === 0 && onSeg(c, a, e)) || (o4 === 0 && onSeg(c, b, e))) return true; // collinear touch
+        return false;
+      };
+      for (let i = 0; i + 1 < w.length; i++) {
+        for (let j = i + 2; j + 1 < w.length; j++) {
+          if (segCross(w[i], w[i + 1], w[j], w[j + 1])) return 'segment self-crossing (R14)';
+        }
+      }
+      return null;
+    },
   };
   for (const g of KIDS.games) {
     const gen = KC.GEN[g.id];
@@ -795,6 +834,23 @@ console.log('\n[8] F-03 session contract (kids core)');
     const fixed = d.items.map((it, i) => ({ item: it.id, recipient: d.recipients[i].id }));
     const r3 = KC.submit(s, fixed);
     ok(r3.outcome === 'pass' && r3.roundChanged && s.placed.length === 0, '(c-deal) every-recipient-exactly-one → pass + fresh round');
+  }
+
+  // (c-trace) goal round on a REAL generator (trace): prefix logs stay silent, out-of-order
+  // logs are fabricated, the full in-order traversal alone completes the round (J-24 core)
+  {
+    const s = KC.newSession('trace', 'littles', 1, 709);
+    const ids = s.round.display.waypoints.map((w) => w.id);
+    ok(ids.length === 4, `(c-trace) littles trace: 2 turns → 4 waypoints (${ids.length})`);
+    let r = KC.submit(s, ids.slice(0, 1));
+    ok(r.outcome === 'incomplete' && s.stepIndex === 0 && s.placed.length === 1, '(c-trace) start-marker log → silent, snapshot kept');
+    r = KC.submit(s, ids.slice(0, ids.length - 1));
+    ok(r.outcome === 'incomplete', '(c-trace) log missing the end marker → silent');
+    r = KC.submit(s, ids.slice().reverse());
+    ok(r.outcome === 'incomplete', '(c-trace) out-of-order log rejected silently (fabricated prefix)');
+    r = KC.submit(s, ids);
+    ok(r.outcome === 'pass' && r.roundChanged, '(c-trace) full in-order traversal → pass + fresh round');
+    ok(s.placed.length === 0, '(c-trace) fresh round resets the log');
   }
 
   // (f) goal-step contract — synthetic goal fixtures (T-021 discipline; real goal gens land in M7)
@@ -992,7 +1048,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['trace'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

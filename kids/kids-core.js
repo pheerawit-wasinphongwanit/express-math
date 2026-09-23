@@ -504,6 +504,32 @@ GEN.deal = function (rng, P, pools) {
   };
 };
 
+/* F-24 «เดินตามเส้น» — goal-state round (T-047): an x-monotone dashed path from the start
+   marker to the end marker through band-sized turns. Every waypoint's x strictly increases,
+   so segments occupy disjoint x-spans and the path is SIMPLE BY CONSTRUCTION (R14 — no
+   segment self-crossing; adjacent segments meet only at their shared vertex); ST-[7] still
+   re-proves simplicity with a full segment-intersection predicate over 2,000 rounds, and
+   forces y to change at every waypoint so each bend is a real turn. The traversal log
+   (waypoint ids in order) is the structure; GOALS['trace'] judges prefix/full-log semantics.
+   on-pass handoff: co-play flips only at pass (J-24 — one glide per hand, cartoon identical). */
+GEN.trace = function (rng, P, pools) {
+  const turns = randInt(rng, P.turnsMin, P.turnsMax);
+  const verts = turns + 2;                       // start marker + turns bends + end marker
+  const waypoints = [];
+  let y = randInt(rng, 0, 4);
+  for (let i = 0; i < verts; i++) {
+    waypoints.push({ id: 'w' + i, x: i, y });    // x = i → strictly increasing (simple by construction)
+    const opts = [];
+    for (let c = 0; c <= 4; c++) if (c !== y) opts.push(c); // force a visible bend at every vertex
+    y = opts[Math.floor(rng() * opts.length)];
+  }
+  return {
+    gameId: 'trace',
+    display: { kind: 'trace', waypoints, start: pools.trace.start, end: pools.trace.end },
+    steps: [{ goal: 'trace' }],                  // on-pass default handoff
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

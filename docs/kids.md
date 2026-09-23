@@ -25,6 +25,7 @@
 | shapehunt | 🔍 | ของจริงรูปทรงอะไร | – | ของจริง→รูปทรง (F-23) | shape |
 | routine | 🐭 | วันของหนู | – | เรียงลำดับกิจวัตร (F-25, multi-step) | arrange |
 | deal | 🥕 | แจกให้ครบ | ✔ (OQ-B natural) | แจกแบบ one-to-one (F-21, goal-state) | number |
+| trace | ✏️ | เดินตามเส้น | ✔ (OQ-B natural) | ตามเส้นลายมือ (F-24, goal-state) | arrange |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
@@ -34,9 +35,9 @@
 | compare | 🆚 | เปรียบเทียบ | compare ✓ · length ✓ · weight ✓ · pairoff |
 | shape | 🔷 | รูปทรงและแบบรูป | shapes ✓ · shapehunt ✓ |
 | visual | 👀 | มองภาพ | samediff ✓ · shadow ✓ · positions ✓ · partwhole ✓ |
-| arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort ✓ · trace · routine ✓ |
+| arrange | 🧩 | จัดและเรียง | order ✓ · sort ✓ · colorsort ✓ · trace ✓ · routine ✓ |
 
-*(M7 เหลือ trace · pairoff — registry ครบ 20)*
+*(M7 เหลือ pairoff — registry ครบ 20)*
 
 Zone marker = the family's marker icon — never any member game's icon (ST-[11], mirrors the sort-bin marker∉members rule). Membership covers exactly the registered games.
 
@@ -62,6 +63,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | shapehunt — ตัวเลือก · ชนิดรูปทรง | 2 · 3 | 4 · 5 |
 | routine — การ์ดกิจวัตร | 3 | 5 |
 | deal — คู่ของ↔ผู้รับ (goal-state 1:1) | 3 | 4–6 |
+| trace — จุดเลี้ยว (turns) | 2 | 3–4 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -111,6 +113,9 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
   - ⏰ ตื่น → 🪥 แปรงฟัน → 🥣 กินข้าวเช้า → 🏫 โรงเรียน → 🛁 อาบน้ำ → 😴 นอน (6 ขั้น rank 1–6)
 - **deal** แจก one-to-one (F-21 — goal-state round ตัวแรก: คำตอบที่ถูกคือ *สถานะปลาย* «ผู้รับทุกตัวถือของพอดีหนึ่งชิ้น» ไม่ใช่เส้นทางเดียว — GOALS['one-each'] เป็นผู้ตัดสิน; โครงสร้างยังไม่ครบ = เงียบ ไม่มีการ์ตูนกลางคัน J-21; co-play ผลัดวางทีละชิ้น handoff `per-action`):
   - ของ (สิ่งที่แจก): 🥕 🌽 🍎 🍇 🍪 🍌 · ผู้รับ: 🐰 🐻 🐸 🐷 🐭 🐨 (แยกกันชัด ไม่ซ้ำข้ามฝั่ง — รอบหยิบตาม N ของ band)
+- **trace** เส้นทางลายมือ (F-24 — goal-state round ตัวที่สอง: โครงสร้างคือ log การไถลตามลำดับ waypoint; หลุดออกนอกเส้น = ไถลหยุดชั่วคราว ไม่มีการ์ตูน ไม่บังคับเริ่มใหม่ J-24; co-play ผลัดไถลรอบละเส้น handoff `on-pass` คือพลิกเมื่อผ่านเท่านั้น):
+  - ไม่มี pool ไอเทม — เส้นทางสังเคราะห์บนกริด x 0..k · y 0..4 โดย **x เพิ่มเข้มงวดทุกจุด** (x-monotone → เส้นทาง simple โดยโครงสร้าง R14 ไม่ตัดตัวเอง) และ y เปลี่ยนเสมอทุกจุด (ทุก bend เป็นเหลี่ยวจริง) · ST-[7] พิสูจน์ความ simple ด้วย segment-intersection predicate เต็มรูปแบบทุกรอบอยู่ดี
+  - marker: เริ่ม 🦆 (เป็ดน้อย) → จบ 🏞️ (สระน้ำ) · band: littles จุดเลี้ยว 2 → bigs 3–4
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 
