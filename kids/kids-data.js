@@ -22,6 +22,7 @@ const KIDS = {
     { id: 'partwhole', icon: '🌓', caption: 'ครึ่ง–เต็ม', family: 'visual', coPlay: false },
     { id: 'equalgroups', icon: '🍒', caption: 'เท่ากันไหม', family: 'number', coPlay: false },
     { id: 'colorsort', icon: '🎨', caption: 'จัดตามสี', family: 'arrange', coPlay: false },
+    { id: 'neighbors', icon: '🧮', caption: 'เพื่อนตัวเลข', family: 'number', coPlay: false },
   ],
 
   // Hub zones (F-02, FEATURES-OQ-D default: single scrolling board, 5 skill-family zones).
@@ -53,6 +54,7 @@ const KIDS = {
         partwhole: { choiceCount: 2, cuts: ['v'] },           // littles: vertical cut only (F-19)
         equalgroups: { rangeLo: 1, rangeHi: 5, choiceCount: 3, minGap: 2 }, // no near-ties (F-18)
         colorsort: { binCount: 2, itemCountMin: 4, itemCountMax: 4 },        // 2 color bowls (F-20)
+        neighbors: { trackMin: 3, trackMax: 5, choiceCount: 3, interior: false }, // littles: gap at the end (F-22)
       } },
     { id: 'bigs', icon: '🐥', label: 'น้องใหญ่ 5–6',
       params: {
@@ -70,6 +72,7 @@ const KIDS = {
         partwhole: { choiceCount: 4, cuts: ['v', 'h', 'd'] }, // bigs add horizontal + diagonal cuts
         equalgroups: { rangeLo: 1, rangeHi: 10, choiceCount: 3, minGap: 1 },
         colorsort: { binCount: 3, itemCountMin: 5, itemCountMax: 6 },        // 3 bowls, more items (F-20)
+        neighbors: { trackMin: 6, trackMax: 10, choiceCount: 4, interior: true }, // bigs: interior gap (F-22)
       } },
   ],
 

@@ -428,6 +428,26 @@ GEN.colorsort = function (rng, P, pools) {
   };
 };
 
+/* F-22 «เพื่อนตัวเลข» — number track 1..L with one missing cell. littles lose the END cell
+   (n±1 — the cell after the last shown neighbor); bigs lose an INTERIOR cell sitting between
+   two shown neighbors. Every shown numeral carries its dot pattern in the view (quantity
+   readable without knowing words); distractor numerals ≠ n, pairwise distinct, in band range. */
+GEN.neighbors = function (rng, P) {
+  const len = randInt(rng, P.trackMin, P.trackMax);
+  const gapIndex = P.interior ? randInt(rng, 1, len - 2) : len - 1;
+  const n = gapIndex + 1;
+  const track = [];
+  for (let v = 1; v <= len; v++) track.push(v === n ? null : v);
+  const others = [];
+  for (let v = 1; v <= P.trackMax; v++) if (v !== n) others.push(v);
+  const choices = shuffle(rng, [n, ...shuffle(rng, others).slice(0, P.choiceCount - 1)]);
+  return {
+    gameId: 'neighbors',
+    display: { kind: 'number-track', track, gapIndex, n },
+    steps: [{ choices, correctId: n }],
+  };
+};
+
 /* ---------- band resolution (F-11 — params only, C6) ---------- */
 function bandParams(data, gameId, bandId) {
   const band = data.bands.find((b) => b.id === bandId);

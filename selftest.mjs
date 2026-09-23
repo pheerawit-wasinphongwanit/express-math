@@ -262,6 +262,19 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
          `colorsort pool: feasible for band «${b.id}» (members ≥ ${maxTake} per bin)`);
     }
   }
+  // neighbors band data invariants (F-22 — no pool: the track is synthesized; the shipped band
+  // design is end-gap for littles → interior for bigs, choices fit the numeral domain)
+  {
+    const lit = KIDS.bands.find((b) => b.id === 'littles').params.neighbors;
+    const big = KIDS.bands.find((b) => b.id === 'bigs').params.neighbors;
+    ok(lit.interior === false && big.interior === true, 'neighbors bands: end-gap littles → interior bigs (shipped design)');
+    for (const b of KIDS.bands) {
+      const P = b.params.neighbors;
+      ok(P.trackMin >= 3 && P.trackMin < P.trackMax, `neighbors params «${b.id}»: track length range sane`);
+      ok(P.choiceCount >= 2 && P.choiceCount <= P.trackMax, `neighbors params «${b.id}»: 2 ≤ choices ≤ trackMax (distractor depth)`);
+      if (P.interior) ok(P.trackMin >= 3, `neighbors params «${b.id}»: interior gap needs track ≥ 3`);
+    }
+  }
   // per-game invariant predicates (return a reason string on violation, null when clean)
   const INVARIANTS = {
     count(r, P) {
@@ -504,6 +517,25 @@ console.log('\n[7] Generator invariants (kids — 2,000 rounds/game/band)');
       KIDS.pools.colorsort.colors.forEach((c) => c.members.forEach((m) => { colOf[m] = c.id; }));
       if (d.items.some((it) => colOf[it.emoji] !== it.bin)) return 'item color mismatch vs pool';
       if (d.bins.some((b) => d.items.some((it) => it.emoji === b.marker))) return 'marker among round items';
+      return null;
+    },
+    neighbors(r, P) {
+      if (r.display.kind !== 'number-track') return 'kind';
+      if (r.steps.length !== 1) return 'steps≠1';
+      const d = r.display, st = r.steps[0];
+      const len = d.track.length;
+      if (len < P.trackMin || len > P.trackMax) return 'track length out of band';
+      for (let i = 0; i < len; i++) {
+        const v = i + 1;
+        if (i === d.gapIndex) { if (d.track[i] !== null) return 'gap cell not empty'; }
+        else if (d.track[i] !== v) return 'track not 1..len consecutive';
+      }
+      if (P.interior && (d.gapIndex === 0 || d.gapIndex === len - 1)) return 'bigs: gap must be interior';
+      if (!P.interior && d.gapIndex !== len - 1) return 'littles: gap must be at the end';
+      if (d.n !== d.gapIndex + 1) return 'n ≠ gap value';
+      if (st.choices.length !== P.choiceCount) return 'choiceCount';
+      if (st.correctId !== d.n) return 'correct≠n';
+      if (!st.choices.every((c) => Number.isInteger(c) && c >= 1 && c <= P.trackMax)) return 'out-of-band choice';
       return null;
     },
   };
@@ -842,7 +874,7 @@ console.log('\n[9] Budgets & hygiene (kids mode · TECH-SPEC §6.5)');
   // every generator display.kind ↔ an engine view branch (T-020's manual 8/8 walk, made mechanical)
   // PENDING_VIEWS: generator tasks land before their view task — entry removed when the view lands
   // (M4 discipline: the mechanical scan must stay green at every commit, never red mid-pair)
-  const PENDING_VIEWS = [];
+  const PENDING_VIEWS = ['neighbors'];
   const KC2 = require('./kids/kids-core.js');
   const kinds = new Set();
   for (const g of KIDS.games) {

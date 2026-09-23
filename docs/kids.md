@@ -21,6 +21,7 @@
 | partwhole | 🌓 | ครึ่ง–เต็ม | – | ส่วน–ทั้งหมด (F-19) | visual |
 | equalgroups | 🍒 | เท่ากันไหม | – | ความเท่ากันของกลุ่ม (F-18) | number |
 | colorsort | 🎨 | จัดตามสี | – | จัดหมวดตามสี (F-20, multi-step) | arrange |
+| neighbors | 🧮 | เพื่อนตัวเลข | – | เพื่อนบ้านของเลข (F-22) | number |
 
 ## Hub zones (F-02 · FEATURES-OQ-D default: single scrolling board, 5 skill-family zones)
 
@@ -52,6 +53,7 @@ Zone marker = the family's marker icon — never any member game's icon (ST-[11]
 | partwhole — การ์ด · ทิศทางผ่า | 2 · ตั้ง (v) | 4 · ตั้ง/นอน/เฉียง (v/h/d) |
 | equalgroups — ช่วงนับ · ส่วนต่างตัวลวง | 1–5 · ≥2 (no near-ties) | 1–10 · ≥1 |
 | colorsort — ถ้วยสี · ชิ้นต่อรอบ | 2 · 4 | 3 · 5–6 |
+| neighbors — ความยาวราง · ตำแหน่งช่องหาย · ตัวเลือก | ≤5 · ปลายราง · 3 | ≤10 · กลางราง · 4 |
 
 Band is read at session start; manual icon picker on the hub (OQ-A); resets every mode entry (OQ-E — nothing persists, NG3).
 
@@ -90,6 +92,7 @@ Band is read at session start; manual icon picker on the hub (OQ-A); resets ever
   - แดง swatch `#E5484D` + marker 🍓: 🍅 🌹 🍒 🦀 🍎
   - เหลือง swatch `#F2B33D` + marker ⭐: 🍌 🌻 🧀 🌽 🍋
   - เขียว swatch `#30A46C` + marker 🌲: 🥑 🥦 🐢 🥒 🍏
+- **neighbors** รางตัวเลข (F-22 — ไม่มี pool: รางสังเคราะห์ 1..L ตาม band ช่องหาย 1 ช่อง; ใต้ทุกเลขมีแถบจุดเท่าจำนวน อ่านปริมาณได้โดยไม่ต้องรู้คำ; littles ช่องปลายหาย → bigs ช่องกลางหายระหว่างเพื่อนบ้านสองตัว)
 
 ## Copy (Thai, for parents — kids screens are icon-led; budget ≤ 40 words, ST-[9])
 
